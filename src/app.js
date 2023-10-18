@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
+const session = require('express-session');
 // const routes = require('./routes'); // Import the routes module
 
 require("./db/conn");
@@ -16,7 +17,7 @@ const  json  = require("express");
 const port = process.env.port || 3000;
 
 const static_path = path.join(__dirname, "../public");
-
+//middleware
 app.use(express.static(static_path));
 app.set("view engine", "hbs");
 
@@ -26,6 +27,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(bodyParser.json()); // Parse JSON
 
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized:true,
+   // cookie:{ maxAge:60000}
+}));
+
 
 
 //routing
@@ -34,7 +42,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-   res.render('login')
+   
+    res.render('login');
 });
 
 app.post("/login", async (req, res) => {
@@ -49,8 +58,8 @@ app.post("/login", async (req, res) => {
         if (existingUser.password !== password) {
             return res.status(400).render('login', { message: 'Invalid Password' });
         }
-
-        res.render('userafterlogin');
+        req.session.user = existingUser;
+        res.redirect('/userafterlogin?success');
     } catch (error) {
         console.error("Error during login:", error);
         res.status(500).send("Internal server error. Please try again later.");
@@ -97,8 +106,13 @@ app.get("/admin", (req, res) => {
    res.render('admin')
 });
 
-app.get("/userafterlogin", (req, res) => {
-   res.render('userafterlogin')
+app.get('/userafterlogin', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    const user = req.session.user;
+    res.render('userafterlogin', { user: user });
 });
 app.get("/vbook", (req, res) => {
    res.render('vbook')
