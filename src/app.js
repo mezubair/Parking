@@ -1,32 +1,43 @@
 const express = require('express');
 const path = require('path');
-const app = express();
-const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars')
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 // const routes = require('./routes'); // Import the routes module
 
-require("./db/conn");
-
-const Register = require("./models/register");
-const  json  = require("express");
-
-// Use the imported API routes
-// app.use('/', routes);
+const app = express();
 
 const port = process.env.port || 3000;
 
 const static_path = path.join(__dirname, "../public");
-//middleware
+const viewsPath = path.join(__dirname, '../views');
+const partialsPath = path.join(__dirname, '../views/partials')
+
+
+
+//Database and necessary models
+require("./db/conn");
+const Register = require("./models/register");
+
+
+
+
+/* Middleware */
+// Setting up the view engine
+//
+app.engine('hbs', exphbs.engine ({
+    extname: '.hbs',
+    defaultLayout: false,
+    partialsDir: partialsPath 
+}));
+
+app.set('views' , viewsPath );
+app.set('view engine', 'hbs');
+
+// Other middleware and configurations
 app.use(express.static(static_path));
-app.set("view engine", "hbs");
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(bodyParser.json()); // Parse JSON
-
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
 app.use(session({
     secret: 'secret',
     resave: false,
@@ -97,11 +108,6 @@ app.post("/register", async (req, res) => {
     }
 });
 
-
-
-  
- 
-
 app.get("/admin", (req, res) => {
    res.render('admin')
 });
@@ -114,6 +120,10 @@ app.get('/userafterlogin', (req, res) => {
     const user = req.session.user;
     res.render('userafterlogin', { user: user });
 });
+
+app.get('/admindashboard', (req, res) =>{
+    res.render('dashboard')
+})
 app.get("/vbook", (req, res) => {
    res.render('vbook')
 });
