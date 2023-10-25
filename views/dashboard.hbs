@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Webpage Title -->
+    <title>Dashboard</title>
+   <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="css/fontawesome-all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/bootstrap2.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+
+  <link href="css/swiper.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+    <!-- Favicon  -->
+    <link rel="icon" href="images/favicon-admin.png">
+</head>
+
+<body>
+
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
+				<a class="navbar-brand" href="./dashboard.php"><span>Vechicle </span>Parking System</a>
+				<ul class="nav navbar-top-links navbar-right">
+					
+						
+					</li>
+					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+						<em class="fa fa-user-circle"></em> 
+					</a>
+						<ul class="dropdown-menu dropdown-alerts">
+							<li><a href="">
+								<div><em class="fa fa-user"></em> Profile</div>
+							</a></li>
+							<li class="divider"></li>
+							<li><a href="">
+								<div><em class="fa fa-key"></em> Change Password</div>
+							</a></li>
+							<li class="divider"></li>
+							<li><a href="">
+								<div><em class="fa fa-cogs"></em> Settings</div>
+							</a></li>
+							<li class="divider"></li>
+							<li><a href="">
+								<div><em class="fa fa-power-off"></em> Logout</div>
+							</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div><!-- /.container-fluid -->
+	</nav>
+
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<div class="profile-sidebar">
+			<div class="profile-userpic">
+				<img src="https://www.w3schools.com/howto/img_avatar.png" width="50" class="img-responsive" alt="Icon">
+			</div>
+			<div class="profile-usertitle">
+				<div class="profile-usertitle-name">Admin Dashboard</div>
+				<div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="divider"></div>
+
+		<form role="search" action="search-results.php" name="search" method="POST" enctype="multipart/form-data">
+
+			<!--  -->
+
+			<div class="form-group">
+				<input type="text" class="form-control" id="searchdata" name="searchdata" placeholder="Search Vehicle-Reg">
+			</div>
+
+		</form>
+		<ul class="nav menu">
+			<li ><a href="dashboard.php"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
+			<li ><a href="manage-vehicles.php"><em class="fa fa-car">&nbsp;</em> Vehicle Entry</a></li>
+			<li ><a > IN Vehicles</a></li>
+            <li > <a >< em class="fa fa-toggle-off">&nbsp;</em> OUT Vehicles</a></li>
+			<!-- <li class="<?php if($page=="about") {echo "active";}?>"><a href="about.php"><em class="fa fa-info">&nbsp;</em> About Page</a></li> -->
+			<li class="<?php if($page=="income") {echo "active";}?>"><a href="total-income.php"><em class="fa fa-dollar">&nbsp;</em> Total Income</a></li>
+			
+		</ul>
+		
+	</div><!--/.sidebar-->
+
+  
+   
+
+
+
+   
+
+
+    <!-- Back To Top Button -->
+    <button onclick="topFunction()" id="myBtn">
+        <img src="images/up-arrow.png" alt="alternative">
+    </button>
+    <!-- end of back to top button -->
+
+    <!-- Scripts -->
+    <script src="js/bootstrap2.min.js"></script>
+    <!-- Bootstrap framework -->
+    <script src="js/swiper.min.js"></script>
+    <!-- Swiper for image and text sliders -->
+    <script src="js/purecounter.min.js"></script>
+    <!-- Purecounter counter for statistics numbers -->
+    <script src="js/replaceme.min.js"></script>
+    <!-- ReplaceMe for rotating text -->
+    <script src="js/scripts.js"></script>
+    <script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
+
+    
+  
+</body>
+
+</html>
+
