@@ -18,6 +18,8 @@ const partialsPath = path.join(__dirname, '../views/partials')
 //Database and necessary models
 require("./db/conn");
 const Register = require("./models/register");
+const VehicleCategory = require("./models/vehicleEntry");
+const VehicleEntry = require('./models/vehicleEntry');
 
 
 
@@ -25,35 +27,35 @@ const Register = require("./models/register");
 /* Middleware */
 // Setting up the view engine
 //
-app.engine('hbs', exphbs.engine ({
+app.engine('hbs', exphbs.engine({
     extname: '.hbs',
     defaultLayout: false,
-    partialsDir: partialsPath 
+    partialsDir: partialsPath
 }));
 
-app.set('views' , viewsPath );
+app.set('views', viewsPath);
 app.set('view engine', 'hbs');
 
 // Other middleware and configurations
 app.use(express.static(static_path));
-app.use(express.urlencoded({ extended: true })); 
-app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized:true,
-   // cookie:{ maxAge:60000}
+    saveUninitialized: true,
+    // cookie:{ maxAge:60000}
 }));
 
 
 
 //routing
 app.get("/", (req, res) => {
-   res.render('index')
+    res.render('index')
 });
 
 app.get("/login", (req, res) => {
-   
+
     res.render('login');
 });
 
@@ -78,7 +80,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-   res.render('register')
+    res.render('register')
 });
 
 app.post("/register", async (req, res) => {
@@ -88,7 +90,7 @@ app.post("/register", async (req, res) => {
         const existingUserPhone = await Register.findOne({ phoneNumber });
 
         if (existingUserPhone || existingUserEmail) {
-            return res.status(400).render('register', { message: 'Email or Phone Number already exists', formData: req.body});
+            return res.status(400).render('register', { message: 'Email or Phone Number already exists', formData: req.body });
         }
 
 
@@ -101,7 +103,7 @@ app.post("/register", async (req, res) => {
         });
 
         const registered = await regNewUser.save();
-        return res.status(400).render('login', { message: 'Registration Successful'});
+        return res.status(400).render('login', { message: 'Registration Successful' });
     } catch (error) {
         console.error("Error during registration:", error);
         res.status(500).send("Internal server error. Please try again later.");
@@ -109,7 +111,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
-   res.render('admin')
+    res.render('admin')
 });
 
 app.get('/userafterlogin', (req, res) => {
@@ -121,31 +123,87 @@ app.get('/userafterlogin', (req, res) => {
     res.render('userafterlogin', { user: user });
 });
 
-app.get('/admindashboard', (req, res) =>{
+app.get('/admindashboard', (req, res) => {
     res.render('dashboard')
 })
+
+app.get('/in-vehicles', (req, res) => {
+    res.render('in-vehicles')
+})
+app.get('/out-vehicles', (req, res) => {
+    res.render('out-vehicles')
+})
+app.get('/total-income', (req, res) => {
+    res.render('total-income')
+})
+
+app.get('/manage-vehicles', (req, res) => {
+    res.render('manage-vehicles')
+})
+app.get('/outgoing-detail', (req, res) => {
+    res.render('outgoing-detail')
+})
+
+app.get('/update-incomingdetail', (req, res) => {
+    res.render('update-incomingdetail')
+})
+
 app.get("/vbook", (req, res) => {
-   res.render('vbook')
+    res.render('vbook')
 });
 
 
 
 app.get("/detail", (req, res) => {
-   res.render('detail')
+    res.render('detail')
 });
 
 
 
 app.get("/privacy", (req, res) => {
-   res.render('privacy')
+    res.render('privacy')
 });
 
 
 app.get("/terms", (req, res) => {
-   res.render('terms')
+    res.render('terms')
 });
+
+///////////////////////////////////////////////////////////////////////
+
+app.post("/manage-vehicles", async (req, res) => {
+    try {
+        const { vehreno, vehcomp, catename, ownername, ownercontno } = req.body;
+        const existingRegistrationNumber = await VehicleEntry.findOne({vehreno});
+        const existingOwnersContact = await VehicleEntry.findOne({ ownercontno });
+
+        if (existingRegistrationNumber|| existingOwnersContact) {
+            return res.status(400).render('manage-vehicles', { message: 'Registration number or Phone Number already exists', formData: req.body });
+        }
+
+
+
+        const regNewVehicle = new VehicleEntry({
+            registrationNumber: vehreno,
+            vehiclesCompanyName: vehcomp,
+            vehicleCategory: catename,
+            ownersFullName: ownername,
+            ownersContact: ownercontno
+        });
+
+        const registered = await regNewVehicle.save();
+        return res.status(400).render('manage-vehicles', { message: 'Booked sucessfully' });
+    } catch (error) {
+        console.error("Error during registration:", error);
+        res.status(500).send("Internal server error. Please try again later.");
+    }
+});
+
+///////////////////////////////////////////////////////////////////////
+
+
 
 
 app.listen(port, () => {
-   console.log(`Server is running at port: ${port}`)
+    console.log(`Server is running at port: ${port}`)
 });  
