@@ -18,9 +18,9 @@
 </head>
 
 <body>
- {{>adminNavbar}}
+    {{>adminNavbar}}
 
-{{>sidebar}}
+    {{>sidebar}}
 
 
     <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -45,6 +45,13 @@
 
                 <div class="col-md-12">
 
+                    {{#if message}}
+                  
+                <div><p style="background-color: red;">{{message}}</p></div>
+                           
+
+                    {{/if}}
+
                     <form method="POST" action="/manage-vehicles">
 
                         <div class="form-group">
@@ -67,7 +74,7 @@
                                 <option value="Four Wheeler">Four Wheeler</option>
                                 <option value="Three Wheeler">Three Wheeler</option>
                                 <option value="Two Wheeler">Two Wheeler</option>
-                               
+
 
                             </select>
                         </div>
@@ -101,7 +108,7 @@
 
     <script src="js1/jquery-1.11.1.min.js"></script>
     <script src="js1/bootstrap.min.js"></script>
-    
+
     <script src="js1/custom.js"></script>
 
 
