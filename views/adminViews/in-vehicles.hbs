@@ -47,45 +47,29 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Vehicle No.</th>
-                <th>Company</th>
-                <th>Category</th>
-                <th>Parking Number</th>
                 <th>Vehicle's Owner</th>
-                <th></th>
+                <th>Registration No.</th>
+                <th>Parking Number</th>
+                <th>Company</th>
+                <th>Model</th>
+                <th>Actions</th>
 
             </tr>
         </thead>
-        <tbody>
-        <?php
-        $ret=mysqli_query($con,"SELECT * FROM vehicle_info WHERE Status='' ORDER BY InTime DESC");
-        $cnt=1;
-        while ($row=mysqli_fetch_array($ret)) {
+<tbody>
+        {{#each vehicles}}
+    <tr>
+      <td>{{addOne @index}}</td>
+      <td>{{this.ownerName}}</td>
+      <td>{{this.registrationNumber}}</td>
+      <td>CA-{{this.parkingNumber}}</td>
+      <td>{{this.vehicleCompanyname}}</td>
+      <td>{{this.vehicleModel}}</td>
+      <td><a href="/update-incomingdetail/{{this._id}}"><button type="button" class="btn btn-sm btn-danger">Take Action</button></a></td>
 
-        ?>
-   
-            <tr>
 
-            <td><?php echo $cnt;?></td>
-                 
-            <td><?php  echo $row['RegistrationNumber'];?></td>
-
-            <td><?php  echo $row['VehicleCompanyname'];?></td>
-
-            <td><?php  echo $row['VehicleCategory'];?></td>
-
-            <td><?php  echo 'CA-'.$row['ParkingNumber'];?></td>
-
-            <td><?php  echo $row['OwnerName'];?></td>
-            
-            <td><a href="update-incomingdetail"><button type="button" class="btn btn-sm btn-danger">Take Action</button></a>
-            </td>
-
-            </tr>
-
-                <?php $cnt=$cnt+1;}?>
- 
-        
+    </tr>
+     {{/each}}
         </tbody>
 
     </table>

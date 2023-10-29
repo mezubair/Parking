@@ -22,134 +22,107 @@
 
 {{>sidebar}}
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="dashboard.php">
-					<em class="fa fa-home"></em>
-				</a></li>
-				<li class="active">Vehicle Category Management</li>
-			</ol>
-		</div><!--/.row-->
-		
-		<div class="row">
-			<div class="col-lg-12">
-				<!-- <h1 class="page-header">Vehicle Management</h1> -->
-			</div>
-		</div><!--/.row-->
-		
-		<div class="row">
-				<div class="col-lg-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">Manage Outgoing Vehicles</div>
-						<div class="panel-body">
+	<div class="row">
+		<ol class="breadcrumb">
+			<li><a href="dashboard.php"><em class="fa fa-home"></em></a></li>
+			<li class="active">Vehicle Category Management</li>
+		</ol>
+	</div><!--/.row-->
 
-                        <?php if($msg)
-						echo "<div class='alert bg-info ' role='alert'>
-						<em class='fa fa-lg fa-warning'>&nbsp;</em> 
-						$msg
-						<a href='#' class='pull-right'>
-						<em class='fa fa-lg fa-close'>
-						</em></a></div>" ?> 
-                        
-                        <div class="col-md-12">
+	<div class="row">
+		<div class="col-lg-12">
+			<!-- <h1 class="page-header">Vehicle Management</h1> -->
+		</div>
+	</div><!--/.row-->
 
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">Manage Incoming Vehicles</div>
+				<div class="panel-body">
 
-							<form method="POST">
+					{{#if msg}}
+						<div class="alert bg-info" role="alert">
+							<em class="fa fa-lg fa-warning">&nbsp;</em> 
+							{{msg}}
+							<a href="#" class="pull-right">
+								<em class="fa fa-lg fa-close"></em>
+							</a>
+						</div>
+					{{/if}}
 
+					<div class="col-md-12">
+						<form method="POST">
 
-                            <?php
-                            $cid=$_GET['updateid'];
-                            $ret=mysqli_query($con,"SELECT * from vehicle_info where ID='$cid'");
-                            $cnt=1;
-                            while ($row=mysqli_fetch_array($ret)) {
-
-                            ?> 
-
+							{{#each vehicleInfo}}
 								<div class="form-group">
 									<label>Vehicle Registration Number</label>
-									<input type="text" class="form-control" value="<?php  echo $row['RegistrationNumber'];?>" id="catename" name="catename" readonly>
+									<input type="text" class="form-control" value="{{this.registrationNumber}}" id="catename" name="catename" readonly>
 								</div>
-
 
 								<div class="form-group">
 									<label>Company Name</label>
-									<input type="text" class="form-control" value="<?php  echo $row['VehicleCompanyname'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.vehicleCompanyname}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Category</label>
-									<input type="text" class="form-control" value="<?php  echo $row['VehicleCategory'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.vehicleCategory}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Parking Number</label>
-									<input type="text" class="form-control" value="<?php  echo $row['ParkingNumber'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.parkingNumber}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="<?php  echo $row['InTime'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.inTime}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
-									<label>Vehicle OUT Time</label>
-									<input type="text" class="form-control" value="<?php  echo $row['OutTime'];?>" id="sdesc" name="sdesc" readonly>
-								</div>
-
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Vehicle Owned By</label>
-									<input type="text" class="form-control" value="<?php  echo $row['OwnerName'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.ownerName}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Vehicle Owner Contact</label>
-									<input type="text" class="form-control" value="<?php  echo $row['OwnerContactNumber'];?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{this.ownerContactNumber}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Current Status</label>
-									<input type="text" class="form-control" value="<?php if($row['Status']==""){ echo "Vehicle In"; } if($row['Status']=="Out"){echo "Vehicle out";} ;?>" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{#if (this.status)}}{{this.status}}{{else}}Vehicle In{{/if}}" id="sdesc" name="sdesc" readonly>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Total Charge</label>
-									<input type="text" class="form-control" value="$ <?php  echo $row['ParkingCharge'];?>" id="parkingcharge" name="parkingcharge" readonly>
+									<input type="number" class="form-control" placeholder="" id="parkingcharge" name="parkingcharge" required>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Status</label>
-									<input type="text" name="status" value="<?php echo $row['Status']; ?>" class="form-control" readonly>
+									<select name="status" class="form-control" required="true">
+										<option value="Out">Outgoing Vehicle</option>
+									</select>
 								</div>
 
-
-                                <div class="form-group">
+								<div class="form-group">
 									<label>Remarks</label>
-									<input type="text" class="form-control" value="<?php  echo $row['Remark'];?>" id="remark" name="remark" readonly>
+									<input type="text" class="form-control" placeholder="" id="remark" name="remark" required>
 								</div>
-								
-                        <?php } ?>
+							{{/each}}
 
-									
-                                    
-								</div> <!--  col-md-12 ends -->
-
-
-						</div>
-					</div>
+							<button type="submit" class="btn btn-success" name="submit-in">Submit For Out-Going</button>
+							<button type="reset" class="btn btn-default">Reset</button>
+						</form>
+					</div> <!--  col-md-12 ends -->
 				</div>
-				
-				
-				
+			</div>
+		</div>
+	</div>
 </div><!--/.row-->
+
   <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/chart.min.js"></script>

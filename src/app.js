@@ -37,9 +37,16 @@ app.use(express.static(static_path));
 //
 app.engine('hbs', exphbs.engine({
     extname: '.hbs',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+      },
     helpers: {
         eq: function (a, b) {
           return a === b;
+        },
+        addOne: function(value) {
+            return value + 1;
         },
     },
     defaultLayout: false,

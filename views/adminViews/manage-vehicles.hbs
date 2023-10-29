@@ -46,58 +46,58 @@
                 <div class="col-md-12">
 
                     {{#if message}}
-                  
-                <div><p style="background-color: red;">{{message}}</p></div>
-                           
-
+                        <div><p style="background-color: red;">{{message}}</p></div>
                     {{/if}}
 
                     <form method="POST" action="/manage-vehicles">
-
+                        <div class="form-group">
+                            <label>Owner's Full Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
+                                name="ownername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Owner's Contact</label>
+                            <input type="text" class="form-control" placeholder="Enter Here.." maxlength="10"
+                                pattern="[0-9]+" id="ownercontno" name="ownercontno" required>
+                        </div>
                         <div class="form-group">
                             <label>Registration Number</label>
                             <input type="text" class="form-control" placeholder="AB00-XXXX" id="vehreno" name="vehreno"
                                 required>
                         </div>
-
-
-                        <div class="form-group">
-                            <label>Vehicle's Company Name</label>
-                            <input type="text" class="form-control" placeholder="Maruti Suzuki" id="vehcomp"
-                                name="vehcomp" required>
-                        </div>
-
-
+                     
                         <div class="form-group">
                             <label>Vehicle Category</label>
                             <select class="form-control" name="catename" id="catename">
                                 <option value="Four Wheeler">Four Wheeler</option>
                                 <option value="Three Wheeler">Three Wheeler</option>
                                 <option value="Two Wheeler">Two Wheeler</option>
-
-
                             </select>
                         </div>
-
-
                         <div class="form-group">
-                            <label>Owner's Full Name</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
-                                name="ownername" required>
+                            <label>Vehicle's Company Name</label>
+                              <select class="form-control" name="vehcomp" id="vehcomp" required>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Maruti Suzuki">Maruti Suzuki</option>
+                                <option value="Renault">Renault</option>
+                                <option value="Mahindra">Mahindra</option>
+                                <option value="Tata">Tata</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Honda">Other</option>
+                            </select>
+                           
                         </div>
-
-
+                        
                         <div class="form-group">
-                            <label>Owner's Contact</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." maxlength="10"
-                                pattern="[0-9]+" id="ownercontno" name="ownercontno" required>
+                            <label>Model</label>
+                            <input type="text" class="form-control" placeholder="Alto 800, i10,i20" id="model" name="model" required>
                         </div>
-
 
                         <button type="submit" class="btn btn-success" name="submit-vehicle">Submit</button>
                         <button type="reset" class="btn btn-default">Reset</button>
+                    </form>
                 </div> <!--  col-md-12 ends -->
-                </form>
+                
             </div>
         </div>
 
