@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const moment = require('moment-timezone');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
@@ -17,7 +20,7 @@ router.get("/dashboard", (req, res) => {
 
 router.get('/in-vehicles', async (req, res) => {
     try {
-      const vehicles = await VehicleEntry.find({}); // Fetch all entries from the database
+      const vehicles = await VehicleEntry.find({status:"In"}); // Fetch all entries from the database
       res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
     } catch (error) {
       console.error('Error fetching data from MongoDB:', error);
@@ -38,6 +41,22 @@ router.get('/in-vehicles', async (req, res) => {
   });
 
 
+  router.get('/out-vehicles', async (req, res) => {
+    try {
+   
+      const status = await VehicleEntry.find({status:"Out"});
+      res.render('adminViews/out-vehicles',{status,page:'out-vehicles'});
+    } catch (error) {
+      console.error('Error fetching vehicle details:', error);
+      res.status(500).send('Internal server error. Please try again later.');
+    }
+  });
+
+
+
+
+
+
 router.get('/out-vehicles', (req, res) => {
     res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
@@ -52,7 +71,7 @@ router.get('/outgoing-detail', (req, res) => {
     res.render('adminViews/outgoing-detail')
 })
 
-router.get('update-incomingdetail', (req, res) => {
+router.get('/update-incomingdetail', (req, res) => {
     res.render('adminViews/update-incomingdetail')
 })
 
@@ -93,6 +112,36 @@ router.post("/manage-vehicles", async (req, res) => {
     }
 });
 
+router.post('/update-incomingdetail/:id', async (req, res) => {
+  try {
+    
+    const id = req.params.id;
+    const { parkingcharge, remark, status } = req.body;
+
+    // Update the document using Mongoose's findByIdAndUpdate
+    const updatedVehicle = await VehicleEntry.findByIdAndUpdate(
+      id,
+      {
+        totalCharge: parkingcharge,
+        remarks: remark,
+        status: status,
+      },
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedVehicle) {
+      return res.status(404).send('Vehicle not found');
+    }
+
+    // Redirect with a success message
+    res.render("./adminViews/out-vehicles" ,{ message: "Booked successfully" });
+  }
+
+  catch (error) {
+    console.error('Error updating vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
 
 
 
