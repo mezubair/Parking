@@ -54,9 +54,22 @@ router.get('/in-vehicles', async (req, res) => {
   router.get('/update-incomingdetail/:id', async (req, res) => {
     try {
       const id = req.params.id;
-      const vehicleDetail = await VehicleEntry.findById(id);
-  
-      res.render('adminViews/update-incomingdetail',{vehicleDetail,page:'update-incomingdetail'});
+        const vehicleDetail = await VehicleEntry.findById(id);
+
+        // Get the current time as the outTime
+        const outTime = moment.tz('Asia/Kolkata');
+
+        // Calculate the difference between outTime and inTime in hours
+        const inTime = moment(vehicleDetail.inTime);
+        const timeDiffInMins = outTime.diff(inTime, 'minutes');
+
+        // Calculate the total charges based on the rate per hour
+        const ratePerHour = 1000; // Set your own rate per hour here
+        let totalCharges = (timeDiffInMins / 60) * ratePerHour;
+
+        // Round the total charges to the nearest whole number
+        totalCharges = Math.round(totalCharges);
+        res.render('adminViews/update-incomingdetail', { outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
     } catch (error) {
       console.error('Error fetching vehicle details:', error);
       res.status(500).send('Internal server error. Please try again later.');
@@ -161,7 +174,6 @@ router.post("/manage-vehicles", async (req, res) => {
 
 router.post('/update-incomingdetail/:id', async (req, res) => {
   try {
-    const currentTime = moment().tz('Asia/Kolkata');
     const id = req.params.id;
     const { parkingcharge, remark, status } = req.body;
 
@@ -172,7 +184,6 @@ router.post('/update-incomingdetail/:id', async (req, res) => {
         totalCharge: parkingcharge,
         remarks: remark,
         status: status,
-        outTime:currentTime.toDate()
       },
       { new: true } // This option returns the updated document
     );

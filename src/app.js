@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars')
-
+const moment = require('moment-timezone')
 
 
 
@@ -47,6 +47,10 @@ app.engine('hbs', exphbs.engine({
         },
         addOne: function(value) {
             return value + 1;
+        },
+        formatDate: function (date) {
+            const momentDate = moment(date);
+            return momentDate.format('MMMM Do YYYY, hh:mm A');
         },
     },
     defaultLayout: false,

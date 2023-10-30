@@ -84,14 +84,14 @@
 
 								<div class="form-group">
 									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="{{vehicleInfo.inTime}}" id="sdesc"
+									<input type="text" class="form-control" value="{{formatDate vehicleInfo.inTime}}" id="sdesc"
 										name="sdesc" readonly>
 								</div>
 
 
 								<div class="form-group">
 									<label>Vehicle OUT Time</label>
-									<input type="text" class="form-control" value="{{vehicleInfo.outTime}}" id="sdesc"
+									<input type="text" class="form-control" value="{{formatDate vehicleInfo.outTime}}" id="sdesc"
 										name="sdesc" readonly>
 								</div>
 
@@ -112,8 +112,8 @@
 
 
 								<div class="form-group">
-									<label>Total Charge</label>
-									<input type="text" class="form-control" value="{{vehicleInfo.totalCharge}} &#8377 "
+									<label>Total Charges &#8377</label>
+									<input type="text" class="form-control" value="&#8377 {{totalCharges}} "
 										id="parkingcharge" name="parkingcharge" readonly>
 								</div>
 
