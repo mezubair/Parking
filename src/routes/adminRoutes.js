@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const moment = require('moment-timezone')
+
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
+require("../db/conn");
 const VehicleEntry = require('../models/vehicleEntry');
 
 router.get("/dashboard", async (req, res) => {
@@ -17,10 +23,6 @@ router.get("/dashboard", async (req, res) => {
       inTime: { $gte: twentyFourHoursAgo }
     });
 
-    console.log("Total vehicles: ", totalCount);
-    console.log("Total vehicles with status 'In':", inCount);
-    console.log("Total vehicles with status 'Out':", outCount);
-    console.log("Total vehicles within the last 24 hours:", within24HoursCount);
 
     res.render("adminViews/dashboard", {
       page: 'dashboard',
@@ -56,6 +58,8 @@ router.get('/in-vehicles', async (req, res) => {
       const id = req.params.id;
         const vehicleDetail = await VehicleEntry.findById(id);
 
+       
+
         // Get the current time as the outTime
         const outTime = moment.tz('Asia/Kolkata');
 
@@ -69,6 +73,9 @@ router.get('/in-vehicles', async (req, res) => {
 
         // Round the total charges to the nearest whole number
         totalCharges = Math.round(totalCharges);
+
+        await VehicleEntry.findByIdAndUpdate(id, { totalCharge:totalCharges });
+    
         res.render('adminViews/update-incomingdetail', { outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
     } catch (error) {
       console.error('Error fetching vehicle details:', error);
@@ -120,9 +127,52 @@ router.get('/in-vehicles', async (req, res) => {
 router.get('/out-vehicles', (req, res) => {
     res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
-router.get('/total-income', (req, res) => {
-    res.render('adminViews/total-income', { page: 'total-income' })
-})
+
+router.get('/total-income', async (req, res) => {
+  try {
+  /*   const Income = require('../models/Income');  */
+
+    // Get today's date and yesterday's date
+    const today = moment().startOf('day');
+    const yesterday = moment().subtract(1, 'days').startOf('day');
+
+    // Fetch all entries for today
+    const todayEntries = await VehicleEntry.find({
+      inTime: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() }
+    });
+
+    // Fetch all entries for yesterday
+    const yesterdayEntries = await VehicleEntry.find({
+      inTime: { $gte: yesterday.toDate(), $lt: moment(yesterday).endOf('day').toDate() }
+    });
+
+    // Calculate the total income
+    const totalIncome = (await VehicleEntry.aggregate([
+      { $group: { _id: null, total: { $sum: '$totalCharges' } } }
+    ]))[0].total;
+
+    // Calculate today's income
+    const todaysIncome = todayEntries.reduce((sum, entry) => sum + entry.totalCharges, 0);
+
+    // Calculate yesterday's income
+    const yesterdaysIncome = yesterdayEntries.reduce((sum, entry) => sum + entry.totalCharges, 0);
+
+  /*   // Update the Income schema
+    const incomeData = new Income({
+      totalIncome,
+      todaysIncome,
+      yesterdaysIncome
+    });
+    await incomeData.save(); */
+
+    res.render('adminViews/total-income', { page: 'total-income', totalIncome, todaysIncome, yesterdaysIncome });
+  } catch (error) {
+    console.error('Error fetching income details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+
 
 router.get('/manage-vehicles', (req, res) => {
     res.render('adminViews/manage-vehicles', { page: 'manage-vehicles' })
@@ -131,9 +181,7 @@ router.get('/outgoing-detail', (req, res) => {
     res.render('adminViews/outgoing-detail')
 })
 
-router.get('/update-incomingdetail', (req, res) => {
-    res.render('adminViews/update-incomingdetail')
-})
+
 
 /////////////////////////////////////////////////////
 router.post("/manage-vehicles", async (req, res) => {
@@ -175,13 +223,12 @@ router.post("/manage-vehicles", async (req, res) => {
 router.post('/update-incomingdetail/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const { parkingcharge, remark, status } = req.body;
+    const { remark, status } = req.body;
 
     // Update the document using Mongoose's findByIdAndUpdate
     const updatedVehicle = await VehicleEntry.findByIdAndUpdate(
       id,
       {
-        totalCharge: parkingcharge,
         remarks: remark,
         status: status,
       },

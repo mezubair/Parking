@@ -87,7 +87,12 @@
 
 								<div class="form-group">
 									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.inTime}}" id="sdesc"
+									<input type="text" class="form-control" value="{{formatDate vehicleDetail.inTime}}" id="sdesc"
+										name="sdesc" readonly>
+								</div>
+								<div class="form-group">
+									<label>Vehicle Out Time</label>
+									<input type="text" class="form-control" value="{{formatDate vehicleDetail.outTime}}" id="sdesc"
 										name="sdesc" readonly>
 								</div>
 
@@ -114,9 +119,9 @@
 
 
 								<div class="form-group">
-									<label>Total Charge  &#8377 </label>
-									<input type="number" class="form-control" placeholder="" id="parkingcharge"
-										name="parkingcharge" required>
+									<label>Total Charges  &#8377 </label>
+									<input type="text" class="form-control" value="&#8377 {{totalCharges}} "
+										id="parkingcharge" name="parkingcharge" readonly>
 								</div>
 
 
@@ -138,7 +143,7 @@
 								<button type="submit" class="btn btn-success" name="submit-in">Submit For
 									Out-Going</button>
 								<button type="reset" class="btn btn-default">Reset</button>
-
+							</form>
 						</div> <!--  col-md-12 ends -->
 
 
