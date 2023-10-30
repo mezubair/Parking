@@ -1,22 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
-const moment = require('moment-timezone');
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
-
-
-router.use(express.urlencoded({ extended: true }));
-router.use(express.json());
-
-
-require("../db/conn");
 const VehicleEntry = require('../models/vehicleEntry');
 
+router.get("/dashboard", async (req, res) => {
+  try {
+    const totalCount = await VehicleEntry.countDocuments({});
+    const inCount = await VehicleEntry.countDocuments({ status: 'In' });
+    const outCount = await VehicleEntry.countDocuments({ status: 'Out' });
 
-router.get("/dashboard", (req, res) => {
-    res.render("adminViews/dashboard", { page: 'dashboard' })
-})
+    // Calculate the date 24 hours ago
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+    
+    const within24HoursCount = await VehicleEntry.countDocuments({
+      inTime: { $gte: twentyFourHoursAgo }
+    });
+
+    console.log("Total vehicles: ", totalCount);
+    console.log("Total vehicles with status 'In':", inCount);
+    console.log("Total vehicles with status 'Out':", outCount);
+    console.log("Total vehicles within the last 24 hours:", within24HoursCount);
+
+    res.render("adminViews/dashboard", {
+      page: 'dashboard',
+      totalCount,
+      inCount,
+      outCount,
+      within24HoursCount
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error occurred while counting entries.");
+  }
+});
+
+
+
+
+
+
 
 router.get('/in-vehicles', async (req, res) => {
     try {
