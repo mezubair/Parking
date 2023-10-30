@@ -43,6 +43,9 @@ const vehicleSchema = new mongoose.Schema({
       type: Date
  
   },
+  outTime:{
+    type:Date
+  },
   status: {
     type: String,
     enum: ['In', 'Out'],

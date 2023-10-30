@@ -48,13 +48,8 @@
                     <div class="panel-heading">Outgoing Vehicles</div>
                     <div class="panel-body">
 
-                        {{#if message}}
-                        <div class="alert bg-info" role="alert">
-                            <em class="fa fa-lg fa-warning">&nbsp;</em>
-                            {{message}}
 
-                        </div>
-                        {{/if}}
+
                         <table id="example" class="table table-striped table-hover table-bordered" style="width:100%">
 
                             <thead>
@@ -71,7 +66,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               {{#each status}}
+                                {{#each status}}
                                 <tr>
 
                                     <td>
@@ -79,38 +74,39 @@
                                     </td>
 
                                     <td>
-                                     {{this.registrationNumber}}
+                                        {{this.registrationNumber}}
                                     </td>
 
                                     <td>
-                                          {{this.vehicleCompanyname}}
+                                        {{this.vehicleCompanyname}}
                                     </td>
 
                                     <td>
-                                         {{this.vehicleCategory}}
+                                        {{this.vehicleCategory}}
                                     </td>
 
                                     <td>
-                                        {{this.parkingNumber}}
+                                       CA- {{this.parkingNumber}}
                                     </td>
 
                                     <td>
-                                          {{this.totalCharge}}
+                                        {{this.totalCharge}} &#8377 
                                     </td>
 
                                     <td>
-                                          {{this.ownerName}}
+                                        {{this.ownerName}}
                                     </td>
 
-                                    <td><a href="./adminViews/outgoing-detail"><button type="button" class="btn btn-sm btn-info">View
+                                    <td><a href="outgoing-detail/{{this._id}}"><button type="button"
+                                                class="btn btn-sm btn-info">View
                                                 Details</button></a>
-                                        <a href="print-receipt.php?vid=<?php echo $row['ID'];?>"><button type="button"
+                                        <a href="print-receipt/{{this._id}}"><button type="button"
                                                 class="btn btn-sm btn-warning"> <i class="fa fa-print"></i></button>
                                     </td>
 
                                 </tr>
 
-                               {{/each}}
+                                {{/each}}
 
 
                             </tbody>
@@ -133,18 +129,8 @@
         <script src="js/easypiechart-data.js"></script>
         <script src="js/bootstrap-datepicker.js"></script>
         <script src="js/custom.js"></script>
-        <script>
-            window.onload = function () {
-                var chart1 = document.getElementById("line-chart").getContext("2d");
-                window.myLine = new Chart(chart1).Line(lineChartData, {
-                    responsive: true,
-                    scaleLineColor: "rgba(0,0,0,.2)",
-                    scaleGridLineColor: "rgba(0,0,0,.05)",
-                    scaleFontColor: "#c5c7cc"
-                });
-            };
-        </script>
 
+    
 
 
 

@@ -40,12 +40,36 @@ router.get('/in-vehicles', async (req, res) => {
     }
   });
 
+  router.get('/print-receipt/:id', async (req, res) => {
+    try {
+      const id = req.params.id;
+      const printDetail = await VehicleEntry.findById(id);
+  
+      res.render('adminViews/print-receipt',{printDetail,page:'print-receipt'});
+    } catch (error) {
+      console.error('Error fetching vehicle details:', error);
+      res.status(500).send('Internal server error. Please try again later.');
+    }
+  });
+
 
   router.get('/out-vehicles', async (req, res) => {
     try {
    
       const status = await VehicleEntry.find({status:"Out"});
       res.render('adminViews/out-vehicles',{status,page:'out-vehicles'});
+    } catch (error) {
+      console.error('Error fetching vehicle details:', error);
+      res.status(500).send('Internal server error. Please try again later.');
+    }
+  });
+
+  router.get('/outgoing-detail/:id', async (req, res) => {
+    try {
+      const id = req.params.id;
+      const vehicleInfo = await VehicleEntry.findById(id);
+  
+      res.render('adminViews/outgoing-detail',{vehicleInfo,page:'outgoing-detail'});
     } catch (error) {
       console.error('Error fetching vehicle details:', error);
       res.status(500).send('Internal server error. Please try again later.');
@@ -91,7 +115,7 @@ router.post("/manage-vehicles", async (req, res) => {
         const currentTime = moment().tz('Asia/Kolkata');
 
         const newVehicle = new VehicleEntry({
-          parkingNumber: parkingNumber,
+          parkingNumber: "CA-"+parkingNumber,
           ownerName: ownername,
           ownerContactNumber: ownercontno,
           registrationNumber: vehreno,
@@ -114,7 +138,7 @@ router.post("/manage-vehicles", async (req, res) => {
 
 router.post('/update-incomingdetail/:id', async (req, res) => {
   try {
-    
+    const currentTime = moment().tz('Asia/Kolkata');
     const id = req.params.id;
     const { parkingcharge, remark, status } = req.body;
 
@@ -125,6 +149,7 @@ router.post('/update-incomingdetail/:id', async (req, res) => {
         totalCharge: parkingcharge,
         remarks: remark,
         status: status,
+        outTime:currentTime.toDate()
       },
       { new: true } // This option returns the updated document
     );
@@ -134,7 +159,7 @@ router.post('/update-incomingdetail/:id', async (req, res) => {
     }
 
     // Redirect with a success message
-    res.render("./adminViews/out-vehicles" ,{ message: "Booked successfully" });
+    res.redirect('/out-vehicles');
   }
 
   catch (error) {

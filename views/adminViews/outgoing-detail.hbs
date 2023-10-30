@@ -2,128 +2,150 @@
 <html>
 
 <head>
-	
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VPS</title>
-    <link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
 
-    <link href="/css1/font-awesome.min.css" rel="stylesheet">
-    <link href="/css1/datepicker3.css" rel="stylesheet">
-    <link href="/css1/styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VPS</title>
+	<link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
 
-    <!--Custom Font-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
+	<link href="/css1/font-awesome.min.css" rel="stylesheet">
+	<link href="/css1/datepicker3.css" rel="stylesheet">
+	<link href="/css1/styles.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<!--Custom Font-->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
+		rel="stylesheet">
 
 </head>
 
 <body>
- {{>adminNavbar}}
+	{{>adminNavbar}}
 
-{{>sidebar}}
+	{{>sidebar}}
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-	<div class="row">
-		<ol class="breadcrumb">
-			<li><a href="dashboard.php"><em class="fa fa-home"></em></a></li>
-			<li class="active">Vehicle Category Management</li>
-		</ol>
-	</div><!--/.row-->
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="dashboard.php">
+						<em class="fa fa-home"></em>
+					</a></li>
+				<li class="active">Vehicle Category Management</li>
+			</ol>
+		</div><!--/.row-->
 
-	<div class="row">
-		<div class="col-lg-12">
-			<!-- <h1 class="page-header">Vehicle Management</h1> -->
-		</div>
-	</div><!--/.row-->
+		<div class="row">
+			<div class="col-lg-12">
+				<!-- <h1 class="page-header">Vehicle Management</h1> -->
+			</div>
+		</div><!--/.row-->
 
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">Manage Incoming Vehicles</div>
-				<div class="panel-body">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">Manage Outgoing Vehicles</div>
+					<div class="panel-body">
 
-					{{#if msg}}
-						<div class="alert bg-info" role="alert">
-							<em class="fa fa-lg fa-warning">&nbsp;</em> 
-							{{msg}}
-							<a href="#" class="pull-right">
-								<em class="fa fa-lg fa-close"></em>
-							</a>
-						</div>
-					{{/if}}
 
-					<div class="col-md-12">
-						<form method="POST">
+						<div class="col-md-12">
 
-							{{#each vehicleInfo}}
+
+							<form method="POST">
+
+
+
+
 								<div class="form-group">
 									<label>Vehicle Registration Number</label>
-									<input type="text" class="form-control" value="{{this.registrationNumber}}" id="catename" name="catename" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.registrationNumber}}"
+										id="catename" name="catename" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Company Name</label>
-									<input type="text" class="form-control" value="{{this.vehicleCompanyname}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.vehicleCompanyname}}"
+										id="sdesc" name="sdesc" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Category</label>
-									<input type="text" class="form-control" value="{{this.vehicleCategory}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.vehicleCategory}}"
+										id="sdesc" name="sdesc" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Parking Number</label>
-									<input type="text" class="form-control" value="{{this.parkingNumber}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.parkingNumber}}"
+										id="sdesc" name="sdesc" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="{{this.inTime}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.inTime}}" id="sdesc"
+										name="sdesc" readonly>
 								</div>
+
+
+								<div class="form-group">
+									<label>Vehicle OUT Time</label>
+									<input type="text" class="form-control" value="{{vehicleInfo.outTime}}" id="sdesc"
+										name="sdesc" readonly>
+								</div>
+
 
 								<div class="form-group">
 									<label>Vehicle Owned By</label>
-									<input type="text" class="form-control" value="{{this.ownerName}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.ownerName}}" id="sdesc"
+										name="sdesc" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Vehicle Owner Contact</label>
-									<input type="text" class="form-control" value="{{this.ownerContactNumber}}" id="sdesc" name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{vehicleInfo.ownerContactNumber}}"
+										id="sdesc" name="sdesc" readonly>
 								</div>
 
-								<div class="form-group">
-									<label>Current Status</label>
-									<input type="text" class="form-control" value="{{#if (this.status)}}{{this.status}}{{else}}Vehicle In{{/if}}" id="sdesc" name="sdesc" readonly>
-								</div>
+
 
 								<div class="form-group">
 									<label>Total Charge</label>
-									<input type="number" class="form-control" placeholder="" id="parkingcharge" name="parkingcharge" required>
+									<input type="text" class="form-control" value="{{vehicleInfo.totalCharge}} &#8377 "
+										id="parkingcharge" name="parkingcharge" readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Status</label>
-									<select name="status" class="form-control" required="true">
-										<option value="Out">Outgoing Vehicle</option>
-									</select>
+									<input type="text" name="status" value="{{vehicleInfo.status}}" class="form-control"
+										readonly>
 								</div>
+
 
 								<div class="form-group">
 									<label>Remarks</label>
-									<input type="text" class="form-control" placeholder="" id="remark" name="remark" required>
+									<input type="text" class="form-control" value="{{vehicleInfo.remarks}}" id="remark"
+										name="remark" readonly>
 								</div>
-							{{/each}}
 
-							<button type="submit" class="btn btn-success" name="submit-in">Submit For Out-Going</button>
-							<button type="reset" class="btn btn-default">Reset</button>
-						</form>
-					</div> <!--  col-md-12 ends -->
+
+
+
+
+						</div> <!--  col-md-12 ends -->
+
+
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-</div><!--/.row-->
+
+
+
+		</div><!--/.row-->
+
 		<script src="/js1/jquery-1.11.1.min.js"></script>
 		<script src="/js1/bootstrap.min.js"></script>
 		<script src="/js1/custom.js"></script>
@@ -144,11 +166,11 @@
 
 
 
-    <script src="/js1/jquery-1.11.1.min.js"></script>
-    <script src="/js1/bootstrap.min.js"></script>
+<script src="/js1/jquery-1.11.1.min.js"></script>
+<script src="/js1/bootstrap.min.js"></script>
 
-    <script src="/js1/custom.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
+<script src="/js1/custom.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
 
 
 
