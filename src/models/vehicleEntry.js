@@ -12,13 +12,12 @@ const vehicleSchema = new mongoose.Schema({
   },
   ownerContactNumber: {
     type: String,
-    required: true,
-     unique:true
+    required: true
   },
   registrationNumber: {
     type: String,
     required: true,
-    unique: true
+    index: true
   },
   vehicleCategory: {
     type: String,
@@ -51,7 +50,8 @@ const vehicleSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['In', 'Out'],
-    default: 'In'
+    default: 'In',
+    index: true
   },
   totalCharge: {
     type: Number
@@ -59,7 +59,10 @@ const vehicleSchema = new mongoose.Schema({
   remarks: {
     type: String
   }
-});
+},{ versionKey: false });
+
+vehicleSchema.index({ registrationNumber: 1, status: 1 }, { unique: true, partialFilterExpression: { status: 'In' } });
+
 
 const VehicleEntry = new mongoose.model('VehicleEntry', vehicleSchema);
 

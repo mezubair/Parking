@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+},{ versionKey: false });
 
 const Register =new mongoose.model('Register', userSchema);
 

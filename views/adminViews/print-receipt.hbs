@@ -3,19 +3,19 @@
 
 <head>
 
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>VPS</title>
-	<link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VPS</title>
+    <link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
 
-	<link href="/css1/font-awesome.min.css" rel="stylesheet">
-	<link href="/css1/datepicker3.css" rel="stylesheet">
-	<link href="/css1/styles.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/css1/font-awesome.min.css" rel="stylesheet">
+    <link href="/css1/datepicker3.css" rel="stylesheet">
+    <link href="/css1/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<!--Custom Font-->
-	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
-		rel="stylesheet">
+    <!--Custom Font-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
 </head>
 
@@ -31,9 +31,9 @@
         <div id="exampl">
             <table id="dom-jqry" class="table table-striped table-bordered">
                 <tr>
-                    <th colspan="4" ><img style=" padding-bottom:10px;" src="/images/parKinglogo.png" width="200" height="45"
-                        alt=""><span style=" font-size:22px; padding-left:200px;">Receipt</span></th>
-                    
+                    <th colspan="4"><img style=" padding-bottom:10px;" src="/images/parKinglogo.png" width="200"
+                            height="45" alt=""><span style=" font-size:22px; padding-left:200px;">Receipt</span></th>
+
                 </tr>
 
                 <tr>
@@ -41,17 +41,14 @@
                     <th>Registration Number</th>
                     <td>{{printDetail.registrationNumber}}</td>
 
-
                     <th>Vehicle Category</th>
-                    <td>
-                        {{printDetail.vehicleCategory}}
-                    </td>
+                    <td>{{printDetail.vehicleCategory}} </td>
                 </tr>
 
                 <tr>
                     <th>Vehicle Company</th>
                     <td>
-                       {{printDetail.vehicleCompanyname}}
+                        {{printDetail.vehicleCompanyname}}
                     </td>
 
                     <th>Parking Number</th>
@@ -63,34 +60,34 @@
                 <tr>
                     <th>Owner Name</th>
                     <td>
-                       {{printDetail.ownerName}}
+                        {{printDetail.ownerName}}
                     </td>
 
                     <th>Owner Contact Number</th>
                     <td>
-                       {{printDetail.ownerContactNumber}}
+                        {{printDetail.ownerContactNumber}}
                     </td>
                 </tr>
 
                 <tr>
                     <th>Vehicle In-Time</th>
                     <td>
-                       {{printDetail.inTime}}
+                        {{printDetail.inTime}}
                     </td>
 
                     <th>Total Charge</th>
                     <td>
-                    {{printDetail.totalCharge }}   &#8377 
+                      &#8377  {{printDetail.totalCharge }} 
                 </tr>
-                
+
                 <tr>
                     <th>Vehicle Out-Time</th>
                     <td>
-                       {{printDetail.registrationNumber}}
+                        {{printDetail.outTime}}
                     </td>
                     <th>Remarks</th>
                     <td colspan="3">
-                     {{printDetail.remarks}}
+                        {{printDetail.remarks}}
                     </td>
                 </tr>
 

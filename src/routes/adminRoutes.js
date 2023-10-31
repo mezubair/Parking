@@ -130,8 +130,6 @@ router.get('/out-vehicles', (req, res) => {
 
 router.get('/total-income', async (req, res) => {
   try {
-  /*   const Income = require('../models/Income');  */
-
     // Get today's date and yesterday's date
     const today = moment().startOf('day');
     const yesterday = moment().subtract(1, 'days').startOf('day');
@@ -148,22 +146,15 @@ router.get('/total-income', async (req, res) => {
 
     // Calculate the total income
     const totalIncome = (await VehicleEntry.aggregate([
-      { $group: { _id: null, total: { $sum: '$totalCharges' } } }
+      { $group: { _id: null, total: { $sum: '$totalCharge' } } }
     ]))[0].total;
 
     // Calculate today's income
-    const todaysIncome = todayEntries.reduce((sum, entry) => sum + entry.totalCharges, 0);
+    const todaysIncome = todayEntries.reduce((sum, entry) => sum + entry.totalCharge, 0);
 
     // Calculate yesterday's income
-    const yesterdaysIncome = yesterdayEntries.reduce((sum, entry) => sum + entry.totalCharges, 0);
+    const yesterdaysIncome = yesterdayEntries.reduce((sum, entry) => sum + entry.totalCharge, 0);
 
-  /*   // Update the Income schema
-    const incomeData = new Income({
-      totalIncome,
-      todaysIncome,
-      yesterdaysIncome
-    });
-    await incomeData.save(); */
 
     res.render('adminViews/total-income', { page: 'total-income', totalIncome, todaysIncome, yesterdaysIncome });
   } catch (error) {
@@ -185,69 +176,85 @@ router.get('/outgoing-detail', (req, res) => {
 
 /////////////////////////////////////////////////////
 router.post("/manage-vehicles", async (req, res) => {
-    try {
-        const { ownername, ownercontno, catename, vehcomp, vehreno, model } = req.body;
-        
-        const existingRegistrationNumber = await VehicleEntry.findOne({registrationNumber:vehreno});
-        const existingOwnersContact = await VehicleEntry.findOne({ ownerContactNumber:ownercontno});
+  try {
+      const { ownername, ownercontno, catename, vehcomp, vehreno, model } = req.body;
 
-        if (existingRegistrationNumber || existingOwnersContact) {
-            return res.status(400).render('./adminViews/manage-vehicles', { message: 'Registration number or Phone Number already exists'});
-        }
+      const existingEntry = await VehicleEntry.findOne({ registrationNumber: vehreno, status: 'In' });
 
-        const parkingNumber = Math.floor(10000 + Math.random() * 90000);
-        const currentTime = moment().tz('Asia/Kolkata');
+      if (existingEntry) {
+          return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
+      }
 
-        const newVehicle = new VehicleEntry({
-          parkingNumber: "CA-"+parkingNumber,
+      const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+      const currentTime = moment().tz('Asia/Kolkata');
+
+      const newVehicle = new VehicleEntry({
+          parkingNumber: "CA-" + parkingNumber,
           ownerName: ownername,
           ownerContactNumber: ownercontno,
           registrationNumber: vehreno,
           vehicleCategory: catename,
           vehicleCompanyname: vehcomp,
-          vehicleModel:model,
-          inTime:currentTime.toDate()
+          vehicleModel: model,
+          inTime: currentTime.toDate()
+      });
 
-        });
-
-        const registered = await newVehicle.save();
-        return res.status(400).render('./adminViews/manage-vehicles', { message: 'Booked sucessfully' });
-    } 
-    
-    catch (error) {
-        console.error("Error during registration:", error);
-        res.status(500).send("Internal server error. Please try again later.");
-    }
+      const registered = await newVehicle.save();
+      return res.status(200).render('./adminViews/manage-vehicles', { message: 'Booked successfully' });
+  } catch (error) {
+      console.error("Error during registration:", error);
+      if (error.code === 11000) {
+          return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
+      }
+      res.status(500).send("Internal server error. Please try again later.");
+  }
 });
+
+
+
+
+
+
+
 
 router.post('/update-incomingdetail/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const { remark, status } = req.body;
 
-    // Update the document using Mongoose's findByIdAndUpdate
+    const vehicleToUpdate = await VehicleEntry.findById(id);
+
+    const existingEntry = await VehicleEntry.findOne({ 
+      _id: { $ne: id }, 
+      status: 'Out'
+    });
+
+    if (existingEntry) {
+      return res.status(400).send('Duplicate entry. Vehicle has already been updated to "Out" status.');
+    }
+
     const updatedVehicle = await VehicleEntry.findByIdAndUpdate(
       id,
       {
         remarks: remark,
         status: status,
       },
-      { new: true } // This option returns the updated document
+      { new: true }
     );
 
     if (!updatedVehicle) {
       return res.status(404).send('Vehicle not found');
     }
 
-    // Redirect with a success message
     res.redirect('/out-vehicles');
-  }
-
-  catch (error) {
+  } catch (error) {
     console.error('Error updating vehicle details:', error);
     res.status(500).send('Internal server error. Please try again later.');
   }
 });
+
+
+
 
 
 
