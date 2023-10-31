@@ -177,38 +177,44 @@ router.get('/outgoing-detail', (req, res) => {
 /////////////////////////////////////////////////////
 router.post("/manage-vehicles", async (req, res) => {
   try {
-      const { ownername, ownercontno, catename, vehcomp, vehreno, model } = req.body;
+    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status } = req.body;
 
-      const existingEntry = await VehicleEntry.findOne({ registrationNumber: vehreno, status: 'In' });
+    // Check for an existing entry with the same registrationNumber, status 'In', and inTime
+    const existingEntry = await VehicleEntry.findOne({
+      registrationNumber: vehreno,
+      status: 'In',
+      inTime: { $lte: new Date() }, // Ensure the inTime is less than or equal to the current time
+    });
 
-      if (existingEntry) {
-          return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
-      }
+    if (existingEntry) {
+      return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
+    }
 
-      const parkingNumber = Math.floor(10000 + Math.random() * 90000);
-      const currentTime = moment().tz('Asia/Kolkata');
+    const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+    const currentTime = moment().tz('Asia/Kolkata');
 
-      const newVehicle = new VehicleEntry({
-          parkingNumber: "CA-" + parkingNumber,
-          ownerName: ownername,
-          ownerContactNumber: ownercontno,
-          registrationNumber: vehreno,
-          vehicleCategory: catename,
-          vehicleCompanyname: vehcomp,
-          vehicleModel: model,
-          inTime: currentTime.toDate()
-      });
+    const newVehicle = new VehicleEntry({
+      parkingNumber: "CA-" + parkingNumber,
+      ownerName: ownername,
+      ownerContactNumber: ownercontno,
+      registrationNumber: vehreno,
+      vehicleCategory: catename,
+      vehicleCompanyname: vehcomp,
+      vehicleModel: model,
+      inTime: currentTime.toDate()
+    });
 
-      const registered = await newVehicle.save();
-      return res.status(200).render('./adminViews/manage-vehicles', { message: 'Booked successfully' });
+    const registered = await newVehicle.save();
+    return res.status(200).render('./adminViews/manage-vehicles', { message: 'Booked successfully' });
   } catch (error) {
-      console.error("Error during registration:", error);
-      if (error.code === 11000) {
-          return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
-      }
-      res.status(500).send("Internal server error. Please try again later.");
+    console.error("Error during registration:", error);
+    if (error.code === 11000) {
+      return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
+    }
+    res.status(500).send("Internal server error. Please try again later.");
   }
 });
+
 
 
 
@@ -224,9 +230,10 @@ router.post('/update-incomingdetail/:id', async (req, res) => {
 
     const vehicleToUpdate = await VehicleEntry.findById(id);
 
-    const existingEntry = await VehicleEntry.findOne({ 
-      _id: { $ne: id }, 
-      status: 'Out'
+    const existingEntry = await VehicleEntry.findOne({
+      _id: { $ne: id },
+      status: 'Out',
+      inTime: vehicleToUpdate.inTime, // Ensuring the same inTime as the vehicle being updated
     });
 
     if (existingEntry) {
@@ -252,6 +259,7 @@ router.post('/update-incomingdetail/:id', async (req, res) => {
     res.status(500).send('Internal server error. Please try again later.');
   }
 });
+
 
 
 
