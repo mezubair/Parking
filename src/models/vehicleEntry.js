@@ -6,7 +6,7 @@ const vehicleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-    ownerName: {
+  ownerName: {
     type: String,
     required: true
   },
@@ -26,26 +26,27 @@ const vehicleSchema = new mongoose.Schema({
   },
   vehicleCompanyname: {
     type: String,
-    enum: [ 'Hyundai',
-            'Maruti Suzuki',
-            'Renault',
-            'Mahindra',
-            'Tata',
-            'Honda',
-            'Other'],
+    enum: ['Hyundai',
+      'Maruti Suzuki',
+      'Renault',
+      'Mahindra',
+      'Tata',
+      'Honda',
+      'Other'],
     required: true
   },
-  vehicleModel:{
-    type:String,
-    required:true
+  vehicleModel: {
+    type: String,
+    required: true
   },
   inTime: {
-      type: Date
- 
+    type: Date,
+    default: moment().tz('Asia/Kolkata')
+
   },
-  outTime:{
-    type:Date,
-    default:moment().tz('Asia/Kolkata')
+  outTime: {
+    type: Date,
+    default: moment().tz('Asia/Kolkata')
   },
   status: {
     type: String,
@@ -59,9 +60,9 @@ const vehicleSchema = new mongoose.Schema({
   remarks: {
     type: String
   }
-},{ versionKey: false });
+}, { versionKey: false });
 
-vehicleSchema.index({ registrationNumber: 1, status: 1 }, { unique: true, partialFilterExpression: { status: 'In' } });
+vehicleSchema.index({ registrationNumber: 1, inTime: 1, status: 1 }, { unique: true, partialFilterExpression: { status: 'In', inTime: { $exists: true } } });
 
 
 const VehicleEntry = new mongoose.model('VehicleEntry', vehicleSchema);
