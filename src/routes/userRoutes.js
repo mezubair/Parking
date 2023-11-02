@@ -2,8 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
+const axios= require('axios');
+const APIkey ="AIzaSyAOl0a7ha6X3iwlTR4_y7XcrHLH-39yb-0";
+
+const parkingLots = require('./parkinglot')
 
 require("../db/conn");
+
 const Register = require("../models/register");
 
 router.use(express.urlencoded({ extended: true }));
@@ -29,15 +34,57 @@ router.get("/login", (req, res) => {
 });
 
 
-router.get("register", (req, res) => {
+router.get("/register", (req, res) => {
     res.render('userViews/register')
 });
-
 
 
 router.get("/admin", (req, res) => {
     res.render('userViews/admin')
 });
+router.get("/slotBooking", (req, res) => {
+    res.render('userViews/slotBooking')
+});
+
+
+// router.post implementation
+router.post('/slotBooking', async (req, res) => {
+    const { userLatitude, userLongitude, city, locality } = req.body;
+    const origin = `${userLatitude},${userLongitude}`;
+
+    const filteredParkingLots = parkingLots.filter(parkingLot => {
+        return parkingLot.city === city && parkingLot.locality === locality;
+    });
+    
+    try {
+        for (let i = 0; i < filteredParkingLots.length; i++) {
+            const { latitude, longitude } = filteredParkingLots[i];
+            const response = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${latitude},${longitude}&key=${APIkey}`);
+            
+            if (response.data && response.data.rows && response.data.rows[0] && response.data.rows[0].elements && response.data.rows[0].elements[0] && response.data.rows[0].elements[0].distance && response.data.rows[0].elements[0].distance.text) {
+                const distance = response.data.rows[0].elements[0].distance.text;
+                filteredParkingLots[i].distance = distance;
+            } else {
+                filteredParkingLots[i].distance = 'N/A'; // Assign a default value if distance is not available
+            }
+        }
+        
+        // Sort filtered parking lots by distance
+        filteredParkingLots.sort((a, b) => {
+            const distanceA = parseFloat(a.distance.split(' ')[0]);
+            const distanceB = parseFloat(b.distance.split(' ')[0]);
+            return distanceA - distanceB;
+        });
+        res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error while fetching parking lots. Please try again later.' });
+    }
+});
+
+
+
+
 
 
 router.get("/vbook", (req, res) => {
@@ -76,10 +123,6 @@ router.get('/userafterlogin', (req, res) => {
     res.render('userViews/userafterlogin', { user: user });
 });
 
-
-router.get("/slot-booking", (req, res) => {
-    res.render('userViews/slot-booking')
-});
 
 
 ////////  Post Requests ////////////////

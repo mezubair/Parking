@@ -57,6 +57,7 @@ app.engine('hbs', exphbs.engine({
     partialsDir: partialsPath
 }));
 
+
 app.set('views', viewsPath);
 app.set('view engine', 'hbs');
 
