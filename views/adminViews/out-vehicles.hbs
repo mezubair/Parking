@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>VPS</title>
-    <link href="/css1/bootstrap.min.css" rel="stylesheet">
-    <link href="/css1/font-awesome.min.css" rel="stylesheet">
-    <link href="/css1/datepicker3.css" rel="stylesheet">
-    <link href="/css1/styles.css" rel="stylesheet">
+    <link href="css1/bootstrap.min.css" rel="stylesheet">
+    <link href="css1/font-awesome.min.css" rel="stylesheet">
+    <link href="css1/datepicker3.css" rel="stylesheet">
+    <link href="css1/datatable.css" rel="stylesheet">
+    <link href="css1/styles.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--Custom Font-->
@@ -27,7 +28,7 @@
     <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
         <div class="row">
             <ol class="breadcrumb">
-                <li><a href="dashboard.php">
+                <li><a href="dashboard">
                         <em class="fa fa-home"></em>
                     </a></li>
                 <li class="active">Outgoing Vehicle Management</li>
@@ -138,14 +139,18 @@
 
 
 
+<script src="js1/jquery-1.11.1.min.js"></script>
+	<script src="js1/bootstrap.min.js"></script>
+	<script src="js1/jquery.dataTables.min.js"></script>
+    <script src="js1/dataTables.bootstrap4.min.js"></script>
+	
+	<script src="js1/custom.js"></script>
 
-    <script src="js1/jquery-1.11.1.min.js"></script>
-    <script src="js1/bootstrap.min.js"></script>
-
-    <script src="js1/custom.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
-
-
+  <script>
+        $(document).ready(function() {
+    $('#example').DataTable();
+} );
+    </script>
 
 </body>
 

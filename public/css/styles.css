@@ -216,24 +216,25 @@ a:hover {
     text-decoration: none;
 }
 
+.btn-outline-reg:hover {
+
+    background-color: #ffffff;
+    color:  #f25c05;
+    text-decoration: transparent;
+}
+
 .btn-outline-reg {
     display: inline-block;
     padding: 1.375rem 2.25rem 1.375rem 2.25rem;
     border: 1px solid #f25c05;
     border-radius: 30px;
-    background-color: transparent;
-    color: #f25c05;
+    background-color: #f25c05;
+    color: #ffffff;
     font-weight: 600;
     font-size: 0.875rem;
     line-height: 0;
     text-decoration: none;
     transition: all 0.2s;
-}
-
-.btn-outline-reg:hover {
-    background-color: #f25c05;
-    color: #ffffff;
-    text-decoration: none;
 }
 
 .btn-outline-lg {
@@ -285,6 +286,9 @@ a:hover {
     padding-left: 1.25rem;
 }
 
+
+
+
 .form-control-submit-button {
     display: inline-block;
     width: 100%;
@@ -313,6 +317,7 @@ a:hover {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -322,6 +327,7 @@ a:hover {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -336,6 +342,7 @@ a:hover {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -345,6 +352,7 @@ a:hover {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -441,6 +449,7 @@ a:hover {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }
@@ -540,60 +549,65 @@ a:hover {
 /*     Carousel    */
 
 
-/********************/ 
-.carousel-item{
+/********************/
+.carousel-item {
     white-space: nowrap;
     height: 100vh;
     min-height: 300px;
-    
+
     background: no-repeat scroll center scroll;
     -webkit-background-size: cover;
     background-size: cover;
 }
-.carousel-item ::before{
+
+.carousel-item ::before {
     content: "";
     display: block;
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-     opacity: 0.7;
-     
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.7;
+
 }
 
-.carousel-caption{
+.carousel-caption {
     bottom: 180px;
     padding-left: 100px;
-    padding-right:100px;
+    padding-right: 100px;
 }
-.carousel-caption h5{
+
+.carousel-caption h5 {
 
     font-size: 5rem;
     font-weight: 700;
-    padding-bottom:60px;
+    padding-bottom: 60px;
     color: rgb(0, 0, 0);
 }
-.carousel-caption p{
-    font-size:18px;
+
+.carousel-caption p {
+    font-size: 18px;
     top: 2 rem;
     color: orange;
 }
-.c3 h5{
-    color:black;
+
+.c3 h5 {
+    color: black;
 }
 
-.c3 p{
+.c3 p {
     color: darkblue;
 }
 
-.c1 h5{
-    color:orange;
+.c1 h5 {
+    color: orange;
     white-space: nowrap;
-    font-size:5rem;
-    
+    font-size: 5rem;
+
 }
-.c1 p{
+
+.c1 p {
     color: white;
 }
 
@@ -1109,19 +1123,23 @@ a:hover {
 /* Min-width 768px */
 
 @media (min-width: 768px) {
+
     /* Header */
     .header {
         padding-top: 9rem;
     }
+
     .header .h1-large {
         font-size: 3.75rem;
         line-height: 4.625rem;
     }
+
     /* end of header */
     /* Extra Pages */
     .ex-basic-1 .text-box {
         padding: 1.75rem 2rem 0.875rem 2rem;
     }
+
     /* end of extra pages */
 }
 
@@ -1141,11 +1159,13 @@ a:hover {
         margin-right: auto;
         margin-left: auto;
     }
+
     .p-heading {
         width: 46rem;
         margin-right: auto;
         margin-left: auto;
     }
+
     /* end of general styles */
     /* Navigation */
     .navbar {
@@ -1154,14 +1174,17 @@ a:hover {
         box-shadow: none;
         transition: all 0.2s;
     }
+
     .navbar.extra-page {
         padding-top: 0.5rem;
     }
+
     .navbar.top-nav-collapse {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
         background-color: #fff2dc;
     }
+
     .offcanvas-collapse {
         position: static;
         top: auto;
@@ -1174,30 +1197,37 @@ a:hover {
         overflow-y: visible;
         visibility: visible;
     }
+
     .offcanvas-collapse.open {
         -webkit-transform: none;
         transform: none;
     }
+
     .navbar .navbar-nav {
         margin-top: 0;
         margin-bottom: 0;
     }
+
     .navbar .nav-item .nav-link {
         padding-right: 0.75rem;
         padding-left: 0.75rem;
     }
+
     .navbar .dropdown-menu {
         padding-top: 0.75rem;
         padding-bottom: 0.75rem;
         box-shadow: 0 3px 3px 1px rgba(0, 0, 0, 0.08);
     }
+
     .navbar .dropdown-divider {
         width: 90%;
     }
+
     .navbar .nav-item .btn-outline-sm {
         margin-top: 0;
         margin-left: 0.625rem;
     }
+
     /* end of navigation */
     /* Header */
     .header {
@@ -1205,13 +1235,16 @@ a:hover {
         padding-bottom: 12rem;
         text-align: left;
     }
+
     .header .text-container {
         margin-bottom: 0;
     }
+
     .header .btn-solid-lg {
         display: inline-block;
         margin-bottom: 0;
     }
+
     /* end of header */
     /* Features */
     .cards-1 .card {
@@ -1219,15 +1252,18 @@ a:hover {
         width: 286px;
         vertical-align: top;
     }
+
     .cards-1 .card:nth-of-type(3n+2) {
         margin-right: 2rem;
         margin-left: 2rem;
     }
+
     /* end of features */
     /* Details 1 */
     .basic-1 .text-container {
         margin-bottom: 0;
     }
+
     /* end of details 1 */
     /* Details Modal */
     /* Stops body and navbar shift on modal open */
@@ -1235,44 +1271,54 @@ a:hover {
         overflow-y: scroll !important;
         padding-right: 0 !important;
     }
+
     body.modal-open .navbar {
         padding-right: 0 !important;
     }
+
     /* end of stops body and navbar shift on modal open */
     .modal {
         padding-right: 0 !important;
     }
+
     .modal-dialog {
         margin-top: 120px;
         margin-right: auto;
         margin-left: auto;
     }
+
     .modal-content .image-container {
         margin-bottom: 0;
     }
+
     /* end of details modal */
     /* Details 2 */
     .basic-2 {
         padding-bottom: 10rem;
     }
+
     .basic-2 .image-container {
         margin-bottom: 0;
     }
+
     /* end of details 2 */
     /* Testimonials */
     .slider-1 .swiper-container {
         width: 92%;
     }
+
     .slider-1 .swiper-button-prev {
         left: -16px;
         width: 22px;
         background-size: 22px 34px;
     }
+
     .slider-1 .swiper-button-next {
         right: -16px;
         width: 22px;
         background-size: 22px 34px;
     }
+
     /* end of testimonials */
     /* Invitation */
     .basic-3 h4 {
@@ -1280,6 +1326,7 @@ a:hover {
         margin-right: auto;
         margin-left: auto;
     }
+
     /* end of invitation */
     /* Pricing */
     .cards-2 .card {
@@ -1287,10 +1334,12 @@ a:hover {
         width: 298px;
         vertical-align: top;
     }
+
     .cards-2 .card:nth-of-type(3n+2) {
         margin-right: 1rem;
         margin-left: 1rem;
     }
+
     /* end of pricing */
     /* Questions */
     .accordion-1 .accordion {
@@ -1298,33 +1347,39 @@ a:hover {
         margin-right: auto;
         margin-left: auto;
     }
+
     /* end of questions */
     /* Footer */
     .footer .footer-col {
         margin-bottom: 2rem;
     }
+
     .footer .footer-col.first {
         display: inline-block;
         width: 320px;
         margin-right: 1.75rem;
         vertical-align: top;
     }
+
     .footer .footer-col.second {
         display: inline-block;
         width: 320px;
         margin-right: 1.75rem;
         vertical-align: top;
     }
+
     .footer .footer-col.third {
         display: inline-block;
         width: 224px;
         text-align: right;
         vertical-align: top;
     }
+
     .footer .footer-col.third .fa-stack {
         margin-right: 0;
         margin-left: 0.375rem;
     }
+
     /* end of footer */
     /* Extra Pages */
     .ex-cards-1 .card {
@@ -1332,10 +1387,12 @@ a:hover {
         width: 296px;
         vertical-align: top;
     }
+
     .ex-cards-1 .card:nth-of-type(3n+2) {
         margin-right: 1rem;
         margin-left: 1rem;
     }
+
     /* end of extra pages */
 }
 
@@ -1346,10 +1403,12 @@ a:hover {
 /* Min-width 1200px */
 
 @media (min-width: 1200px) {
+
     /* General Styles */
     .container {
         max-width: 1140px;
     }
+
     /* end of general styles */
     /* Header */
     .header {
@@ -1357,9 +1416,11 @@ a:hover {
         padding-top: 18.5rem;
         padding-bottom: 18rem;
     }
+
     .header .image-container {
         position: relative;
     }
+
     .header .image-container img {
         position: absolute;
         top: -180px;
@@ -1367,79 +1428,97 @@ a:hover {
         width: 840px;
         max-width: none;
     }
+
     /* end of header */
     /* Features */
     .cards-1 .card {
         width: 310px;
     }
+
     .cards-1 .card:nth-of-type(3n+2) {
         margin-right: 5.5rem;
         margin-left: 5.5rem;
     }
+
     /* end of features */
     /* Details 1 */
     .basic-1 .text-container {
         margin-top: 10rem;
     }
+
     .basic-1 h2 {
         margin-right: 4rem;
     }
+
     .basic-1 .image-container {
         margin-left: 4rem;
     }
+
     /* end of details 1 */
     /* Details Modal */
     .modal-content {
         padding-right: 2rem;
         padding-left: 2rem;
     }
+
     /* end of details modal */
     /* Details 2 */
     .basic-2 .text-container {
         margin-top: 8rem;
         margin-left: 5rem;
     }
+
     /* end of details 2 */
     /* Testimonials */
     .slider-1 .swiper-container {
         width: 96%;
     }
+
     .slider-1 .swiper-button-prev {
         left: -28px;
     }
+
     .slider-1 .swiper-button-next {
         right: -28px;
     }
+
     /* end of testimonials */
     /* Pricing */
     .cards-2 .card {
         width: 342px;
     }
+
     .cards-2 .card:nth-of-type(3n+2) {
         margin-right: 2.5rem;
         margin-left: 2.5rem;
     }
+
     /* end of pricing */
     /* Footer */
     .footer .footer-col.first {
         width: 352px;
         margin-right: 6rem;
     }
+
     .footer .footer-col.second {
         margin-right: 6.5rem;
     }
+
     .footer .footer-col.third {
         text-align: right;
     }
+
     /* end of footer */
     /* Extra Pages */
     .ex-cards-1 .card {
         width: 336px;
     }
+
     .ex-cards-1 .card:nth-of-type(3n+2) {
         margin-right: 2.875rem;
         margin-left: 2.875rem;
     }
+
     /* end of extra pages */
 }
 
@@ -1452,24 +1531,29 @@ a:hover {
     padding: auto;
     height: 35px;
     width: 80px;
-    background-color: #e78e19; /* Change the background color as needed */
-    color: #fff; /* Text color */
+    background-color: #e78e19;
+    /* Change the background color as needed */
+    color: #fff;
+    /* Text color */
     font-size: 16px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    transition: background-color 0.3s ease; /* Smooth color transition on hover */
+    transition: background-color 0.3s ease;
+    /* Smooth color transition on hover */
 }
 
 .submitlocation:hover {
-    background-color: #0c2f55; /* Change the background color on hover */
+    background-color: #0c2f55;
+    /* Change the background color on hover */
 }
 
-.lform{
-text-align: center;
-margin: 20px;
+.lform {
+    text-align: center;
+    margin: 20px;
 }
-#location{
+
+#location {
     padding: 5px;
     border-radius: 5px;
     border-color: #da8080;
