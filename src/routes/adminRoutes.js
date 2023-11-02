@@ -18,7 +18,7 @@ router.get("/dashboard", async (req, res) => {
     // Calculate the date 24 hours ago
     const twentyFourHoursAgo = new Date();
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-    
+
     const within24HoursCount = await VehicleEntry.countDocuments({
       inTime: { $gte: twentyFourHoursAgo }
     });
@@ -44,80 +44,80 @@ router.get("/dashboard", async (req, res) => {
 
 
 router.get('/in-vehicles', async (req, res) => {
-    try {
-      const vehicles = await VehicleEntry.find({status:"In"}); // Fetch all entries from the database
-      res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
-    } catch (error) {
-      console.error('Error fetching data from MongoDB:', error);
-      res.status(400).send('error'); // Redirect to an error page or another route in case of an error
-    }
-  });
-  
-  router.get('/update-incomingdetail/:id', async (req, res) => {
-    try {
-      const id = req.params.id;
-        const vehicleDetail = await VehicleEntry.findById(id);
+  try {
+    const vehicles = await VehicleEntry.find({ status: "In" }); // Fetch all entries from the database
+    res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
+  } catch (error) {
+    console.error('Error fetching data from MongoDB:', error);
+    res.status(400).send('error'); // Redirect to an error page or another route in case of an error
+  }
+});
 
-       
-
-        // Get the current time as the outTime
-        const outTime = moment.tz('Asia/Kolkata');
-
-        // Calculate the difference between outTime and inTime in hours
-        const inTime = moment(vehicleDetail.inTime);
-        const timeDiffInMins = outTime.diff(inTime, 'minutes');
-
-        // Calculate the total charges based on the rate per hour
-        const ratePerHour = 1000; // Set your own rate per hour here
-        let totalCharges = (timeDiffInMins / 60) * ratePerHour;
-
-        // Round the total charges to the nearest whole number
-        totalCharges = Math.round(totalCharges);
-
-        await VehicleEntry.findByIdAndUpdate(id, { totalCharge:totalCharges });
-    
-        res.render('adminViews/update-incomingdetail', { outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
-    } catch (error) {
-      console.error('Error fetching vehicle details:', error);
-      res.status(500).send('Internal server error. Please try again later.');
-    }
-  });
-
-  router.get('/print-receipt/:id', async (req, res) => {
-    try {
-      const id = req.params.id;
-      const printDetail = await VehicleEntry.findById(id);
-  
-      res.render('adminViews/print-receipt',{printDetail,page:'print-receipt'});
-    } catch (error) {
-      console.error('Error fetching vehicle details:', error);
-      res.status(500).send('Internal server error. Please try again later.');
-    }
-  });
+router.get('/update-incomingdetail/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const vehicleDetail = await VehicleEntry.findById(id);
 
 
-  router.get('/out-vehicles', async (req, res) => {
-    try {
-   
-      const status = await VehicleEntry.find({status:"Out"});
-      res.render('adminViews/out-vehicles',{status,page:'out-vehicles'});
-    } catch (error) {
-      console.error('Error fetching vehicle details:', error);
-      res.status(500).send('Internal server error. Please try again later.');
-    }
-  });
 
-  router.get('/outgoing-detail/:id', async (req, res) => {
-    try {
-      const id = req.params.id;
-      const vehicleInfo = await VehicleEntry.findById(id);
-  
-      res.render('adminViews/outgoing-detail',{vehicleInfo,page:'outgoing-detail'});
-    } catch (error) {
-      console.error('Error fetching vehicle details:', error);
-      res.status(500).send('Internal server error. Please try again later.');
-    }
-  });
+    // Get the current time as the outTime
+    const outTime = moment.tz('Asia/Kolkata');
+
+    // Calculate the difference between outTime and inTime in hours
+    const inTime = moment(vehicleDetail.inTime);
+    const timeDiffInMins = outTime.diff(inTime, 'minutes');
+
+    // Calculate the total charges based on the rate per hour
+    const ratePerHour = 1000; // Set your own rate per hour here
+    let totalCharges = (timeDiffInMins / 60) * ratePerHour;
+
+    // Round the total charges to the nearest whole number
+    totalCharges = Math.round(totalCharges);
+
+    await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
+
+    res.render('adminViews/update-incomingdetail', { outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
+  } catch (error) {
+    console.error('Error fetching vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+router.get('/print-receipt/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const printDetail = await VehicleEntry.findById(id);
+
+    res.render('adminViews/print-receipt', { printDetail, page: 'print-receipt' });
+  } catch (error) {
+    console.error('Error fetching vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+
+router.get('/out-vehicles', async (req, res) => {
+  try {
+
+    const status = await VehicleEntry.find({ status: "Out" });
+    res.render('adminViews/out-vehicles', { status, page: 'out-vehicles' });
+  } catch (error) {
+    console.error('Error fetching vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+router.get('/outgoing-detail/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const vehicleInfo = await VehicleEntry.findById(id);
+
+    res.render('adminViews/outgoing-detail', { vehicleInfo, page: 'outgoing-detail' });
+  } catch (error) {
+    console.error('Error fetching vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
 
 
 
@@ -125,7 +125,7 @@ router.get('/in-vehicles', async (req, res) => {
 
 
 router.get('/out-vehicles', (req, res) => {
-    res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
+  res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
 
 router.get('/total-income', async (req, res) => {
@@ -166,11 +166,33 @@ router.get('/total-income', async (req, res) => {
 
 
 router.get('/manage-vehicles', (req, res) => {
-    res.render('adminViews/manage-vehicles', { page: 'manage-vehicles' })
+  res.render('adminViews/manage-vehicles', { page: 'manage-vehicles' })
 })
 router.get('/outgoing-detail', (req, res) => {
-    res.render('adminViews/outgoing-detail')
-})
+  res.render('adminViews/outgoing-detail')
+});
+
+
+router.post('/search', async (req, res) => {
+  try {
+    const { searchdata } = req.body;
+
+    // Perform a Mongoose query to find documents with matching registrationnumber
+    const matchingEntries = await VehicleEntry.find({ registrationnumber: searchdata });
+
+    if (matchingEntries.length > 0) {
+      // Send the matching data to the 'adminViews/search' page
+      res.render('adminViews/search', { matchingEntries });
+    } else {
+      // Handle the case when no matching entries are found
+      res.render('adminViews/search', { noMatch: true });
+    }
+  } catch (error) {
+    // Handle any errors here
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
 

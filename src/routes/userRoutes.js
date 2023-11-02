@@ -29,7 +29,7 @@ router.get("/login", (req, res) => {
 });
 
 
-router.get("/register", (req, res) => {
+router.get("register", (req, res) => {
     res.render('userViews/register')
 });
 
@@ -61,14 +61,24 @@ router.get("/terms", (req, res) => {
     res.render('userViews/terms')
 });
 
+router.get("/temp", (req, res) => {
+    res.render('userViews/temp')
+});
+
 
 router.get('/userafterlogin', (req, res) => {
     if (!req.session.user) {
-        return res.redirect('userViews/login');
+        req.session.message = 'Please Log In First'; // Set the message
+        return res.redirect('/login'); // Redirect to 'login' page
     }
 
     const user = req.session.user;
     res.render('userViews/userafterlogin', { user: user });
+});
+
+
+router.get("/slot-booking", (req, res) => {
+    res.render('userViews/slot-booking')
 });
 
 
@@ -80,11 +90,11 @@ router.post("/login", async (req, res) => {
         const existingUser = await Register.findOne({ email });
 
         if (!existingUser) {
-            return res.status(400).render('login', { message: 'Invalid Email' });
+            return res.status(400).render('userViews/login', { message: 'Invalid Email' });
         }
 
         if (existingUser.password !== password) {
-            return res.status(400).render('login', { message: 'Invalid Password' });
+            return res.status(400).render('userViews/login', { message: 'Invalid Password' });
         }
         req.session.user = existingUser;
         res.redirect('userafterlogin?success');
@@ -123,3 +133,5 @@ router.post("/register", async (req, res) => {
 
 
 module.exports = router;
+
+
