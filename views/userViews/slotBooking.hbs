@@ -93,16 +93,17 @@
                         <h2>You are just one step away</h2>
                         <p>Select the city where you want to park your Vehicle.</p>
                         <!-- Search Form -->
-                        <form action="" method="post">
+                        <form id="searchForm" action="/slotBooking" method="post"
+                            onsubmit="requestLocationAccess()">
                             <div class="row g-2">
                                 <div class="col-md">
                                     <div class="form-floating">
                                         <select class="form-select" id="districtDropdown"
                                             aria-label="Floating label select example" onchange="populateLocalities()">
                                             <option selected>Select</option>
-                                            <option value="district1">Anantnag</option>
-                                            <option value="district2">Budgam</option>
-                                            <option value="district3">Srinagar</option>
+                                            <option value="Anantnag">Anantnag</option>
+                                            <option value="Budgam">Budgam</option>
+                                            <option value="Srinagar">Srinagar</option>
                                         </select>
                                         <label for="districtDropdown">City</label>
                                     </div>
@@ -120,7 +121,8 @@
                             <div class="row justify-content-center mt-5">
                                 <div class="col-md-3">
                                     <div class="form-floating">
-                                        <button type="button" class="btn-outline-reg">Search</button>
+                                        <button type="button" class="btn-outline-reg"
+                                            onclick="requestLocationAccess()">Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -130,41 +132,42 @@
                     <!-- end of text-container -->
                 </div>
                 <!-- end of col -->
-               <div class="col-lg-6 col-xl-6">
-    <div class="container">
-        <div id="nearbyParkingLots">
-            <h3>Nearby Parking Lots</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">S.No.</th>
-                        <th scope="col">Parking Lot Name</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Distance</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#if parkingLots}}
-                        {{#each parkingLots}}
-                            <tr>
-                                <td>{{@index}}</td>
-                                <td>{{this.name}}</td>
-                                <td>{{this.price}}</td>
-                                <td>{{calculateDistance this.latitude this.longitude userLatitude userLongitude}} km</td>
-                                <td><button onclick="bookNow('{{this._id}}')" class="btn btn-primary">Book Now</button></td>
-                            </tr>
-                        {{/each}}
-                    {{else}}
-                        <tr>
-                            <td colspan="5">No parking lots found</td>
-                        </tr>
-                    {{/if}}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                <div class="col-lg-6 col-xl-6">
+                    <div class="container">
+                        <div id="nearbyParkingLots">
+                            {{#if parkingLots}}
+                            <h3>Nearby Parking Lots</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">S.No.</th>
+                                        <th scope="col">Parking Lot Name</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Distance</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each parkingLots}}
+                                    <tr>
+                                        <td>{{addOne @index}}</td>
+                                        <td>{{this.name}}</td> <!-- Add the corresponding data fields -->
+                                        <td>{{this.chargesPerHour}}</td> <!-- Add the corresponding data fields -->
+                                        <td>{{this.distance}} km</td>
+                                        <!-- Make sure distance is provided in the data -->
+                                        <td><button onclick="bookNow('{{this.id}}')" class="btn btn-primary">Book
+                                                Now</button></td> <!-- Assuming 'id' is the unique identifier -->
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            {{else}}
+                            <p>No parking lots found</p>
+                            {{/if}}
+
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <!-- end of row -->
