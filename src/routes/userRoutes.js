@@ -75,14 +75,11 @@ router.post('/slotBooking', async (req, res) => {
             const distanceB = parseFloat(b.distance.split(' ')[0]);
             return distanceA - distanceB;
         });
-        console.log(filteredParkingLots)
-        res.render('userViews/slotBooking', { parkingLots: filteredParkingLots, searchPerformed: true });
+        res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).send('Error while fetching parking lots. Please try again later.');
+        res.status(500).json({ error: 'Error while fetching parking lots. Please try again later.' });
     }
-    
-    
 });
 
 
