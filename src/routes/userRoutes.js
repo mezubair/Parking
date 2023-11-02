@@ -38,7 +38,15 @@ router.get("/register", (req, res) => {
 router.get("/admin", (req, res) => {
     res.render('userViews/admin')
 });
+router.get("/slotBooking", (req, res) => {
+    res.render('userViews/slotBooking')
+});
 
+router.post('/search', (req, res) => {
+    const { city, locality } = req.body;
+    const filteredParkingLots = parkingLotsData.filter(parkingLot => parkingLot.city === city && parkingLot.locality === locality);
+    res.json(filteredParkingLots);
+});
 
 router.get("/vbook", (req, res) => {
     res.render('userViews/vbook')
@@ -80,11 +88,11 @@ router.post("/login", async (req, res) => {
         const existingUser = await Register.findOne({ email });
 
         if (!existingUser) {
-            return res.status(400).render('login', { message: 'Invalid Email' });
+            return res.status(400).render('userViews/login', { message: 'Invalid Email' });
         }
 
         if (existingUser.password !== password) {
-            return res.status(400).render('login', { message: 'Invalid Password' });
+            return res.status(400).render('userViews/login', { message: 'Invalid Password' });
         }
         req.session.user = existingUser;
         res.redirect('userafterlogin?success');
