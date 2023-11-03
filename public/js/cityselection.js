@@ -52,42 +52,45 @@ function requestLocationAccess() {
                 .then(response => response.json())
                 .then(data => {
 
-    const table = document.getElementById('parkingLotsTable');
+                    const table = document.getElementById('parkingLotsTable');
 
-    // Find the table body where rows will be added
-    const tbody = table.querySelector('tbody');
+                    // Find the table body where rows will be added
+                    const tbody = table.querySelector('tbody');
 
-    if (data.parkingLots.length > 0) {
-        // Clear existing content
-        tbody.innerHTML = '';
+                    if (data.parkingLots.length > 0) {
+                        // Clear existing content
+                        tbody.innerHTML = '';
 
-        data.parkingLots.forEach((lot, index) => {
-            const row = tbody.insertRow();
-            row.innerHTML = `
+                        data.parkingLots.forEach((lot, index) => {
+                            const row = tbody.insertRow();
+                            row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${lot.name}</td>
                 <td>${lot.chargesPerHour}</td>
-                <td>${lot.distance}</td>
-                <td ><button onclick="bookNow('${lot.id}')" class="btn-outline-reg">Book Now</button></td>
+                <td>${lot.distance} km</td>
+                <td>
+                <a href="/vbook?lotId=${lot.id}" class="btn-outline-reg">Book Now</a>
+            </td>
+            
             `;
-        });
+                        });
 
-        // Show the table
-        table.style.display = 'table';
-    } else {
-        // If no parking lots found, hide the table and display a message
-        table.style.display = 'table';
-        tbody.innerHTML = `
+                        // Show the table
+                        table.style.display = 'table';
+                    } else {
+                        // If no parking lots found, hide the table and display a message
+                        table.style.display = 'table';
+                        tbody.innerHTML = `
             <tr>
                 <td  colspan="5" rowspan="2">No parking lots found</td>
             </tr>
         `;
-    }
+                    }
                     // Hide the loading message
                     loadingMessage.style.display = 'none';
 
                     // Populate the table with the fetched data
-                    
+
                 })
                 .catch(error => {
                     console.error('Error fetching parking lots:', error);
