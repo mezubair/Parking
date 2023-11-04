@@ -40,9 +40,7 @@ router.get("/register", (req, res) => {
 });
 
 
-router.get("/admin", (req, res) => {
-    res.render('userViews/admin')
-});
+
 router.get("/slotBooking", (req, res) => {
     res.render('userViews/slotBooking')
 });
@@ -202,24 +200,6 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post('/admin', (req, res) => {
-    const { ademail, adpass } = req.body;
-
-    // Find the user based on the username in the data
-    const matchingUser = parkingLotsData.find(user => user.email === ademail && user.password === adpass);
-    console.log(ademail);
-    console.log(adpass);
-console.log(matchingUser);
-
-    if (matchingUser) {
-        // If a matching user is found, you can access their data
-        res.redirect(`/dashboard?id=${matchingUser.id}`);
-        console.log(matchingUser);
-    } else {
-        // Handle the case where there's no match
-        console.log("User not found or invalid credentials");
-    }
-});
 
 
 module.exports = router;
