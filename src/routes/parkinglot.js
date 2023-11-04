@@ -1,17 +1,19 @@
 let parkingLotsData = [
     {
         id: 1,
-        name: " Parking",
+        name: " Parking Lot Eidgah ",
         latitude: 78.90,
         longitude: 123.456,
         address: "123 Example Street, Srinagar",
-        locality: "Locality 1",
+        locality: "Eidgah",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin1",
+            password: "admin"
         }
     },
     {
@@ -25,8 +27,11 @@ let parkingLotsData = [
         chargesPerHour: 10,
         totalSpots: 50,
         phone: "123-456-7890",
-        email: "Elachibagh@example.com",
-        password: "admin"
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin2",
+            password: "admin"
+        }
 
     },
     {
@@ -40,8 +45,11 @@ let parkingLotsData = [
         chargesPerHour: 10,
         totalSpots: 50,
         phone: "123-456-7890",
-        email: "Mominabad@example.com",
-        password: "Admin@Mominabad"
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin3",
+            password: "admin"
+        }
 
     },
     {
@@ -56,7 +64,10 @@ let parkingLotsData = [
         totalSpots: 50,
         phone: "123-456-7890",
         email: "Tengpur@example.com",
-        password: "Tengpur@Mominabad"
+        adminAuth: {
+            username: "admin4",
+            password: "admin"
+        }
 
 
     },
@@ -69,9 +80,13 @@ let parkingLotsData = [
         locality: "Iqbal Park",
         city: "Srinagar",
         chargesPerHour: 5,
-
+        totalSpots: 50,
         phone: "123-456-7890",
-        email: "downtownparking@example.com"
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin5",
+            password: "admin"
+        }
 
     },
     {
@@ -83,9 +98,12 @@ let parkingLotsData = [
         locality: "Iqbal Park",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin6",
+            password: "admin"
         }
     },
     {
@@ -97,9 +115,12 @@ let parkingLotsData = [
         locality: "Iqbal Park",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Tengpur@example.com",
+        adminAuth: {
+            username: "admin7",
+            password: "admin"
         }
     }
     // Add more entries here

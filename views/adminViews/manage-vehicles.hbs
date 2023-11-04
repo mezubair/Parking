@@ -53,14 +53,14 @@
 
                       <div class="form-group">
                             <label>Parking Lot Name</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
-                                name="ownername" value="{{userData.name}}" required readonly>
+                            <input type="text" class="form-control" id="parkinglotname"
+                                name="parkinglotname" value="{{details.name}}" required readonly>
                         </div>
 
                           <div class="form-group">
                             <label>Spots Available</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
-                                name="ownername" required readonly>
+                            <input type="text" class="form-control" value="{{details.totalSpots}}" id="spotsavailable"
+                                name="spotsavailable" required readonly>
                         </div>
 
                         <div class="form-group">

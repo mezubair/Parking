@@ -1,53 +1,185 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const moment = require('moment-timezone')
+const moment = require('moment-timezone');
+const session = require('express-session');
+const VehicleEntry = require('../models/vehicleEntry');
+const parkingLotsData = require('./parkinglot');
 
+// Middleware for Express
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-require("../db/conn");
-const VehicleEntry = require('../models/vehicleEntry');
+// Express session setup
+router.use(
+  session({
+    secret: 'mySecret',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-router.get("/dashboard", async (req, res) => {
-  const userId = req.query.id;
-  const matchingUser = parkingLotsData.find(user => user.id === parseInt(userId, 10));
-  if (matchingUser) {
-    // User data is found, and you can use it in your dashboard
-    res.render('dashboard', { user: matchingUser }); // Assuming you're using a template engine like EJS or Handlebars
-} else {
-    // Handle the case where the user is not found
-    console.log("User not found");
-}
+// Admin login verification middleware
+// Session configuration
+router.use(
+  session({
+    secret: 'mySecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  })
+);
+
+// Admin login verification middleware for POST requests
+const adminDetailsPost = (req, res, next) => {
+  const ademail = req.body.ademail;
+  const adpass = req.body.adpass;
+  console.log(ademail, adpass);
+
+  const matchingAdmin = parkingLotsData.find(
+    (admin) =>
+      admin.adminAuth.username === ademail && admin.adminAuth.password === adpass
+  );
+
+  if (matchingAdmin) {
+    req.session.adminDetails = matchingAdmin;
+    next();
+  } else {
+    console.log('Admin not found or invalid credentials');
+    res.redirect('/adminLogin');
+  }
+};
+
+// Admin login verification middleware for GET requests
+const adminDetailsGet = (req, res, next) => {
+  const details = req.session.adminDetails;
+  if (details) {
+    next();
+  } else {
+    res.redirect('/adminLogin');
+  }
+};
+
+// Route for the admin login page
+router.get('/adminLogin', (req, res) => {
+  res.render('adminViews/adminLogin');
+});
+
+// Route for the admin login post request
+router.post('/adminLogin', adminDetailsPost, (req, res) => {
+  const details=req.session.adminDetails;
+  res.redirect('/dashboard');
+});
+
+// Route for the dashboard
+router.get('/dashboard', adminDetailsGet, async (req, res) => {
   try {
-    const totalCount = await VehicleEntry.countDocuments({});
-    const inCount = await VehicleEntry.countDocuments({ status: 'In' });
-    const outCount = await VehicleEntry.countDocuments({ status: 'Out' });
+    const details = req.session.adminDetails;
+    const totalCount = await VehicleEntry.countDocuments({
+      parkingLotName: details.name,
+    });
+    const inCount = await VehicleEntry.countDocuments({
+      status: 'In',
+      parkingLotName: details.name,
+    });
+    const outCount = await VehicleEntry.countDocuments({
+      status: 'Out',
+      parkingLotName: details.name,
+    });
 
-    // Calculate the date 24 hours ago
     const twentyFourHoursAgo = new Date();
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
     const within24HoursCount = await VehicleEntry.countDocuments({
-      inTime: { $gte: twentyFourHoursAgo }
+      inTime: { $gte: twentyFourHoursAgo },
+      parkingLotName: details.name,
     });
 
-
-    res.render("adminViews/dashboard", {
+    res.render('adminViews/dashboard', {
       page: 'dashboard',
       totalCount,
       inCount,
       outCount,
-      within24HoursCount
+      within24HoursCount,
+      details,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error occurred while counting entries.");
+    res.status(500).send('Error occurred while counting entries.');
   }
 });
+//manage-vehicles
+router.get('/manage-vehicles',adminDetailsGet, (req, res) => {
+  details=req.session.adminDetails;
+  if (details) {
+    res.render('adminViews/manage-vehicles', { details, page: 'manage-vehicles' })
+  } else {
+    res.redirect('/adminLogin');
+  }
+});
+router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
+  const details = req.session.adminDetails;
+  try {
+    // Extracting necessary information from the request body
+    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status } = req.body;
 
+    // Ensure that admin details are available in the session
+   
+    console.log("Admin details:", details);
 
+    // Check for an existing entry with the same registrationNumber, status 'In', and inTime
+    const existingEntry = await VehicleEntry.findOne({
+      parkingLotName: details.name,
+      registrationNumber: vehreno,
+      status: 'In',
+      inTime: { $lte: new Date() }, // Ensure the inTime is less than or equal to the current time
+    });
+    console.log("Existing entry:", existingEntry);
 
+    // If an existing entry is found, return a duplicate entry error message
+    if (existingEntry) {
+      console.log("Duplicate entry found. Please check the data.");
+      return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+    }
+
+    // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
+    const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+    const currentTime = moment().tz('Asia/Kolkata');
+    console.log("Parking Number:", parkingNumber);
+    console.log("Current Time:", currentTime);
+
+    // Create a new instance of VehicleEntry with the extracted information and save it
+    const newVehicle = new VehicleEntry({
+      parkingLotName: details.name,
+      availableSpots: details.totalSpots,
+      parkingNumber: "CA-" + parkingNumber,
+      ownerName: ownername,
+      ownerContactNumber: ownercontno,
+      registrationNumber: vehreno,
+      vehicleCategory: catename,
+      vehicleCompanyname: vehcomp,
+      vehicleModel: model,
+      inTime: currentTime.toDate()
+    });
+    console.log("New Vehicle:", newVehicle);
+
+    const registered = await newVehicle.save();
+
+    // Render a success message upon successful save
+    console.log("Vehicle entry successfully saved.");
+    return res.status(200).render('./adminViews/manage-vehicles', {details, message: 'Booked successfully' });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    // Check for duplicate entry error and handle accordingly
+    if (error.code === 11000) {
+      console.log("Duplicate entry error. Please check the data.");
+      return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+    }
+    // Handle other potential errors with a generic server error message
+    console.log("Internal server error. Please try again later.");
+    res.status(500).send("Internal server error. Please try again later.");
+  }
+});
 
 
 
@@ -174,77 +306,15 @@ router.get('/total-income', async (req, res) => {
 
 
 
-router.get('/manage-vehicles', (req, res) => {
-  res.render('adminViews/manage-vehicles', { page: 'manage-vehicles' })
-})
+
 router.get('/outgoing-detail', (req, res) => {
   res.render('adminViews/outgoing-detail')
 });
 
 
-router.post('/search', async (req, res) => {
-  try {
-    const { searchdata } = req.body;
-
-    // Perform a Mongoose query to find documents with matching registrationnumber
-    const matchingEntries = await VehicleEntry.find({ registrationnumber: searchdata });
-
-    if (matchingEntries.length > 0) {
-      // Send the matching data to the 'adminViews/search' page
-      res.render('adminViews/search', { matchingEntries });
-    } else {
-      // Handle the case when no matching entries are found
-      res.render('adminViews/search', { noMatch: true });
-    }
-  } catch (error) {
-    // Handle any errors here
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-
 
 /////////////////////////////////////////////////////
-router.post("/manage-vehicles", async (req, res) => {
-  try {
-    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status } = req.body;
 
-    // Check for an existing entry with the same registrationNumber, status 'In', and inTime
-    const existingEntry = await VehicleEntry.findOne({
-      registrationNumber: vehreno,
-      status: 'In',
-      inTime: { $lte: new Date() }, // Ensure the inTime is less than or equal to the current time
-    });
-
-    if (existingEntry) {
-      return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
-    }
-
-    const parkingNumber = Math.floor(10000 + Math.random() * 90000);
-    const currentTime = moment().tz('Asia/Kolkata');
-
-    const newVehicle = new VehicleEntry({
-      parkingNumber: "CA-" + parkingNumber,
-      ownerName: ownername,
-      ownerContactNumber: ownercontno,
-      registrationNumber: vehreno,
-      vehicleCategory: catename,
-      vehicleCompanyname: vehcomp,
-      vehicleModel: model,
-      inTime: currentTime.toDate()
-    });
-
-    const registered = await newVehicle.save();
-    return res.status(200).render('./adminViews/manage-vehicles', { message: 'Booked successfully' });
-  } catch (error) {
-    console.error("Error during registration:", error);
-    if (error.code === 11000) {
-      return res.status(400).render('./adminViews/manage-vehicles', { message: 'Duplicate entry. Please check the data.' });
-    }
-    res.status(500).send("Internal server error. Please try again later.");
-  }
-});
 
 
 
