@@ -108,16 +108,16 @@
                     <div class="text-box mt-5 mb-5">
 
                         <!-- Log In Form -->
-                        <form id="loginform" action="dashboard">
+                        <form id="loginform" action="/admin" method="POST">
                             <div class="mb-4 form-floating">
-                                <input type="text" class="form-control" id="floatingInput"
-                                    placeholder="username">
+                                <input type="email" class="form-control" id="ademail"
+                                    placeholder="email" name="ademail">
                                 <label for="floatingInput">Admin Username</label>
                                 <p class="text-danger" id="floatingInput_error"></p>
                             </div>
                             <div class="mb-4 form-floating">
-                                <input type="password" class="form-control" id="floatingPassword"
-                                    placeholder="Password">
+                                <input type="password" class="form-control" id="adpass"
+                                    placeholder="Password" name="adpass">
                                 <label for="floatingPassword">Password</label>
                                 <p class="text-danger" id="floatingPassword_error"></p>
                             </div>

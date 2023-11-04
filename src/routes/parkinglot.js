@@ -11,6 +11,7 @@ let parkingLotsData = [
         contact: {
             phone: "123-456-7890",
             email: "downtownparking@example.com"
+
         }
     },
     {
@@ -22,10 +23,11 @@ let parkingLotsData = [
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 10,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Elachibagh@example.com",
+        password: "admin"
+
     },
     {
         id: 3,
@@ -36,10 +38,11 @@ let parkingLotsData = [
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 10,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Mominabad@example.com",
+        password: "Admin@Mominabad"
+
     },
     {
         id: 4,
@@ -50,10 +53,12 @@ let parkingLotsData = [
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Tengpur@example.com",
+        password: "Tengpur@Mominabad"
+
+
     },
     {
         id: 5,
@@ -64,10 +69,10 @@ let parkingLotsData = [
         locality: "Iqbal Park",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+
+        phone: "123-456-7890",
+        email: "downtownparking@example.com"
+
     },
     {
         id: 6,

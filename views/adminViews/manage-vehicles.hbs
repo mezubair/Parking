@@ -50,6 +50,19 @@
                     {{/if}}
 
                     <form method="POST" action="/manage-vehicles">
+
+                      <div class="form-group">
+                            <label>Parking Lot Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
+                                name="ownername" value="{{userData.name}}" required readonly>
+                        </div>
+
+                          <div class="form-group">
+                            <label>Spots Available</label>
+                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
+                                name="ownername" required readonly>
+                        </div>
+
                         <div class="form-group">
                             <label>Owner's Full Name</label>
                             <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
