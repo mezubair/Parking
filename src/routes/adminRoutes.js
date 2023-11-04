@@ -10,6 +10,15 @@ require("../db/conn");
 const VehicleEntry = require('../models/vehicleEntry');
 
 router.get("/dashboard", async (req, res) => {
+  const userId = req.query.id;
+  const matchingUser = parkingLotsData.find(user => user.id === parseInt(userId, 10));
+  if (matchingUser) {
+    // User data is found, and you can use it in your dashboard
+    res.render('dashboard', { user: matchingUser }); // Assuming you're using a template engine like EJS or Handlebars
+} else {
+    // Handle the case where the user is not found
+    console.log("User not found");
+}
   try {
     const totalCount = await VehicleEntry.countDocuments({});
     const inCount = await VehicleEntry.countDocuments({ status: 'In' });

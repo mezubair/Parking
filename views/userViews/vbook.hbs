@@ -93,34 +93,81 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-6 offset-xl-3">
-                    <div class="text-box mt-5 mb-5">
-                        <p class="mb-4">Provide your vehicle details to book a parking spot</p>
+                    <div class="text-box mt-4 mb-8">
 
-                        <form id="registration-form">
-
-                            <input type="hidden" id="lotId" name="lotId" value="">
+                        <h6 class="mb-4" style="color: green;">Provide your vehicle details to book a parking spot</h6>
 
 
-                            <label for="vehicleNumber">Vehicle Number</label>
-                            <input type="text" id="vehicleNumber" class="form-control" name="vehicleNumber"
-                                placeholder="Enter your vehicle number" required><br>
+                        <form method="POST" action="/update-incomingdetail/{{vehicleDetail._id}}">
+
+                            <div class="form-group mb-4">
+                                <label for="sdesc">Parking Lot Name</label>
+                                <input type="text" class="form-control" name="sdesc" id="sdesc"
+                                    value="{{parkingLotData.name}}" readonly>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="registrationNumber">Vehicle Registration Number</label>
+                                <input type="text" class="form-control" name="registrationNumber"
+                                    id="registrationNumber">
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="catename">Vehicle Category</label>
+                                <select class="form-select" name="catename" id="catename">
+                                    <option value="Four Wheeler">Four Wheeler</option>
+                                    <option value="Three Wheeler">Three Wheeler</option>
+                                    <option value="Two Wheeler">Two Wheeler</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="vehcomp">Vehicle's Company Name</label>
+                                <select class="form-select" name="vehcomp" id="vehcomp" required>
+                                    <option value="Hyundai">Hyundai</option>
+                                    <option value="Maruti Suzuki">Maruti Suzuki</option>
+                                    <option value="Renault">Renault</option>
+                                    <option value="Mahindra">Mahindra</option>
+                                    <option value="Tata">Tata</option>
+                                    <option value="Honda">Honda</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
 
 
 
-                            <label for="vehicleType">Vehicle Type</label>
-                            <select id="vehicleType" class="form-control" name="vehicleType" required>
-                                <option value="car">Car</option>
-                                <option value="motorcycle">Motorcycle</option>
-                                <option value="truck">Truck</option>
-                                <!-- Add more vehicle types as needed -->
-                            </select><br>
+                            <div class="form-group mb-4">
+                                <label for="sdesc">Vehicle IN Time</label>
+                                <input type="datetime-local" class="form-control" name="inTime" id="inTime">
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="sdesc">Vehicle Out Time</label>
+                                <input type="datetime-local" class="form-control" name="outTime" id="outTime">
+                            </div>
 
-                            <label for="contactInfo">Contact Information</label>
-                            <input type="text" class="form-control" id="contactInfo" name="contactInfo"
-                                placeholder="Enter your contact information" required><br>
+                            <div class="form-group mb-4">
+                                <label for="sdesc">Vehicle Owned By</label>
+                                <input type="text" class="form-control" name="sdesc" id="sdesc">
+                            </div>
 
-                            <button type="submit" class="form-control-submit-button">Submit Registration</button>
+                            <div class="form-group mb-4">
+                                <label for="sdesc">Vehicle Owner Contact</label>
+                                <input type="text" class="form-control" name="sdesc" id="sdesc">
+                            </div>
+
+
+
+                            <div class="form-group mb-4">
+                                <label for="parkingcharge">Total Charges &#8377</label>
+                                <input type="text" class="form-control" name="charges" id="charges" readonly>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-success" name="submit-in">Book</button>
+                            <button type="reset" class="btn btn-default">Reset</button>
                         </form>
+
+
                     </div>
                     <!-- end of text-box -->
                 </div>
@@ -234,6 +281,30 @@
     <script src="js/validate.js"></script>
     <!-- validate form script -->
     <script src="js/fetchparking.js"></script>
+
+    <script>
+        document.getElementById('inTime').addEventListener('change', calculateCharges);
+        document.getElementById('outTime').addEventListener('change', calculateCharges);
+
+        function calculateCharges() {
+            const inTime = new Date(document.getElementById('inTime').value);
+            const outTime = new Date(document.getElementById('outTime').value);
+            const ratePerHour = 50; // Change this rate per hour as needed
+
+            const minutes = (outTime - inTime) / (1000 * 60); // Calculate minutes
+            const hours = Math.floor(minutes / 60); // Calculate hours
+            const remainingMinutes = minutes % 60; // Calculate remaining minutes
+
+            const charges = (hours * ratePerHour) + (remainingMinutes * (ratePerHour / 60));
+
+            if (!isNaN(charges) && charges >= 0) {
+                document.getElementById('charges').value = '₹' + charges.toFixed(2); // Display up to 2 decimal places
+            } else {
+                document.getElementById('charges').value = '';
+            }
+        }
+    </script>
+
 </body>
 
 </html>

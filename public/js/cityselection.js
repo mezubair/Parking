@@ -25,6 +25,7 @@ function populateLocalities() {
     }
 }
 
+// JavaScript code in your existing .js file
 function requestLocationAccess() {
     // Show the loading message
     const loadingMessage = document.getElementById('loadingMessage');
@@ -50,11 +51,46 @@ function requestLocationAccess() {
             })
                 .then(response => response.json())
                 .then(data => {
+
+                    const table = document.getElementById('parkingLotsTable');
+
+                    // Find the table body where rows will be added
+                    const tbody = table.querySelector('tbody');
+
+                    if (data.parkingLots.length > 0) {
+                        // Clear existing content
+                        tbody.innerHTML = '';
+
+                        data.parkingLots.forEach((lot, index) => {
+                            const row = tbody.insertRow();
+                            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${lot.name}</td>
+                <td>${lot.chargesPerHour}</td>
+                <td>${lot.distance} km</td>
+                <td>
+                <a href="/vbook?lotId=${lot.id}" class="btn-outline-reg">Book Now</a>
+            </td>
+            
+            `;
+                        });
+
+                        // Show the table
+                        table.style.display = 'table';
+                    } else {
+                        // If no parking lots found, hide the table and display a message
+                        table.style.display = 'table';
+                        tbody.innerHTML = `
+            <tr>
+                <td  colspan="5" rowspan="2">No parking lots found</td>
+            </tr>
+        `;
+                    }
                     // Hide the loading message
                     loadingMessage.style.display = 'none';
 
-                    // Display the data on your page
-                    displayParkingLots(data);
+                    // Populate the table with the fetched data
+
                 })
                 .catch(error => {
                     console.error('Error fetching parking lots:', error);
@@ -72,42 +108,5 @@ function requestLocationAccess() {
         alert("Geolocation is not supported by this browser.");
         // Hide the loading message in case of an error
         loadingMessage.style.display = 'none';
-    }
-}
-
-
-function displayParkingLots(data) {
-    const nearbyParkingLots = document.getElementById('nearbyParkingLots');
-    nearbyParkingLots.innerHTML = ''; // Clear existing content
-
-    if (data.parkingLots.length > 0) {
-        const table = document.createElement('table');
-        table.className = 'table';
-
-        const thead = table.createTHead();
-        const headerRow = thead.insertRow();
-        const headers = ['S.No.', 'Parking Lot Name', 'Price', 'Distance', 'Action'];
-
-        headers.forEach(headerText => {
-            const th = document.createElement('th');
-            th.innerText = headerText;
-            headerRow.appendChild(th);
-        });
-
-        const tbody = table.createTBody();
-        data.parkingLots.forEach((lot, index) => {
-            const row = tbody.insertRow();
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${lot.name}</td>
-                <td>${lot.chargesPerHour}</td>
-                <td>${lot.distance}</td>
-                <td><button onclick="bookNow('${lot.id}')" class="btn btn-primary">Book Now</button></td>
-            `;
-        });
-
-        nearbyParkingLots.appendChild(table);
-    } else {
-        nearbyParkingLots.innerText = 'No parking lots found';
     }
 }

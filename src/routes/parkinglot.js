@@ -1,7 +1,7 @@
 let parkingLotsData = [
     {
         id: 1,
-        name: "Downtown Parking",
+        name: " Parking",
         latitude: 78.90,
         longitude: 123.456,
         address: "123 Example Street, Srinagar",
@@ -11,49 +11,54 @@ let parkingLotsData = [
         contact: {
             phone: "123-456-7890",
             email: "downtownparking@example.com"
+
         }
     },
     {
         id: 2,
-        name: "Downtown Parking",
+        name: "Elachi Bagh",
         latitude: 34.071750,
         longitude: 74.804320,
         address: "456 Example Street, Srinagar",
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 10,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Elachibagh@example.com",
+        password: "admin"
+
     },
     {
         id: 3,
-        name: "Downtown Parking",
-        latitude: 34.071750,
-        longitude: 74.804320,
+        name: "Mominabad",
+        latitude: 34.0696,
+        longitude: 74.7890,
         address: "789 Example Street, Srinagar",
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 10,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Mominabad@example.com",
+        password: "Admin@Mominabad"
+
     },
     {
         id: 4,
-        name: "Downtown Parking",
-        latitude: 34.071750,
-        longitude: 74.804320,
+        name: "Tengpur Parking",
+        latitude: 34.1186471,
+        longitude: 74.7973392,
         address: "101 Example Street, Srinagar",
         locality: "Batamaloo",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+        totalSpots: 50,
+        phone: "123-456-7890",
+        email: "Tengpur@example.com",
+        password: "Tengpur@Mominabad"
+
+
     },
     {
         id: 5,
@@ -64,10 +69,10 @@ let parkingLotsData = [
         locality: "Iqbal Park",
         city: "Srinagar",
         chargesPerHour: 5,
-        contact: {
-            phone: "123-456-7890",
-            email: "downtownparking@example.com"
-        }
+
+        phone: "123-456-7890",
+        email: "downtownparking@example.com"
+
     },
     {
         id: 6,
