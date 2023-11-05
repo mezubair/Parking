@@ -4,72 +4,61 @@ const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const session = require('express-session');
 const VehicleEntry = require('../models/vehicleEntry');
-const parkingLotsData = require('./parkinglot');
+const parkingLots = require('../models/parkingLot');
 
 // Middleware for Express
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
-
-// Express session setup
-router.use(
-  session({
-    secret: 'mySecret',
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
 // Admin login verification middleware
 // Session configuration
 router.use(
   session({
     secret: 'mySecret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 24 * 60  * 1000 }
   })
 );
 
 // Admin login verification middleware for POST requests
-const adminDetailsPost = (req, res, next) => {
-  const ademail = req.body.ademail;
-  const adpass = req.body.adpass;
-  console.log(ademail, adpass);
-
-  const matchingAdmin = parkingLotsData.find(
-    (admin) =>
-      admin.adminAuth.username === ademail && admin.adminAuth.password === adpass
-  );
-
-  if (matchingAdmin) {
-    req.session.adminDetails = matchingAdmin;
+const adminDetails = (req, res, next) => {
+  if (req.session.admin && req.session.adminDetails) {
     next();
   } else {
-    console.log('Admin not found or invalid credentials');
-    res.redirect('/adminLogin');
-  }
-};
-
-// Admin login verification middleware for GET requests
-const adminDetailsGet = (req, res, next) => {
-  const details = req.session.adminDetails;
-  if (details) {
-    next();
-  } else {
-    res.redirect('/adminLogin');
+    res.status(403).send('Access Forbidden');
   }
 };
 
 // Route for the admin login page
-router.get('/adminLogin', (req, res) => {
+router.get('/adminLogin',(req, res) => {
   res.render('adminViews/adminLogin');
 });
 
 // Route for the admin login post request
-router.post('/adminLogin', adminDetailsPost, (req, res) => {
-  const details=req.session.adminDetails;
-  res.redirect('/dashboard');
+
+router.post('/adminLogin', async (req, res) => {
+  const { ademail, adpass } = req.body;
+
+  try {
+    const admin = await parkingLots.findOne({
+      'adminAuth.username': ademail,
+      'adminAuth.password': adpass,
+    }); // Make sure 'parkingLots' refers to the correct Mongoose model
+
+    if (admin) {
+      req.session.admin = admin; // Store user data in the session
+      req.session.adminDetails = true; // Set isAdmin flag in the session
+      res.redirect('/dashboard');
+    } else {
+      res.send('Invalid username or password');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
@@ -80,9 +69,9 @@ router.get('/logout', (req, res) => {
   });
 });
 // Route for the dashboard
-router.get('/dashboard', adminDetailsGet, async (req, res) => {
+router.get('/dashboard', adminDetails, async (req, res) => {
   try {
-    const details = req.session.adminDetails;
+    const details = req.session.admin;
     const totalCount = await VehicleEntry.countDocuments({
       parkinglotName: details.name,
     });
@@ -109,7 +98,6 @@ router.get('/dashboard', adminDetailsGet, async (req, res) => {
       inCount,
       outCount,
       within24HoursCount,
-      details,
     });
   } catch (err) {
     console.error(err);
@@ -117,20 +105,18 @@ router.get('/dashboard', adminDetailsGet, async (req, res) => {
   }
 });
 //manage-vehicles
-router.get('/manage-vehicles',adminDetailsGet, (req, res) => {
-  const details=req.session.adminDetails;
-  if (details) {
-    res.render('adminViews/manage-vehicles', { details, page: 'manage-vehicles' })
-  } else {
-    res.redirect('/adminLogin');
-  }
+router.get('/manage-vehicles',adminDetails, (req, res) => {
+const details = req.session.admin;
+console.log(details)
+    res.render('adminViews/manage-vehicles', { details,page: 'manage-vehicles' })
+  
 });
-router.post("/manage-vehicles", adminDetailsGet, async (req, res) => {
-  const details = req.session.adminDetails;
+router.post("/manage-vehicles", adminDetails, async (req, res) => {
+  const details = req.session.admin;
   console.log(details.name);
   try {
     // Extracting necessary information from the request body
-    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status ,spotsavailable} = req.body;
+    const { ownername, ownercontno, catename, vehcomp, vehreno, model} = req.body;
 
     // Ensure that admin details are available in the session
    
@@ -155,13 +141,11 @@ router.post("/manage-vehicles", adminDetailsGet, async (req, res) => {
     // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
     const parkingNumber = Math.floor(10000 + Math.random() * 90000);
     const currentTime = moment().tz('Asia/Kolkata');
-    console.log("Parking Number:", parkingNumber);
-    console.log("Current Time:", currentTime);
+   
 
     // Create a new instance of VehicleEntry with the extracted information and save it
     const newVehicle = new VehicleEntry({
       parkinglotName: details.name,
-      availableSpots: details.totalSpots,
       parkingNumber: "CA-" + parkingNumber,
       ownerName: ownername,
       ownerContactNumber: ownercontno,
@@ -172,14 +156,17 @@ router.post("/manage-vehicles", adminDetailsGet, async (req, res) => {
       inTime: currentTime.toDate()
     });
     console.log("New Vehicle:", newVehicle);
-
+    details.totalSpots -=1;
     const registered = await newVehicle.save();
-    
-  details.totalSpots=availabeSlots -= 1;
+    await parkingLots.findOneAndUpdate(
+      { name : details.name }, // Use the appropriate field to identify the specific document
+      { $inc: { totalSpots: -1 } } // Decrement the totalSpots field by one
+    );
+
 
     // Render a success message upon successful save
     console.log("Vehicle entry successfully saved.");
-    return res.status(200).render('./adminViews/manage-vehicles', {details,availabeSlots, message: 'Booked successfully' });
+    return res.status(200).render('./adminViews/manage-vehicles', {details, message: 'Booked successfully' });
   } catch (error) {
     console.error("Error during registration:", error);
     // Check for duplicate entry error and handle accordingly
@@ -196,9 +183,9 @@ router.post("/manage-vehicles", adminDetailsGet, async (req, res) => {
 
 
 
-router.get('/in-vehicles',adminDetailsGet, async (req, res) => {
+router.get('/in-vehicles',adminDetails, async (req, res) => {
   try {
-    const details = req.session.adminDetails;
+    const details = req.session.admin;
     const vehicles = await VehicleEntry.find({ status: "In" , parkinglotName: details.name}); // Fetch all entries from the database
     res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
   } catch (error) {
@@ -207,8 +194,9 @@ router.get('/in-vehicles',adminDetailsGet, async (req, res) => {
   }
 });
 
-router.get('/update-incomingdetail/:id', async (req, res) => {
+router.get('/update-incomingdetail/:id',adminDetails, async (req, res) => {
   try {
+    const details=req.session.admin;
     const id = req.params.id;
     const vehicleDetail = await VehicleEntry.findById(id);
 
@@ -229,8 +217,13 @@ router.get('/update-incomingdetail/:id', async (req, res) => {
     totalCharges = Math.round(totalCharges);
 
     await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
+    details.totalSpots +=1;
+    await parkingLots.findOneAndUpdate(
+      { name : details.name }, // Use the appropriate field to identify the specific document
+      { $inc: { totalSpots: +1 } } // Decrement the totalSpots field by one
+    );
 
-    res.render('adminViews/update-incomingdetail', { outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
+    res.render('adminViews/update-incomingdetail', { availabeSlots:details.totalSpots,outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
     res.status(500).send('Internal server error. Please try again later.');
@@ -250,9 +243,9 @@ router.get('/print-receipt/:id', async (req, res) => {
 });
 
 
-router.get('/out-vehicles',adminDetailsGet, async (req, res) => {
+router.get('/out-vehicles',adminDetails, async (req, res) => {
   try {
-    const details = req.session.adminDetails;
+    const details = req.session.admin;
     const status = await VehicleEntry.find({ status: "Out" , parkinglotName: details.name});
     res.render('adminViews/out-vehicles', { status, page: 'out-vehicles' });
   } catch (error) {
@@ -261,7 +254,7 @@ router.get('/out-vehicles',adminDetailsGet, async (req, res) => {
   }
 });
 
-router.get('/outgoing-detail/:id', async (req, res) => {
+router.get('/outgoing-detail/:id',adminDetails, async (req, res) => {
   try {
     const id = req.params.id;
     const vehicleInfo = await VehicleEntry.findById(id);
@@ -278,13 +271,13 @@ router.get('/outgoing-detail/:id', async (req, res) => {
 
 
 
-router.get('/out-vehicles', (req, res) => {
+router.get('/out-vehicles',adminDetails, (req, res) => {
   res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
 
-router.get('/total-income', adminDetailsGet, async (req, res) => {
+router.get('/total-income', adminDetails, async (req, res) => {
   try {
-    const details = req.session.adminDetails;
+    const details = req.session.admin;
 
     // Get today's date and yesterday's date
     const today = moment().startOf('day');
@@ -332,7 +325,7 @@ router.get('/total-income', adminDetailsGet, async (req, res) => {
 
 
 
-router.get('/outgoing-detail', (req, res) => {
+router.get('/outgoing-detail',adminDetails, (req, res) => {
   res.render('adminViews/outgoing-detail')
 });
 
@@ -349,7 +342,7 @@ router.get('/outgoing-detail', (req, res) => {
 
 
 
-router.post('/update-incomingdetail/:id', async (req, res) => {
+router.post('/update-incomingdetail/:id',adminDetails, async (req, res) => {
   try {
     const id = req.params.id;
     const { remark, status } = req.body;

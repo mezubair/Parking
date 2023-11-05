@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 const axios= require('axios');
 
-const parkingLots = require('./parkinglot')
+const parkingLots = require('../models/parkingLot')
 
 require("../db/conn");
 
@@ -12,8 +12,6 @@ const Register = require("../models/register");
 
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
-
-const parkingLotsData = require('../routes/parkinglot'); 
 
 router.use(session({
     secret: 'secret',
@@ -50,71 +48,69 @@ router.get("/slotBooking", (req, res) => {
 
 
 router.post('/slotBooking', async (req, res) => {
-  const { userLatitude, userLongitude, city, locality } = req.body;
-  const origin = `${userLatitude},${userLongitude}`;
+    const { userLatitude, userLongitude, city, locality } = req.body;
+    const origin = `${userLatitude},${userLongitude}`;
+    const filteredParkingLots = await parkingLots.find({ city, locality });
   
-  const filteredParkingLots = parkingLots.filter(parkingLot => {
-    return parkingLot.city === city && parkingLot.locality === locality;
-  });
-  
-  const apiKey = '75da3d7912msh345449a21dd102fp122829jsnd22aad6e0df2';
-  const host = 'trueway-matrix.p.rapidapi.com';
-  
-  try {
-    for (let i = 0; i < filteredParkingLots.length; i++) {
-      const { latitude, longitude } = filteredParkingLots[i];
-      const url = `https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins=${origin}&destinations=${latitude},${longitude}`;
+      const apiKey = '75da3d7912msh345449a21dd102fp122829jsnd22aad6e0df2';
+      const host = 'trueway-matrix.p.rapidapi.com';
       
-      const options = {
-        method: 'GET',
-        url,
-        headers: {
-          'X-RapidAPI-Key': apiKey,
-          'X-RapidAPI-Host': host,
-        },
-      };
-      
-      const response = await axios.request(options);
-      
-      if (response.data && response.data.distances && response.data.distances[0]) {
-        // The distance is returned in meters, so convert it to kilometers
-        const distanceInMeters = response.data.distances[0];
-        const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
-        filteredParkingLots[i].distance = distanceInKilometers;
-      } else {
-        filteredParkingLots[i].distance = 'N/A'; // Assign a default value if distance is not available
+      try {
+        for (let i = 0; i < filteredParkingLots.length; i++) {
+          const { latitude, longitude } = filteredParkingLots[i];
+          const url = `https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins=${origin}&destinations=${latitude},${longitude}`;
+          
+          const options = {
+            method: 'GET',
+            url,
+            headers: {
+              'X-RapidAPI-Key': apiKey,
+              'X-RapidAPI-Host': host,
+            },
+          };
+          
+          const response = await axios.request(options);
+          
+          if (response.data && response.data.distances && response.data.distances[0]) {
+            // The distance is returned in meters, so convert it to kilometers
+            const distanceInMeters = response.data.distances[0];
+            const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
+            filteredParkingLots[i].distance = distanceInKilometers;
+          } else {
+            filteredParkingLots[i].distance = 'N/A'; // Assign a default value if distance is not available
+          }
+        }
+        
+        // Sort filtered parking lots by distance
+        filteredParkingLots.sort((a, b) => {
+          const distanceA = parseFloat(a.distance);
+          const distanceB = parseFloat(b.distance);
+          return distanceA - distanceB;
+        });
+        
+        res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
+      } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error while fetching parking lots. Please try again later.' });
       }
-    }
-    
-    // Sort filtered parking lots by distance
-    filteredParkingLots.sort((a, b) => {
-      const distanceA = parseFloat(a.distance);
-      const distanceB = parseFloat(b.distance);
-      return distanceA - distanceB;
     });
-    
-    res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error while fetching parking lots. Please try again later.' });
-  }
-});
+
+  
 
 
 
 
 
 
-// Express.js example
-router.get('/vbook', (req, res) => {
+  router.get('/vbook', (req, res) => {
     const lotId = req.query.lotId;
-
+  
     // Fetch the parking lot data associated with lotId from your database
-    const parkingLotData = parkingLotsData.find(lot => lot.id === parseInt(lotId));
-
-    // Render the vslot template and pass the data to it
-    res.render('userViews/vbook', { parkingLotData });
-});
+    const parkingLotData=parkingLots.findOne({ id: lotId });
+      // Render the vslot template and pass the data to it
+      res.render('userViews/vbook', { parkingLotData });
+    });
+  
 
 
 

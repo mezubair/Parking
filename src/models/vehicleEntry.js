@@ -8,11 +8,6 @@ const vehicleSchema = new mongoose.Schema({
     required: true,
     
   },
-  availabeSlots:{
-    type: String,
-    require:true,
-    
-  },
   parkingNumber: {
     type: String,
     required: true,
