@@ -6,10 +6,12 @@ const vehicleSchema = new mongoose.Schema({
   parkinglotName:{
     type: String,
     required: true,
+    
   },
   availabeSlots:{
     type: String,
-    required: true,
+    require:true,
+    
   },
   parkingNumber: {
     type: String,
