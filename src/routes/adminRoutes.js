@@ -71,20 +71,28 @@ router.post('/adminLogin', adminDetailsPost, (req, res) => {
   res.redirect('/dashboard');
 });
 
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    }
+    res.redirect('/adminLogin');
+  });
+});
 // Route for the dashboard
 router.get('/dashboard', adminDetailsGet, async (req, res) => {
   try {
     const details = req.session.adminDetails;
     const totalCount = await VehicleEntry.countDocuments({
-      parkingLotName: details.name,
+      parkinglotName: details.name,
     });
     const inCount = await VehicleEntry.countDocuments({
       status: 'In',
-      parkingLotName: details.name,
+      parkinglotName: details.name,
     });
     const outCount = await VehicleEntry.countDocuments({
       status: 'Out',
-      parkingLotName: details.name,
+      parkinglotName: details.name,
     });
 
     const twentyFourHoursAgo = new Date();
@@ -92,7 +100,7 @@ router.get('/dashboard', adminDetailsGet, async (req, res) => {
 
     const within24HoursCount = await VehicleEntry.countDocuments({
       inTime: { $gte: twentyFourHoursAgo },
-      parkingLotName: details.name,
+      parkinglotName: details.name,
     });
 
     res.render('adminViews/dashboard', {
@@ -110,18 +118,19 @@ router.get('/dashboard', adminDetailsGet, async (req, res) => {
 });
 //manage-vehicles
 router.get('/manage-vehicles',adminDetailsGet, (req, res) => {
-  details=req.session.adminDetails;
+  const details=req.session.adminDetails;
   if (details) {
     res.render('adminViews/manage-vehicles', { details, page: 'manage-vehicles' })
   } else {
     res.redirect('/adminLogin');
   }
 });
-router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
+router.post("/manage-vehicles", adminDetailsGet, async (req, res) => {
   const details = req.session.adminDetails;
+  console.log(details.name);
   try {
     // Extracting necessary information from the request body
-    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status } = req.body;
+    const { ownername, ownercontno, catename, vehcomp, vehreno, model, status ,spotsavailable} = req.body;
 
     // Ensure that admin details are available in the session
    
@@ -129,7 +138,7 @@ router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
 
     // Check for an existing entry with the same registrationNumber, status 'In', and inTime
     const existingEntry = await VehicleEntry.findOne({
-      parkingLotName: details.name,
+      parkinglotName: details.name,
       registrationNumber: vehreno,
       status: 'In',
       inTime: { $lte: new Date() }, // Ensure the inTime is less than or equal to the current time
@@ -142,6 +151,7 @@ router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
       return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
     }
 
+
     // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
     const parkingNumber = Math.floor(10000 + Math.random() * 90000);
     const currentTime = moment().tz('Asia/Kolkata');
@@ -150,7 +160,7 @@ router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
 
     // Create a new instance of VehicleEntry with the extracted information and save it
     const newVehicle = new VehicleEntry({
-      parkingLotName: details.name,
+      parkinglotName: details.name,
       availableSpots: details.totalSpots,
       parkingNumber: "CA-" + parkingNumber,
       ownerName: ownername,
@@ -164,10 +174,12 @@ router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
     console.log("New Vehicle:", newVehicle);
 
     const registered = await newVehicle.save();
+    
+  details.totalSpots=availabeSlots -= 1;
 
     // Render a success message upon successful save
     console.log("Vehicle entry successfully saved.");
-    return res.status(200).render('./adminViews/manage-vehicles', {details, message: 'Booked successfully' });
+    return res.status(200).render('./adminViews/manage-vehicles', {details,availabeSlots, message: 'Booked successfully' });
   } catch (error) {
     console.error("Error during registration:", error);
     // Check for duplicate entry error and handle accordingly
@@ -184,9 +196,10 @@ router.post("/manage-vehicles", adminDetailsPost, async (req, res) => {
 
 
 
-router.get('/in-vehicles', async (req, res) => {
+router.get('/in-vehicles',adminDetailsGet, async (req, res) => {
   try {
-    const vehicles = await VehicleEntry.find({ status: "In" }); // Fetch all entries from the database
+    const details = req.session.adminDetails;
+    const vehicles = await VehicleEntry.find({ status: "In" , parkinglotName: details.name}); // Fetch all entries from the database
     res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
   } catch (error) {
     console.error('Error fetching data from MongoDB:', error);
@@ -237,10 +250,10 @@ router.get('/print-receipt/:id', async (req, res) => {
 });
 
 
-router.get('/out-vehicles', async (req, res) => {
+router.get('/out-vehicles',adminDetailsGet, async (req, res) => {
   try {
-
-    const status = await VehicleEntry.find({ status: "Out" });
+    const details = req.session.adminDetails;
+    const status = await VehicleEntry.find({ status: "Out" , parkinglotName: details.name});
     res.render('adminViews/out-vehicles', { status, page: 'out-vehicles' });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
@@ -269,40 +282,52 @@ router.get('/out-vehicles', (req, res) => {
   res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
 
-router.get('/total-income', async (req, res) => {
+router.get('/total-income', adminDetailsGet, async (req, res) => {
   try {
+    const details = req.session.adminDetails;
+
     // Get today's date and yesterday's date
     const today = moment().startOf('day');
     const yesterday = moment().subtract(1, 'days').startOf('day');
 
-    // Fetch all entries for today
+    // Fetch all entries for today where parkingLotName matches details.name
     const todayEntries = await VehicleEntry.find({
-      inTime: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() }
+      inTime: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() },
+      parkinglotName: details.name,
     });
 
-    // Fetch all entries for yesterday
+    // Fetch all entries for yesterday where parkingLotName matches details.name
     const yesterdayEntries = await VehicleEntry.find({
-      inTime: { $gte: yesterday.toDate(), $lt: moment(yesterday).endOf('day').toDate() }
+      inTime: { $gte: yesterday.toDate(), $lt: moment(yesterday).endOf('day').toDate() },
+      parkinglotName: details.name,
     });
 
-    // Calculate the total income
-    const totalIncome = (await VehicleEntry.aggregate([
-      { $group: { _id: null, total: { $sum: '$totalCharge' } } }
-    ]))[0].total;
+    // Calculate the total income where parkingLotName matches details.name
+    const totalIncome = (
+      await VehicleEntry.aggregate([
+        { $match: { parkinglotName: details.name } },
+        { $group: { _id: null, total: { $sum: '$totalCharge' } } },
+      ])
+    )[0]?.total || 0;
 
-    // Calculate today's income
+    // Calculate today's income where parkingLotName matches details.name
     const todaysIncome = todayEntries.reduce((sum, entry) => sum + entry.totalCharge, 0);
 
-    // Calculate yesterday's income
+    // Calculate yesterday's income where parkingLotName matches details.name
     const yesterdaysIncome = yesterdayEntries.reduce((sum, entry) => sum + entry.totalCharge, 0);
 
-
-    res.render('adminViews/total-income', { page: 'total-income', totalIncome, todaysIncome, yesterdaysIncome });
+    res.render('adminViews/total-income', {
+      page: 'total-income',
+      totalIncome,
+      todaysIncome,
+      yesterdaysIncome,
+    });
   } catch (error) {
     console.error('Error fetching income details:', error);
     res.status(500).send('Internal server error. Please try again later.');
   }
 });
+
 
 
 
