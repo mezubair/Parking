@@ -63,14 +63,16 @@ function requestLocationAccess() {
 
                         data.parkingLots.forEach((lot, index) => {
                             const row = tbody.insertRow();
+                            const availableSpots = lot.totalSpots > 0 ? lot.totalSpots : "No spots available"; // Determine the available spots
                             row.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${lot.name}</td>
                 <td>${lot.chargesPerHour}</td>
                 <td>${lot.distance} km</td>
+                <td>${availableSpots}</td>
                 <td>
-                <a href="/vbook?lotId=${lot.id}" class="btn-outline-reg">Book Now</a>
-            </td>
+                ${lot.totalSpots > 0 ? `<a href="/vbook?lotId=${lot._id}" class="btn-outline-reg">Book Now</a>` : ''}
+              </td>
             
             `;
                         });

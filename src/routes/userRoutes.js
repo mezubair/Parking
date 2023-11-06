@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
-const axios= require('axios');
+const axios=require("axios");
 
-const parkingLots = require('./parkinglot')
+const parkingLots = require('../models/parkingLot')
+const VehicleEntry = require('../models/vehicleEntry');
 
 require("../db/conn");
 
@@ -12,8 +13,6 @@ const Register = require("../models/register");
 
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
-
-const parkingLotsData = require('../routes/parkinglot'); 
 
 router.use(session({
     secret: 'secret',
@@ -40,9 +39,7 @@ router.get("/register", (req, res) => {
 });
 
 
-router.get("/admin", (req, res) => {
-    res.render('userViews/admin')
-});
+
 router.get("/slotBooking", (req, res) => {
     res.render('userViews/slotBooking')
 });
@@ -54,70 +51,68 @@ router.get("/slotBooking", (req, res) => {
 router.post('/slotBooking', async (req, res) => {
   const { userLatitude, userLongitude, city, locality } = req.body;
   const origin = `${userLatitude},${userLongitude}`;
-  
-  const filteredParkingLots = parkingLots.filter(parkingLot => {
-    return parkingLot.city === city && parkingLot.locality === locality;
-  });
-  
+  const filteredParkingLots = await parkingLots.find({ city, locality });
+
   const apiKey = '75da3d7912msh345449a21dd102fp122829jsnd22aad6e0df2';
   const host = 'trueway-matrix.p.rapidapi.com';
-  
+
   try {
-    for (let i = 0; i < filteredParkingLots.length; i++) {
-      const { latitude, longitude } = filteredParkingLots[i];
-      const url = `https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins=${origin}&destinations=${latitude},${longitude}`;
-      
-      const options = {
-        method: 'GET',
-        url,
-        headers: {
-          'X-RapidAPI-Key': apiKey,
-          'X-RapidAPI-Host': host,
-        },
-      };
-      
-      const response = await axios.request(options);
-      
-      if (response.data && response.data.distances && response.data.distances[0]) {
-        // The distance is returned in meters, so convert it to kilometers
-        const distanceInMeters = response.data.distances[0];
-        const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
-        filteredParkingLots[i].distance = distanceInKilometers;
-      } else {
-        filteredParkingLots[i].distance = 'N/A'; // Assign a default value if distance is not available
-      }
-    }
-    
-    // Sort filtered parking lots by distance
-    filteredParkingLots.sort((a, b) => {
-      const distanceA = parseFloat(a.distance);
-      const distanceB = parseFloat(b.distance);
-      return distanceA - distanceB;
-    });
-    
-    res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
+      const distanceCalculations = filteredParkingLots.map(async (parkingLot) => {
+          const { latitude, longitude } = parkingLot;
+          const url = `https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins=${origin}&destinations=${latitude},${longitude}`;
+
+          const options = {
+              method: 'GET',
+              url,
+              headers: {
+                  'X-RapidAPI-Key': apiKey,
+                  'X-RapidAPI-Host': host,
+              },
+          };
+
+          const response = await axios.request(options);
+
+          if (response.data && response.data.distances && response.data.distances[0]) {
+              const distanceInMeters = response.data.distances[0];
+              const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
+              parkingLot.distance = distanceInKilometers;
+          } else {
+              parkingLot.distance = 'N/A';
+          }
+      });
+
+      await Promise.all(distanceCalculations);
+
+      // Sort filtered parking lots by distance
+      filteredParkingLots.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+console.log(filteredParkingLots);
+      res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error while fetching parking lots. Please try again later.' });
+      console.error('Error:', error);
+      res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
   }
 });
 
 
-
-
-
-
-// Express.js example
-router.get('/vbook', (req, res) => {
+  router.get('/vbook', async (req, res) => {
     const lotId = req.query.lotId;
-
-    // Fetch the parking lot data associated with lotId from your database
-    const parkingLotData = parkingLotsData.find(lot => lot.id === parseInt(lotId));
-
-    // Render the vslot template and pass the data to it
-    res.render('userViews/vbook', { parkingLotData });
-});
-
+  
+    try {
+      // Use Mongoose to retrieve the data based on lotId
+      const lotData = await parkingLots.findById(lotId).exec();
+      console.log(lotData);
+  
+      if (lotData) {
+        // Render the 'vbook' template and pass the data to it
+        res.render('userViews/vbook', { lotData });
+      } else {
+        res.status(404).send('Lot not found'); // Handle when the lot is not found
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error'); // Handle database errors
+    }
+  });
 
 
 
@@ -202,24 +197,70 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post('/admin', (req, res) => {
-    const { ademail, adpass } = req.body;
+router.post("/vbook",async(req,res)=>{
 
-    // Find the user based on the username in the data
-    const matchingUser = parkingLotsData.find(user => user.email === ademail && user.password === adpass);
-    console.log(ademail);
-    console.log(adpass);
-console.log(matchingUser);
-
-    if (matchingUser) {
-        // If a matching user is found, you can access their data
-        res.redirect(`/dashboard?id=${matchingUser.id}`);
-        console.log(matchingUser);
-    } else {
-        // Handle the case where there's no match
-        console.log("User not found or invalid credentials");
-    }
-});
+    try {
+        // Extracting necessary information from the request body
+        const { plotname,ownername, ownercontno, catename, vehcomp, vehreno, model,inTime,outTime} = req.body;
+    
+        // Ensure that admin details are available in the session
+    
+    
+        // Check for an existing entry with the same registrationNumber, status 'In', and inTime
+        const existingEntry = await VehicleEntry.findOne({
+          //parkinglotName:
+          registrationNumber: vehreno,
+          status: 'In',
+          inTime: inTime // Ensure the inTime is less than or equal to the current time
+        });
+        console.log("Existing entry:", existingEntry);
+    
+        // If an existing entry is found, return a duplicate entry error message
+        if (existingEntry) {
+          console.log("Duplicate entry found. Please check the data.");
+        //  return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+        }
+    
+    
+        // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
+        const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+    
+        // Create a new instance of VehicleEntry with the extracted information and save it
+        const newVehicle = new VehicleEntry({
+          parkinglotName:plotname,
+          parkingNumber: "CA-" + parkingNumber,
+          ownerName: ownername,
+          ownerContactNumber: ownercontno,
+          registrationNumber: vehreno,
+          vehicleCategory: catename,
+          vehicleCompanyname: vehcomp,
+          vehicleModel: model,
+          inTime:inTime
+        });
+        console.log("New Vehicle:", newVehicle);
+      //  details.totalSpots -=1;
+        const registered = await newVehicle.save();
+       // await parkingLots.findOneAndUpdate(
+       //   { name : details.name }, // Use the appropriate field to identify the specific document
+      //    { $inc: { totalSpots: -1 } } // Decrement the totalSpots field by one
+     //   );
+    
+    
+        // Render a success message upon successful save
+        console.log("Vehicle entry successfully saved.");
+       // return res.status(200).render('./adminViews/manage-vehicles', {details, message: 'Booked successfully' });
+      } catch (error) {
+        console.error("Error during registration:", error);
+        // Check for duplicate entry error and handle accordingly
+        if (error.code === 11000) {
+          console.log("Duplicate entry error. Please check the data.");
+          return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+        }
+        // Handle other potential errors with a generic server error message
+        console.log("Internal server error. Please try again later.");
+        res.status(500).send("Internal server error. Please try again later.");
+      }
+    });
 
 
 module.exports = router;

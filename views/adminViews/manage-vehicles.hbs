@@ -2,25 +2,25 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VPS</title>
-    <link href="css1/bootstrap.min.css" rel="stylesheet">
-    <link href="css1/font-awesome.min.css" rel="stylesheet">
-    <link href="css1/datepicker3.css" rel="stylesheet">
-    <link href="css1/styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VPS</title>
+	<link href="css1/bootstrap.min.css" rel="stylesheet">
+	<link href="css1/font-awesome.min.css" rel="stylesheet">
+	<link href="css1/datepicker3.css" rel="stylesheet">
+	<link href="css1/styles.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!--Custom Font-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
+	<!--Custom Font-->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
+		rel="stylesheet">
 
 </head>
 
 <body>
-    {{>adminNavbar}}
+	{{>adminNavbar}}
 
-    {{>sidebar}}
+	{{>sidebar}}
 
 
     <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -53,14 +53,14 @@
 
                       <div class="form-group">
                             <label>Parking Lot Name</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
-                                name="ownername" value="{{userData.name}}" required readonly>
+                            <input type="text" class="form-control" id="parkinglotname"
+                                name="parkinglotname" value="{{details.name}}" required readonly>
                         </div>
 
                           <div class="form-group">
                             <label>Spots Available</label>
-                            <input type="text" class="form-control" placeholder="Enter Here.." id="ownername"
-                                name="ownername" required readonly>
+                            <input type="text" class="form-control" value="{{details.totalSpots}}" id="spotsavailable"
+                                name="spotsavailable" required readonly>
                         </div>
 
                         <div class="form-group">
@@ -117,27 +117,12 @@
 
 
 
-    </div> <!--/.main-->
 
-    <script src="js1/jquery-1.11.1.min.js"></script>
-    <script src="js1/bootstrap.min.js"></script>
+	<script src="js1/jquery-1.11.1.min.js"></script>
+	<script src="js1/bootstrap.min.js"></script>
 
-    <script src="js1/custom.js"></script>
-
-
-
-
-
-    </div> <!--/.main-->
-
-
-
-
-    <script src="js1/jquery-1.11.1.min.js"></script>
-    <script src="js1/bootstrap.min.js"></script>
-
-    <script src="js1/custom.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
+	<script src="js1/custom.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js'></script>
 
 
 

@@ -3,13 +3,10 @@ const moment = require('moment-timezone')
 
 const vehicleSchema = new mongoose.Schema({
 
-  parkingSlotName:{
+  parkinglotName:{
     type: String,
     required: true,
-  },
-  totalSlots:{
-    type: String,
-    required: true,
+    
   },
   parkingNumber: {
     type: String,

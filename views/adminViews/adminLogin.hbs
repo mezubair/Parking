@@ -5,26 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Your description">
-    <meta name="author" content="Your name">
-
-    <!-- OG Meta Tags to improve the way the post looks when you share the page on Facebook, Twitter, LinkedIn -->
-    <meta property="og:site_name" content="" />
-    <!-- website name -->
-    <meta property="og:site" content="" />
-    <!-- website link -->
-    <meta property="og:title" content="" />
-    <!-- title shown in the actual shared post -->
-    <meta property="og:description" content="" />
-    <!-- description shown in the actual shared post -->
-    <meta property="og:image" content="" />
-    <!-- image link, make sure it's jpg -->
-    <meta property="og:url" content="" />
-    <!-- where do you want your post to link to -->
-    <meta name="twitter:card" content="summary_large_image">
-    <!-- to have large image post format in Twitter -->
-
     <!-- Webpage Title -->
     <title>Log In</title>
    <!-- Styles -->
@@ -43,45 +23,7 @@
 
 <body>
 
-    <!-- Navigation -->
-    <nav id="navbarExample" class="navbar navbar-expand-lg fixed-top navbar-light" aria-label="Main navigation">
-        <div class="container">
-
-            <!-- Image Logo -->
-            <a class="navbar-brand logo-text" href="/" ><img src="images/parKinglogo.png" width="200" height="40" alt=""></a>
-
-            <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav ms-auto navbar-nav-scroll">
-                    <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#features">Services</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="detail">About Us</a>
-                    </li>
-                     <li class="nav-item">
-            <a class="nav-link active" href="/admin">Admin Login</a>
-          </li>
-                </ul>
-                <span class="nav-item ">
-                    <a class="btn-outline-sm " href="login">Register/Log In</a>
-                </span>
-            </div>
-            <!-- end of navbar-collapse -->
-        </div>
-        <!-- end of container -->
-    </nav>
-    <!-- end of navbar -->
-    <!-- end of navigation -->
-
+{{>userNavbar}}
 
     <!-- Header -->
     <header class="ex-header">
@@ -108,11 +50,10 @@
                     <div class="text-box mt-5 mb-5">
 
                         <!-- Log In Form -->
-                        <form id="loginform" action="/admin" method="POST">
+                        <form id="loginform" action="/adminLogin" method="POST">
                             <div class="mb-4 form-floating">
-                                <input type="email" class="form-control" id="ademail"
-                                    placeholder="email" name="ademail">
-                                <label for="floatingInput">Admin Username</label>
+                                <input type="text" class="form-control" id="ademail" name="ademail">
+                                <label for="floatingInput">Username</label>
                                 <p class="text-danger" id="floatingInput_error"></p>
                             </div>
                             <div class="mb-4 form-floating">

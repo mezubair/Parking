@@ -1,0 +1,133 @@
+[{
+  "_id": {
+    "$oid": "65476fa805426fff3043b22d"
+  },
+  "name": " Parking Lot Eidgah ",
+  "latitude": 78.9,
+  "longitude": 123.456,
+  "address": "123 Example Street, Srinagar",
+  "locality": "Eidgah",
+  "city": "Srinagar",
+  "chargesPerHour": 5,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin1",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b22e"
+  },
+  "name": "Elachi Bagh",
+  "latitude": 34.07175,
+  "longitude": 74.80432,
+  "address": "456 Example Street, Srinagar",
+  "locality": "Batamaloo",
+  "city": "Srinagar",
+  "chargesPerHour": 10,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin2",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b22f"
+  },
+  "name": "Mominabad",
+  "latitude": 34.0696,
+  "longitude": 74.789,
+  "address": "789 Example Street, Srinagar",
+  "locality": "Batamaloo",
+  "city": "Srinagar",
+  "chargesPerHour": 10,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin3",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b230"
+  },
+  "name": "Tengpur Parking",
+  "latitude": 34.1186471,
+  "longitude": 74.7973392,
+  "address": "101 Example Street, Srinagar",
+  "locality": "Batamaloo",
+  "city": "Srinagar",
+  "chargesPerHour": 5,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin4",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b231"
+  },
+  "name": "Downtown Parking",
+  "latitude": 78.9,
+  "longitude": 123.456,
+  "address": "123 Example Street, Srinagar",
+  "locality": "Iqbal Park",
+  "city": "Srinagar",
+  "chargesPerHour": 5,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin5",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b232"
+  },
+  "name": "Downtown Parking",
+  "latitude": 78.9,
+  "longitude": 123.456,
+  "address": "456 Example Street, Srinagar",
+  "locality": "Iqbal Park",
+  "city": "Srinagar",
+  "chargesPerHour": 5,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin6",
+    "password": "admin"
+  }
+},
+{
+  "_id": {
+    "$oid": "65476fa805426fff3043b233"
+  },
+  "name": "Downtown Parking",
+  "latitude": 78.9,
+  "longitude": 123.456,
+  "address": "789 Example Street, Srinagar",
+  "locality": "Iqbal Park",
+  "city": "Srinagar",
+  "chargesPerHour": 5,
+  "totalSpots": 50,
+  "phone": "123-456-7890",
+  "email": "Tengpur@example.com",
+  "adminAuth": {
+    "username": "admin7",
+    "password": "admin"
+  }
+}]
