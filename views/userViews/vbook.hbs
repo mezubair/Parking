@@ -97,6 +97,11 @@
 
                         <h6 class="mb-4" style="color: green;">Provide your vehicle details to book a parking spot</h6>
 
+                        {{#if message}}
+                        <div>
+                            <p style="color: red;">{{message}}</p>
+                        </div>
+                        {{/if}}
 
                         <form method="POST" action="/vbook">
 
@@ -104,13 +109,12 @@
                                 <label for="plotname">Parking Lot Name</label>
                                 <select class="form-select" name="plotname" id="plotname">
                                     <option value="{{lotData.name}}">{{lotData.name}}</option>
-                               </select>
+                                </select>
                             </div>
 
                             <div class="form-group mb-4">
                                 <label for="registrationNumber">Vehicle Registration Number</label>
-                                <input type="text" class="form-control" name="vehreno"
-                                    id="registrationNumber">
+                                <input type="text" class="form-control" name="vehreno" id="registrationNumber">
                             </div>
 
                             <div class="form-group mb-4">
@@ -135,10 +139,9 @@
                                 </select>
                             </div>
 
-                             <div class="form-group mb-4">
+                            <div class="form-group mb-4">
                                 <label for="registrationNumber">Vehicle Model</label>
-                                <input type="text" class="form-control" name="model"
-                                    id="model">
+                                <input type="text" class="form-control" name="model" id="model">
                             </div>
 
 
@@ -170,7 +173,9 @@
                             </div>
 
 
-                            <button type="submit" class="btn btn-success" name="submit-in">Book</button>
+                            <button type="submit" class="btn btn-success" name="submit-in" id="bookButton">Book</button>
+                            <button type="button" class="btn btn-primary" id="payNowButton">Pay Now</button>
+
                             <button type="reset" class="btn btn-default">Reset</button>
                         </form>
 
@@ -288,29 +293,8 @@
     <script src="js/validate.js"></script>
     <!-- validate form script -->
     <script src="js/fetchparking.js"></script>
-
-    <script>
-        document.getElementById('inTime').addEventListener('change', calculateCharges);
-        document.getElementById('outTime').addEventListener('change', calculateCharges);
-
-        function calculateCharges() {
-            const inTime = new Date(document.getElementById('inTime').value);
-            const outTime = new Date(document.getElementById('outTime').value);
-            const ratePerHour = 50; // Change this rate per hour as needed
-
-            const minutes = (outTime - inTime) / (1000 * 60); // Calculate minutes
-            const hours = Math.floor(minutes / 60); // Calculate hours
-            const remainingMinutes = minutes % 60; // Calculate remaining minutes
-
-            const charges = (hours * ratePerHour) + (remainingMinutes * (ratePerHour / 60));
-
-            if (!isNaN(charges) && charges >= 0) {
-                document.getElementById('charges').value = '₹' + charges.toFixed(2); // Display up to 2 decimal places
-            } else {
-                document.getElementById('charges').value = '';
-            }
-        }
-    </script>
+  <script src="js/vbook.js"></script>
+  
 
 </body>
 
