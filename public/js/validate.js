@@ -1,6 +1,7 @@
 /* Signup form validation */
 let signup_form = document.getElementById('signupForm');
 const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{com|in}$/;
 
 if (signup_form) {
     signup_form.addEventListener('submit', function(e) {
@@ -35,7 +36,12 @@ if (signup_form) {
         if (!email.value) {
             document.getElementById('floatingInput3_error').innerHTML = 'Email is required';
             e.preventDefault();
-        } else {
+        } 
+        else if (!emailRegex.test(email.value)) {
+            document.getElementById('floatingInput3_error').innerHTML =
+                'Please enter a valid email';
+            e.preventDefault();
+        }else {
             document.getElementById('floatingInput3_error').innerHTML = '';
         }
         if (!password.value) {
