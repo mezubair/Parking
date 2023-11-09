@@ -103,7 +103,7 @@
                         </div>
                         {{/if}}
 
-                        <form method="POST" action="/vbook">
+                        <form method="POST" action="/vbook" id="myForm">
 
                             <div class="form-group mb-4">
                                 <label for="plotname">Parking Lot Name</label>
@@ -173,8 +173,7 @@
                             </div>
 
 
-                            <button type="submit" class="btn btn-success" name="submit-in" id="bookButton">Book</button>
-                            <button type="button" class="btn btn-primary" id="payNowButton">Pay Now</button>
+                              <button type="button" class="btn btn-primary" id="payNowButton">Pay Now</button>
 
                             <button type="reset" class="btn btn-default">Reset</button>
                         </form>
@@ -294,6 +293,12 @@
     <!-- validate form script -->
     <script src="js/fetchparking.js"></script>
   <script src="js/vbook.js"></script>
+
+  <!---->
+  <script src="js/razorpay.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
   
 
 </body>
