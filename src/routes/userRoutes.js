@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 const axios = require("axios");
+const Razorpay = require('razorpay');
 
 const parkingLots = require('../models/parkingLot')
 const VehicleEntry = require('../models/vehicleEntry');
@@ -198,10 +199,9 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/vbook", async (req, res) => {
-
     try {
         // Extracting necessary information from the request body
-        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime } = req.body;
+        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime, charges } = req.body;
 
         // Check for an existing entry with the same registrationNumber, status 'In', and inTime
         const existingEntry = await VehicleEntry.findOne({
@@ -217,51 +217,137 @@ router.post("/vbook", async (req, res) => {
             return res.status(400).render('./userViews/vbook', { message: 'Duplicate entry. Please check the data.' });
         }
 
-
-        // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
-        const parkingNumber = Math.floor(10000 + Math.random() * 90000);
-
-        // Create a new instance of VehicleEntry with the extracted information and save it
-        const newVehicle = new VehicleEntry({
-            parkinglotName: plotname,
-            parkingNumber: "CA-" + parkingNumber,
-            ownerName: ownername,
-            ownerContactNumber: ownercontno,
-            registrationNumber: vehreno,
-            vehicleCategory: catename,
-            vehicleCompanyname: vehcomp,
-            vehicleModel: model,
-            inTime: inTime
-        });
-        console.log("New Vehicle:", newVehicle);
-        const parkName = await parkingLots.findOne({
-            name: plotname,
-        });
-        console.log(parkName);
-
-        parkName.totalSpots -= 1;
-        const registered = await newVehicle.save();
-        await parkingLots.findOneAndUpdate(
-            { name: parkName.name },
-            { $inc: { totalSpots: -1 } }
-        );
-
-
-        // Render a success message upon successful save
-        console.log("Vehicle entry successfully saved.");
-        return res.status(200).render('./userViews/vbook', { message: 'Booked successfully' });
+        // If validation is successful, redirect the user to the payment page
+        return res.status(200).render('./userViews/payment', { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime, charges });
     } catch (error) {
-        console.error("Error during registration:", error);
-        // Check for duplicate entry error and handle accordingly
-        if (error.code === 11000) {
-            console.log("Duplicate entry error. Please check the data.");
-            return res.status(400).render('./userViews/vbook', { message: 'Duplicate entry. Please check the data.' });
-        }
         // Handle other potential errors with a generic server error message
+        console.error("Error during form validation:", error);
         console.log("Internal server error. Please try again later.");
         res.status(500).send("Internal server error. Please try again later.");
     }
 });
+
+
+router.get("/payment", (req, res) => {
+    res.render('userViews/payment')
+});
+
+router.post("/payment", async (req, res) => {
+    const submitMethod = req.body.payNowButton;
+    console.log(submitMethod);
+
+    try {
+        // Extracting necessary information from the request body
+        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime } = req.body;
+
+        // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
+        const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+
+        let newVehicle;
+
+        if (submitMethod === 'js') {
+            // Create a new instance of VehicleEntry with the extracted information and save it
+            newVehicle = new VehicleEntry({
+                parkinglotName: plotname,
+                parkingNumber: "CA-" + parkingNumber,
+                ownerName: ownername,
+                ownerContactNumber: ownercontno,
+                registrationNumber: vehreno,
+                vehicleCategory: catename,
+                vehicleCompanyname: vehcomp,
+                vehicleModel: model,
+                inTime: inTime,
+                outTime: outTime,
+                paymentStatus: "paid",
+
+
+            });
+            plotname.totalSpots -= 1;
+            const registered = await newVehicle.save();
+            await parkingLots.findOneAndUpdate(
+                { name: plotname.name },
+                { $inc: { totalSpots: -1 } }
+            );
+        } else {
+            // Create a new instance of VehicleEntry with the extracted information and save it
+            newVehicle = new VehicleEntry({
+                parkinglotName: plotname,
+                parkingNumber: "CA-" + parkingNumber,
+                ownerName: ownername,
+                ownerContactNumber: ownercontno,
+                registrationNumber: vehreno,
+                vehicleCategory: catename,
+                vehicleCompanyname: vehcomp,
+                vehicleModel: model,
+                inTime: inTime,
+                outTime: outTime,
+                paymentStatus: "awaited",
+            });
+            plotname.totalSpots -= 1;
+            const registered = await newVehicle.save();
+            await parkingLots.findOneAndUpdate(
+                { name: plotname.name },
+                { $inc: { totalSpots: -1 } }
+            );
+        }
+
+   // Render a success message upon successful save
+   console.log("Vehicle entry successfully saved.");
+   return res.status(200).render('./userViews/vbook', { message: 'Booked successfully' });
+} catch (error) {
+   console.error("Error during registration:", error);
+   // ... Your existing code ...
+}
+});
+
+
+
+
+const razorpay = new Razorpay({
+    key_id: "rzp_test_esJ9zn2E77SUXk",
+    key_secret: "oPKYchsY7QOvBwppBSer2ywv",
+});
+
+router.post('/create-order', (req, res) => {
+    const { amount } = req.body;
+
+
+    const options = {
+        amount: amount * 100, // Razorpay amount is in paise, so multiply by 100
+        currency: 'INR',
+        receipt: 'order_receipt', // You can generate a unique receipt ID here
+    };
+
+    razorpay.orders.create(options, (err, order) => {
+        if (err) {
+            console.error('Error creating Razorpay order:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        res.json(order);
+    });
+});
+
+router.post('/Cpayment', (req, res) => {
+    const { payment_id, order_id, signature } = req.body;
+
+    // Verify the payment signature
+    const generatedSignature = razorpay.webhook.verifyPaymentSignature({
+        order_id: order_id,
+        payment_id: payment_id,
+    }, signature);
+
+    if (!generatedSignature) {
+        console.error('Invalid Razorpay payment signature');
+        return res.status(400).json({ error: 'Invalid Signature' });
+    }
+
+    // Perform additional validation and save data to your database
+    // ...
+
+    res.json({ success: true, message: 'Payment successful' });
+});
+
 
 
 module.exports = router;

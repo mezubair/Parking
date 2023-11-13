@@ -39,6 +39,7 @@
     <link href="css/styles.css" rel="stylesheet">
     <!-- Favicon  -->
     <link rel="icon" href="images/favicon-admin.png">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -72,30 +73,13 @@
     <!-- end of navbar -->
     <!-- end of navigation -->
 
-
-    <!-- Header -->
-    <header class="ex-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-10 offset-xl-1">
-                    <h1 class="text-center">Parking Lot Registration</h1>
-                </div>
-                <!-- end of col -->
-            </div>
-            <!-- end of row -->
-        </div>
-        <!-- end of container -->
-    </header>
-    <!-- end of ex-header -->
-    <!-- end of header -->
-
-    <div class="ex-form-1 pt-5 pb-5">
+    <div class="ex-form-1 pt-5 pb-5" style="margin-top: 100px; background-color: rgb(241, 238, 238);">
         <div class="container">
             <div class="row">
                 <div class="col-xl-6 offset-xl-3">
                     <div class="text-box mt-4 mb-8">
 
-                        <h6 class="mb-4" style="color: green;">Provide your vehicle details to book a parking spot</h6>
+                        <h6 class="mb-4" style="color: green;">Procced to payment.....</h6>
 
                         {{#if message}}
                         <div>
@@ -103,79 +87,57 @@
                         </div>
                         {{/if}}
 
-                        <form method="POST" action="/vbook" id="myForm">
+                        <form method="POST" action="/payment" id="paymentForm">
 
-                            <div class="form-group mb-4">
-                                <label for="plotname">Parking Lot Name</label>
-                                <select class="form-select" name="plotname" id="plotname">
-                                    <option value="{{lotData.name}}">{{lotData.name}}</option>
-                                </select>
-                            </div>
+
+                            <input type="hidden" name="plotname" value="{{plotname}}">
+                            <input type="hidden" name="catename" value="{{catename}}">
+                            <input type="hidden" name="vehcomp" value="{{vehcomp}}">
+                            <input type="hidden" name="model" value="{{model}}">
+                            <input type="hidden" name="ownername" value="{{ownername}}">
+
+
 
                             <div class="form-group mb-4">
                                 <label for="registrationNumber">Vehicle Registration Number</label>
-                                <input type="text" class="form-control" name="vehreno" id="registrationNumber">
+                                <input type="text" class="form-control" value="{{vehreno}}" name="vehreno"
+                                    id="registrationNumber" readonly>
                             </div>
-
-                            <div class="form-group mb-4">
-                                <label for="catename">Vehicle Category</label>
-                                <select class="form-select" name="catename" id="catename">
-                                    <option value="Four Wheeler">Four Wheeler</option>
-                                    <option value="Three Wheeler">Three Wheeler</option>
-                                    <option value="Two Wheeler">Two Wheeler</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="vehcomp">Vehicle's Company Name</label>
-                                <select class="form-select" name="vehcomp" id="vehcomp" required>
-                                    <option value="Hyundai">Hyundai</option>
-                                    <option value="Maruti Suzuki">Maruti Suzuki</option>
-                                    <option value="Renault">Renault</option>
-                                    <option value="Mahindra">Mahindra</option>
-                                    <option value="Tata">Tata</option>
-                                    <option value="Honda">Honda</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="registrationNumber">Vehicle Model</label>
-                                <input type="text" class="form-control" name="model" id="model">
-                            </div>
-
 
 
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle IN Time</label>
-                                <input type="datetime-local" class="form-control" name="inTime" id="inTime">
+                                <input type="datetime-local" class="form-control" value="{{inTime}}" name="inTime"
+                                    id="inTime" readonly>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle Out Time</label>
-                                <input type="datetime-local" class="form-control" name="outTime" id="outTime">
+                                <input type="datetime-local" class="form-control" value="{{outTime}}" name="outTime"
+                                    id="outTime" readonly>
                             </div>
 
-                            <div class="form-group mb-4">
-                                <label for="sdesc">Vehicle Owned By</label>
-                                <input type="text" class="form-control" name="ownername" id="sdesc">
-                            </div>
+
 
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle Owner Contact</label>
-                                <input type="text" class="form-control" name="ownercontno" id="sdesc">
+                                <input type="text" class="form-control" value="{{ownercontno}}" name="ownercontno"
+                                    id="sdesc" readonly>
                             </div>
 
 
 
                             <div class="form-group mb-4">
                                 <label for="parkingcharge">Total Charges &#8377</label>
-                                <input type="text" class="form-control" name="charges" id="charges" readonly>
+                                <input type="text" class="form-control" value="{{charges}}" name="charges" id="charges"
+                                    readonly>
                             </div>
+                            
 
 
-                              <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                            <button type="button" class="btn btn-primary" id="payNowButton" >Pay Now</button>
+                            <button type="button" class="btn btn-primary" id="payNowLater" >Pay Later</button>
 
-                            <button type="reset" class="btn btn-default">Reset</button>
+
                         </form>
 
 
@@ -292,13 +254,11 @@
     <script src="js/validate.js"></script>
     <!-- validate form script -->
     <script src="js/fetchparking.js"></script>
-  <script src="js/vbook.js"></script>
-
-  <!---->
+    <script src="js/razorpay.js"></script>
 
 
 
-  
+
 
 </body>
 
