@@ -16,6 +16,7 @@
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
     "moment-timezone": "^0.5.43",
-    "mongoose": "^7.6.3"
+    "mongoose": "^7.6.3",
+    "razorpay": "^2.9.2"
   }
 }

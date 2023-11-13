@@ -63,6 +63,13 @@ const vehicleSchema = new mongoose.Schema({
   totalCharge: {
     type: Number
   },
+
+ paymentStatus: {
+    type: String,
+    enum: ['notpaid', 'paid',"awaited"],
+    default: 'notpaid',
+
+  },
   remarks: {
     type: String
   }

@@ -1,47 +1,47 @@
-// Function to calculate the payment amount based on the "Total Charges" field
+// razorpay.js
 
-function calculatePaymentAmount() {
-    var totalChargesInput = document.getElementById('charges');
-    var totalCharges = parseFloat(totalChargesInput.value) * 100; // Convert to paise
-    if (isNaN(totalCharges) || totalCharges <= 0) {
-        return 0;
-    }
-    return totalCharges;
-}
+document.getElementById('payNowButton').addEventListener('click', async function() {
+    // Fetch the amount from the charges input field
+    var amount = document.getElementById('charges').value;
+    document.getElementById('payNowButton').value = 'js';
 
-// Function to initiate the Razorpay payment
-function initiatePayment() {
-    var calculatedAmount = calculatePaymentAmount();
-    if (calculatedAmount === 0) {
-        alert("Invalid payment amount. Please check the 'Total Charges' field.");
-    } else {
-        var options = {
-            key: "rzp_test_05YP5NQEWOkIUp", // Replace with your Razorpay key
-            amount: calculatedAmount,
-            currency: "INR",
-            name: "Your Company Name",
-            description: "Payment for Services",
-            image: "https://example.com/your_logo.png",
-            order_id: "order_DaaS6LOUAASb7Y", // Replace with the actual order ID
-            handler: function (response) {
-                // Handle the response after payment
-                // You can submit the form or perform other actions here
-                document.getElementById('myForm').submit(); // Submit the form
+    // Create a Razorpay order on the server side and get the order ID
+    // Replace 'YOUR_SERVER_ENDPOINT' with the actual endpoint on your server
+    try {
+        const response = await fetch('/create-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            prefill: {
-                name: "User Name",
-                email: "user@example.com",
-                contact: "1234567890",
+            body: JSON.stringify({
+                
+                amount: amount,
+            }),
+        });
+
+        const order = await response.json();
+
+        // Open Razorpay checkout with the obtained order ID
+        var options = {
+            key: 'rzp_test_esJ9zn2E77SUXk', // Replace with your Razorpay API key
+            amount: order.amount,
+            currency: order.currency,
+            name: 'ParKing',
+            description: 'Parking Lot Registration',
+            order_id: order.id,
+            handler: function(response) {
+                // Handle the success callback here
+
+                console.log(response);
+
+                // After successful payment, submit the payment form
+                document.getElementById('paymentForm').submit();
             },
         };
 
         var rzp = new Razorpay(options);
         rzp.open();
+    } catch (error) {
+        console.error('Error creating Razorpay order:', error);
     }
-}
-
-// Add an event listener to the "Pay Now" button
-document.getElementById('payNowButton').addEventListener('click', function (e) {
-    e.preventDefault();
-    initiatePayment();
 });
