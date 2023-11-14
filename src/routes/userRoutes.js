@@ -15,13 +15,24 @@ const Register = require("../models/register");
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
-router.use(session({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: true,
-    // cookie:{ maxAge:60000}
-}));
+// Session configuration
+router.use(
+    session({
+        secret: 'mySecret',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { maxAge: 24 * 60 * 1000 }
+    })
+);
 
+// Admin login verification middleware for POST requests
+const userDetails = (req, res, next) => {
+    if (req.session.user && req.session.userDetails) {
+        next();
+    } else {
+        return res.status(400).render('userViews/login', { message: 'Please Log In First!' });
+    }
+};
 
 
 router.get("/", (req, res) => {
@@ -34,6 +45,19 @@ router.get("/login", (req, res) => {
     res.render('userViews/login');
 });
 
+router.get("/logoutuser", userDetails, (req, res) => {
+
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).send('Internal server error');
+        }
+
+        // Redirect to the login page after destroying the session
+        res.redirect('login');
+    });
+});
+
 
 router.get("/register", (req, res) => {
     res.render('userViews/register')
@@ -41,8 +65,14 @@ router.get("/register", (req, res) => {
 
 
 
-router.get("/slotBooking", (req, res) => {
+router.get("/slotBooking", userDetails, (req, res) => {
+    const details = req.session.user;
+
     res.render('userViews/slotBooking')
+});
+
+router.get("/paymentSucess", userDetails, (req, res) => {
+    res.render('userViews/paymentSucess')
 });
 
 
@@ -95,7 +125,7 @@ router.post('/slotBooking', async (req, res) => {
 });
 
 
-router.get('/vbook', async (req, res) => {
+router.get('/vbook', userDetails, async (req, res) => {
     const lotId = req.query.lotId;
 
     try {
@@ -137,39 +167,51 @@ router.get("/temp", (req, res) => {
 });
 
 
-router.get('/userafterlogin', (req, res) => {
-    if (!req.session.user) {
-        req.session.message = 'Please Log In First'; // Set the message
-        return res.redirect('/login'); // Redirect to 'login' page
-    }
+router.get('/userafterlogin', userDetails, async (req, res) => {
+
 
     const user = req.session.user;
-    res.render('userViews/userafterlogin', { user: user });
-});
 
+
+    try {
+        const uservehicle = await VehicleEntry.find({
+            ownerContactNumber: user.phoneNumber,
+            status: "In"
+        });
+        console.log(uservehicle);
+        // Pass user data with associated vehicle entries to the view
+        res.render('userViews/userafterlogin', { user: user, userEntries: uservehicle });
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 
 ////////  Post Requests ////////////////
 
 router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
     try {
-        const { email, password } = req.body;
-        const existingUser = await Register.findOne({ email });
+        const user = await Register.findOne({
+            email: email,
+            password: password,
+        }); // Make sure 'parkingLots' refers to the correct Mongoose model
 
-        if (!existingUser) {
-            return res.status(400).render('userViews/login', { message: 'Invalid Email' });
+        if (user) {
+            req.session.user = user; // Store user data in the session
+            req.session.userDetails = true; // Set isAdmin flag in the session
+            res.redirect('/userafterlogin');
+        } else {
+            return res.status(400).render('userViews/login', { message: 'Invalid Credentials' });
         }
-
-        if (existingUser.password !== password) {
-            return res.status(400).render('userViews/login', { message: 'Invalid Password' });
-        }
-        req.session.user = existingUser;
-        res.redirect('userafterlogin?success');
     } catch (error) {
-        console.error("Error during login:", error);
-        res.status(500).send("Internal server error. Please try again later.");
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
 });
+
 
 router.post("/register", async (req, res) => {
     try {
@@ -228,30 +270,33 @@ router.post("/vbook", async (req, res) => {
 });
 
 
-router.get("/payment", (req, res) => {
+router.get("/payment", userDetails, (req, res) => {
     res.render('userViews/payment')
 });
 
-router.post("/payment", async (req, res) => {
-    const submitMethod = req.body.payNowButton;
-    console.log(submitMethod);
+router.post("/payment", userDetails, async (req, res) => {
+    const user = req.session.user;
+
+
 
     try {
         // Extracting necessary information from the request body
-        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime } = req.body;
+        const { plotname, ownername, catename, vehcomp, vehreno, model, inTime, outTime, submitSource, charges } = req.body;
 
+
+        console.log(submitSource);
         // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
         const parkingNumber = Math.floor(10000 + Math.random() * 90000);
 
         let newVehicle;
 
-        if (submitMethod === 'js') {
-            // Create a new instance of VehicleEntry with the extracted information and save it
+        if (submitSource === 'PayNow') {
+            // Create a new instance of VehicleEntry with the extracted information
             newVehicle = new VehicleEntry({
                 parkinglotName: plotname,
                 parkingNumber: "CA-" + parkingNumber,
                 ownerName: ownername,
-                ownerContactNumber: ownercontno,
+                ownerContactNumber: user.phoneNumber,
                 registrationNumber: vehreno,
                 vehicleCategory: catename,
                 vehicleCompanyname: vehcomp,
@@ -259,22 +304,24 @@ router.post("/payment", async (req, res) => {
                 inTime: inTime,
                 outTime: outTime,
                 paymentStatus: "paid",
-
-
+                totalCharge: charges
             });
+
+
             plotname.totalSpots -= 1;
-            const registered = await newVehicle.save();
+            await newVehicle.save();  // Saving the newVehicle
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
                 { $inc: { totalSpots: -1 } }
             );
-        } else {
-            // Create a new instance of VehicleEntry with the extracted information and save it
+
+        } else if (submitSource === 'PayLater') {
+            // Create a new instance of VehicleEntry with the extracted information
             newVehicle = new VehicleEntry({
                 parkinglotName: plotname,
                 parkingNumber: "CA-" + parkingNumber,
                 ownerName: ownername,
-                ownerContactNumber: ownercontno,
+                ownerContactNumber: user.phoneNumber,
                 registrationNumber: vehreno,
                 vehicleCategory: catename,
                 vehicleCompanyname: vehcomp,
@@ -282,23 +329,36 @@ router.post("/payment", async (req, res) => {
                 inTime: inTime,
                 outTime: outTime,
                 paymentStatus: "awaited",
+                totalCharge: charges
             });
+
+   
+
             plotname.totalSpots -= 1;
-            const registered = await newVehicle.save();
+            await newVehicle.save();  // Saving the newVehicle
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
                 { $inc: { totalSpots: -1 } }
             );
         }
+        const parkingLotDetails = await parkingLots.findOne({ name: plotname })
+        const lat = parkingLotDetails.latitude;
+        const longt = parkingLotDetails.longitude;
+        console.log("Vehicle entry successfully saved.");
+        return res.status(200).render('./userViews/paymentSucess', { parkingNumber, inTime, outTime, submitSource, lat, longt });
+    }
 
-   // Render a success message upon successful save
-   console.log("Vehicle entry successfully saved.");
-   return res.status(200).render('./userViews/vbook', { message: 'Booked successfully' });
-} catch (error) {
-   console.error("Error during registration:", error);
-   // ... Your existing code ...
-}
+    catch (error) {
+        console.error("Error during registration:", error);
+        // Handle the error as needed
+        return res.status(500).send("Internal server error. Please try again later.");
+    }
+
+
 });
+
+
+
 
 
 
@@ -310,6 +370,7 @@ const razorpay = new Razorpay({
 
 router.post('/create-order', (req, res) => {
     const { amount } = req.body;
+    const submitSource = req.body.submitSource;
 
 
     const options = {

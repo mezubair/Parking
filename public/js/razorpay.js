@@ -1,9 +1,17 @@
 // razorpay.js
 
+
+document.getElementById('payLater').addEventListener('click', async function() {
+    document.getElementById('submitSource').value = 'PayLater';
+    document.getElementById('paymentForm').submit();
+});
+
 document.getElementById('payNowButton').addEventListener('click', async function() {
     // Fetch the amount from the charges input field
     var amount = document.getElementById('charges').value;
-    document.getElementById('payNowButton').value = 'js';
+  
+    // Set the value of the hidden input field to indicate the button clicked
+    document.getElementById('submitSource').value = 'PayNow';
 
     // Create a Razorpay order on the server side and get the order ID
     // Replace 'YOUR_SERVER_ENDPOINT' with the actual endpoint on your server
@@ -14,8 +22,8 @@ document.getElementById('payNowButton').addEventListener('click', async function
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                
                 amount: amount,
+                submitSource: 'PayNow',
             }),
         });
 
@@ -31,7 +39,6 @@ document.getElementById('payNowButton').addEventListener('click', async function
             order_id: order.id,
             handler: function(response) {
                 // Handle the success callback here
-
                 console.log(response);
 
                 // After successful payment, submit the payment form
@@ -45,3 +52,6 @@ document.getElementById('payNowButton').addEventListener('click', async function
         console.error('Error creating Razorpay order:', error);
     }
 });
+
+
+////////////////////////////////////////////////////
