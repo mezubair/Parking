@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Payment Status</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .card {
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .card-img {
+            max-width: 40%;
+            height: auto;
+        }
+
+        .btn-back {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+
+        em {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>Booking Status</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+
+                {{#if (eq submitSource 'PayLater')}}
+                <strong class="card-text">Your slot is reserved !</strong>
+                <p>Temporary Parking Number: CA {{parkingNumber}}</p>
+                <strong>Your slot is reserved till {{formatDate inTime}} </strong>
+                <br>
+                <br>
+                <em>Kindly be advised that your parking reservation is subject to cancellation if you do not arrive at
+                    the parking lot within the specified time. To ensure your reservation remains valid, please make
+                    sure to arrive promptly. Thank you for your cooperation.</em>
+                {{else if (eq submitSource 'PayNow')}}
+                <strong class="card-text">Booked Successfully</strong>
+                <p>Parking Number: CA {{parkingNumber}}</p>
+                <p>Your slot is booked from {{formatDate inTime}} to {{formatDate outTime}}</p>
+
+                {{else}}
+                <p class="card-text">Unexpected Payment Status</p>
+                {{/if}}
+
+                <img src="./images/booking-confirmed-icon.png" alt="Success Image" class="card-img mt-3">
+                <br>
+                <a href="userafterlogin" class="btn btn-back mt-3">Back to Home</a>
+                <button id="navigateBtn" class="btn btn-primary mt-3">Navigate</button>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('navigateBtn').addEventListener('click', () => {
+            // Request access to the user's location
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    };
+
+            
+                    // Replace the following coordinates with the parking lot coordinates
+                    const parkingLotLocation = {
+                        latitude:{{lat}},
+                        longitude:{{longt}}
+                };
+
+
+            // Redirect the user to Google Maps with navigation
+            window.location.href = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${parkingLotLocation.latitude},${parkingLotLocation.longitude}&travelmode=driving`;
+        },
+            (error) => {
+                console.error('Error getting user location:', error);
+                alert('Unable to access your location. Please enable location services.');
+            }
+        );
+        });
+    </script>
+</body>
+
+</html>
