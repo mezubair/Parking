@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 const axios = require("axios");
 const Razorpay = require('razorpay');
+const twilio = require('twilio');
 
 const parkingLots = require('../models/parkingLot')
 const VehicleEntry = require('../models/vehicleEntry');
@@ -212,6 +213,11 @@ router.post("/login", async (req, res) => {
     }
 });
 
+const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
+const authToken = '710d631200691a7d7187ab8d687bf7c5';
+const twilioPhone = '+15637702743';
+
+const client = twilio(accountSid, authToken);
 
 router.post("/register", async (req, res) => {
     try {
@@ -223,7 +229,6 @@ router.post("/register", async (req, res) => {
             return res.status(400).render('./userViews/register', { message: 'Email or Phone Number already exists', formData: req.body });
         }
 
-
         const regNewUser = new Register({
             fullName: fullName,
             phoneNumber: phoneNumber,
@@ -233,6 +238,18 @@ router.post("/register", async (req, res) => {
         });
 
         const registered = await regNewUser.save();
+
+        // Send a welcome message via Twilio
+        const messageBody= "Welcome to ParKing! You have been successfully registered.Thank you for choosing ParKing!";
+        await client.messages.create({
+            body: messageBody,
+            to: `+91${phoneNumber}`,
+            from: twilioPhone,
+        })
+
+        console.log('Message sent successfully:', messageBody .sid);
+
+        // Render the registration success message here
         return res.status(400).render('./userViews/login', { message: 'Registration Successful' });
     } catch (error) {
         console.error("Error during registration:", error);
@@ -274,24 +291,21 @@ router.get("/payment", userDetails, (req, res) => {
     res.render('userViews/payment')
 });
 
+
+
+
+
 router.post("/payment", userDetails, async (req, res) => {
     const user = req.session.user;
-
-
+    
 
     try {
-        // Extracting necessary information from the request body
         const { plotname, ownername, catename, vehcomp, vehreno, model, inTime, outTime, submitSource, charges } = req.body;
-
-
-        console.log(submitSource);
-        // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
         const parkingNumber = Math.floor(10000 + Math.random() * 90000);
 
         let newVehicle;
 
         if (submitSource === 'PayNow') {
-            // Create a new instance of VehicleEntry with the extracted information
             newVehicle = new VehicleEntry({
                 parkinglotName: plotname,
                 parkingNumber: "CA-" + parkingNumber,
@@ -307,16 +321,13 @@ router.post("/payment", userDetails, async (req, res) => {
                 totalCharge: charges
             });
 
-
             plotname.totalSpots -= 1;
-            await newVehicle.save();  // Saving the newVehicle
+            await newVehicle.save();
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
                 { $inc: { totalSpots: -1 } }
             );
-
         } else if (submitSource === 'PayLater') {
-            // Create a new instance of VehicleEntry with the extracted information
             newVehicle = new VehicleEntry({
                 parkinglotName: plotname,
                 parkingNumber: "CA-" + parkingNumber,
@@ -332,34 +343,36 @@ router.post("/payment", userDetails, async (req, res) => {
                 totalCharge: charges
             });
 
-   
-
             plotname.totalSpots -= 1;
-            await newVehicle.save();  // Saving the newVehicle
+            await newVehicle.save();
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
                 { $inc: { totalSpots: -1 } }
             );
         }
-        const parkingLotDetails = await parkingLots.findOne({ name: plotname })
+
+        const parkingLotDetails = await parkingLots.findOne({ name: plotname });
         const lat = parkingLotDetails.latitude;
         const longt = parkingLotDetails.longitude;
-        console.log("Vehicle entry successfully saved.");
-        return res.status(200).render('./userViews/paymentSucess', { parkingNumber, inTime, outTime, submitSource, lat, longt });
-    }
+        
 
-    catch (error) {
+        // Sending a message to the user's phone number using Twilio
+        const messageBody = `Dear ${user.fullName},\nYour Parking slot at ${plotname} has been successfully booked from ${inTime} to ${outTime}. Thank you for choosing ParKing!`;
+
+        await client.messages.create({
+            body: messageBody,
+            to: `+91${user.phoneNumber}`,
+            from: twilioPhone,
+        });
+
+        console.log('Message sent successfully');
+
+        return res.status(200).render('./userViews/paymentSucess', { parkingNumber, inTime, outTime, submitSource, lat, longt });
+    } catch (error) {
         console.error("Error during registration:", error);
-        // Handle the error as needed
         return res.status(500).send("Internal server error. Please try again later.");
     }
-
-
 });
-
-
-
-
 
 
 
