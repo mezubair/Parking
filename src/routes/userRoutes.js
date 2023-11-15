@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 const axios = require("axios");
 const Razorpay = require('razorpay');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 
 const parkingLots = require('../models/parkingLot')
 const VehicleEntry = require('../models/vehicleEntry');
@@ -213,11 +213,11 @@ router.post("/login", async (req, res) => {
     }
 });
 
-const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
-const authToken = '710d631200691a7d7187ab8d687bf7c5';
-const twilioPhone = '+15637702743';
+// const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
+// const authToken = '710d631200691a7d7187ab8d687bf7c5';
+// const twilioPhone = '+15637702743';
 
-const client = twilio(accountSid, authToken);
+// const client = twilio(accountSid, authToken);
 
 router.post("/register", async (req, res) => {
     try {
@@ -240,14 +240,14 @@ router.post("/register", async (req, res) => {
         const registered = await regNewUser.save();
 
         // Send a welcome message via Twilio
-        const messageBody= "Welcome to ParKing! You have been successfully registered.Thank you for choosing ParKing!";
-        await client.messages.create({
-            body: messageBody,
-            to: `+91${phoneNumber}`,
-            from: twilioPhone,
-        })
+        // const messageBody= "Welcome to ParKing! You have been successfully registered.Thank you for choosing ParKing!";
+        // await client.messages.create({
+        //     body: messageBody,
+        //     to: `+91${phoneNumber}`,
+        //     from: twilioPhone,
+        // })
 
-        console.log('Message sent successfully:', messageBody .sid);
+        // console.log('Message sent successfully:', messageBody .sid);
 
         // Render the registration success message here
         return res.status(400).render('./userViews/login', { message: 'Registration Successful' });
@@ -321,7 +321,7 @@ router.post("/payment", userDetails, async (req, res) => {
                 totalCharge: charges
             });
 
-            plotname.totalSpots -= 1;
+           
             await newVehicle.save();
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
@@ -343,7 +343,6 @@ router.post("/payment", userDetails, async (req, res) => {
                 totalCharge: charges
             });
 
-            plotname.totalSpots -= 1;
             await newVehicle.save();
             await parkingLots.findOneAndUpdate(
                 { name: plotname.name },
@@ -357,15 +356,15 @@ router.post("/payment", userDetails, async (req, res) => {
         
 
         // Sending a message to the user's phone number using Twilio
-        const messageBody = `Dear ${user.fullName},\nYour Parking slot at ${plotname} has been successfully booked from ${inTime} to ${outTime}. Thank you for choosing ParKing!`;
+        // const messageBody = `Dear ${user.fullName},\nYour Parking slot at ${plotname} has been successfully booked from ${inTime} to ${outTime}. Thank you for choosing ParKing!`;
 
-        await client.messages.create({
-            body: messageBody,
-            to: `+91${user.phoneNumber}`,
-            from: twilioPhone,
-        });
+        // await client.messages.create({
+        //     body: messageBody,
+        //     to: `+91${user.phoneNumber}`,
+        //     from: twilioPhone,
+        // });
 
-        console.log('Message sent successfully');
+        // console.log('Message sent successfully');
 
         return res.status(200).render('./userViews/paymentSucess', { parkingNumber, inTime, outTime, submitSource, lat, longt });
     } catch (error) {
@@ -422,6 +421,56 @@ router.post('/Cpayment', (req, res) => {
     res.json({ success: true, message: 'Payment successful' });
 });
 
+
+
+
+//////////      ...............................NOTIFY USERS.................. //////////////////////
+
+// const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
+// const twilioClient = new Twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+// // Function to send a Twilio message
+// const sendTwilioMessage = async (phoneNumber, message) => {
+//   try {
+//     const result = await twilioClient.messages.create({
+//       body: message,
+//       from: TWILIO_PHONE_NUMBER,
+//       to: phoneNumber,
+//     });
+//     console.log('Twilio Message SID:', result.sid);
+//   } catch (error) {
+//     console.error('Error sending Twilio message:', error);
+//   }
+// };
+
+// const notifyUsers = async () => {
+//     try {
+//       const currentTime = new Date().toISOString(); // Current time
+//       const reminderTime = calculateReminderTime(currentTime); // Time 5 minutes before the current time
+  
+//       // Fetch users with outTime scheduled in the next 5 minutes
+//       const usersToNotify = await VehicleEntry.find({ outTime: { $gte: reminderTime, $lt: currentTime } });
+  
+//       // Send messages to eligible users
+//       await Promise.all(usersToNotify.map(async (user) => {
+//         const phoneNumber = user.ownerContactNumber;
+//         const userName = user.ownerName;
+//         const vehicleRegistrationNumber = user.registrationNumber;
+  
+//         const message = `Hello ${userName}, your vehicle with registration number ${vehicleRegistrationNumber} is scheduled to leave the parking lot in 5 minutes. Please ensure to move your vehicle on time to avoid any inconvenience. Thank you for using our service.`;
+  
+//         // Send Twilio message
+//         await sendTwilioMessage(phoneNumber, message);
+//       }));
+  
+//       console.log('Notification process completed.');
+//     } catch (error) {
+//       console.error('Error during notification process:', error);
+//     }
+//   };
+  
+//   // Call the async function to start the notification process
+//   notifyUsers();
 
 
 module.exports = router;

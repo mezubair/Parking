@@ -26,7 +26,7 @@ const adminDetails = (req, res, next) => {
   if (req.session.admin && req.session.adminDetails) {
     next();
   } else {
-    res.status(403).send('Access Forbidden');
+    res.redirect('/adminLogin');
   }
 };
 
@@ -94,6 +94,7 @@ router.get('/dashboard', adminDetails, async (req, res) => {
 
     res.render('adminViews/dashboard', {
       page: 'dashboard',
+      parkinglotName:details.name,
       totalCount,
       inCount,
       outCount,
@@ -186,7 +187,7 @@ router.post("/manage-vehicles", adminDetails, async (req, res) => {
 router.get('/in-vehicles',adminDetails, async (req, res) => {
   try {
     const details = req.session.admin;
-    const vehicles = await VehicleEntry.find({ status: "In" , parkinglotName: details.name}); // Fetch all entries from the database
+    const vehicles = await VehicleEntry.find({ status: "In", parkinglotName: details.name, paymentStatus: { $ne: "awaited" } }); // Fetch all entries from the database
     res.render('adminViews/in-vehicles', { vehicles, page: 'in-vehicles' }); // Pass the data to the 'in-vehicles' view
   } catch (error) {
     console.error('Error fetching data from MongoDB:', error);
@@ -323,20 +324,42 @@ router.get('/total-income', adminDetails, async (req, res) => {
 
 
 
-
-
 router.get('/outgoing-detail',adminDetails, (req, res) => {
   res.render('adminViews/outgoing-detail')
 });
 
 
 
+/////////////////////////////////////////////////////////////
+router.get('/awaited',adminDetails, async (req, res) => {
+  try {
+    const details = req.session.admin;
+    const vehicles = await VehicleEntry.find({ paymentStatus:"awaited",parkinglotName: details.name});
+    res.render('adminViews/awaited', { vehicles, page:'awaited' });
+  } catch (error) {
+    console.error('Error fetching vehicle details:', error);
+    res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+
+router.post('/update-payment-status/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+
+      // Update the payment status to "not paid"
+      await VehicleEntry.findByIdAndUpdate(id, { $set: { paymentStatus: 'not paid' } });
+
+      res.redirect('/in-vehicles'); // Redirect back to the awaited page
+  } catch (error) {
+      console.error('Error updating payment status:', error);
+      res.status(500).send('Internal server error. Please try again later.');
+  }
+});
+
+
+
 /////////////////////////////////////////////////////
-
-
-
-
-
 
 
 
