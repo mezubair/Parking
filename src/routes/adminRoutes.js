@@ -211,7 +211,7 @@ router.get('/update-incomingdetail/:id',adminDetails, async (req, res) => {
     const timeDiffInMins = outTime.diff(inTime, 'minutes');
 
     // Calculate the total charges based on the rate per hour
-    const ratePerHour = 1000; // Set your own rate per hour here
+    const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
     let totalCharges = (timeDiffInMins / 60) * ratePerHour;
 
     // Round the total charges to the nearest whole number

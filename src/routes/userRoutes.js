@@ -136,7 +136,10 @@ router.get('/vbook', userDetails, async (req, res) => {
 
         if (lotData) {
             // Render the 'vbook' template and pass the data to it
+            
             res.render('userViews/vbook', { lotData });
+           
+         
         } else {
             res.status(404).send('Lot not found'); // Handle when the lot is not found
         }
@@ -302,6 +305,7 @@ router.post("/payment", userDetails, async (req, res) => {
     try {
         const { plotname, ownername, catename, vehcomp, vehreno, model, inTime, outTime, submitSource, charges } = req.body;
         const parkingNumber = Math.floor(10000 + Math.random() * 90000);
+        console.log(plotname);
 
         let newVehicle;
 
@@ -324,7 +328,7 @@ router.post("/payment", userDetails, async (req, res) => {
            
             await newVehicle.save();
             await parkingLots.findOneAndUpdate(
-                { name: plotname.name },
+                { name: plotname },
                 { $inc: { totalSpots: -1 } }
             );
         } else if (submitSource === 'PayLater') {
@@ -345,7 +349,7 @@ router.post("/payment", userDetails, async (req, res) => {
 
             await newVehicle.save();
             await parkingLots.findOneAndUpdate(
-                { name: plotname.name },
+                { name: plotname },
                 { $inc: { totalSpots: -1 } }
             );
         }
