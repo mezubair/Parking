@@ -17,6 +17,7 @@
     "express-validator": "^7.0.1",
     "moment-timezone": "^0.5.43",
     "mongoose": "^7.6.3",
-    "razorpay": "^2.9.2"
+    "razorpay": "^2.9.2",
+    "twilio": "^4.19.0"
   }
 }

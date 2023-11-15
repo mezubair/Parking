@@ -115,7 +115,8 @@
 
 
             // Redirect the user to Google Maps with navigation
-            window.location.href = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${parkingLotLocation.latitude},${parkingLotLocation.longitude}&travelmode=driving`;
+          window.open(`https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${parkingLotLocation.latitude},${parkingLotLocation.longitude}&travelmode=driving`, '_blank');
+
         },
             (error) => {
                 console.error('Error getting user location:', error);

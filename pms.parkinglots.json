@@ -3,8 +3,8 @@
     "$oid": "65476fa805426fff3043b22d"
   },
   "name": " Parking Lot Eidgah ",
-  "latitude": 78.9,
-  "longitude": 123.456,
+  "latitude":34.1122,
+  "longitude":74.7492,
   "address": "123 Example Street, Srinagar",
   "locality": "Eidgah",
   "city": "Srinagar",
@@ -22,8 +22,8 @@
     "$oid": "65476fa805426fff3043b22e"
   },
   "name": "Elachi Bagh",
-  "latitude": 34.07175,
-  "longitude": 74.80432,
+  "latitude":34.0595538,
+  "longitude":74.8010688,
   "address": "456 Example Street, Srinagar",
   "locality": "Batamaloo",
   "city": "Srinagar",
@@ -41,8 +41,8 @@
     "$oid": "65476fa805426fff3043b22f"
   },
   "name": "Mominabad",
-  "latitude": 34.0696,
-  "longitude": 74.789,
+  "latitude":34.0696,
+  "longitude":74.7890,
   "address": "789 Example Street, Srinagar",
   "locality": "Batamaloo",
   "city": "Srinagar",
@@ -60,8 +60,8 @@
     "$oid": "65476fa805426fff3043b230"
   },
   "name": "Tengpur Parking",
-  "latitude": 34.1186471,
-  "longitude": 74.7973392,
+  "latitude":34.05665,
+  "longitude":74.786779,
   "address": "101 Example Street, Srinagar",
   "locality": "Batamaloo",
   "city": "Srinagar",
@@ -79,8 +79,8 @@
     "$oid": "65476fa805426fff3043b231"
   },
   "name": "Downtown Parking",
-  "latitude": 78.9,
-  "longitude": 123.456,
+  "latitude":34.0852,
+  "longitude":74.8201,
   "address": "123 Example Street, Srinagar",
   "locality": "Iqbal Park",
   "city": "Srinagar",
@@ -97,9 +97,9 @@
   "_id": {
     "$oid": "65476fa805426fff3043b232"
   },
-  "name": "Downtown Parking",
-  "latitude": 78.9,
-  "longitude": 123.456,
+  "name": "Safa-kadal Parking",
+  "latitude":34.0944,
+  "longitude":74.7916,
   "address": "456 Example Street, Srinagar",
   "locality": "Iqbal Park",
   "city": "Srinagar",
@@ -116,9 +116,9 @@
   "_id": {
     "$oid": "65476fa805426fff3043b233"
   },
-  "name": "Downtown Parking",
-  "latitude": 78.9,
-  "longitude": 123.456,
+  "name": "Natipora Parking",
+  "latitude": 34.0501,
+  "longitude":74.8103,
   "address": "789 Example Street, Srinagar",
   "locality": "Iqbal Park",
   "city": "Srinagar",
