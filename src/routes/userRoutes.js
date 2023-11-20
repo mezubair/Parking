@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
+const moment = require('moment-timezone');
 const axios = require("axios");
 const Razorpay = require('razorpay');
 // const twilio = require('twilio');
@@ -12,6 +13,7 @@ const VehicleEntry = require('../models/vehicleEntry');
 require("../db/conn");
 
 const Register = require("../models/register");
+const parkingLot = require('../models/parkingLot');
 
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
@@ -263,7 +265,7 @@ router.post("/register", async (req, res) => {
 router.post("/vbook", async (req, res) => {
     try {
         // Extracting necessary information from the request body
-        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime, charges } = req.body;
+        const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime } = req.body;
 
         // Check for an existing entry with the same registrationNumber, status 'In', and inTime
         const existingEntry = await VehicleEntry.findOne({
@@ -278,6 +280,25 @@ router.post("/vbook", async (req, res) => {
             console.log("Duplicate entry found. Please check the data.");
             return res.status(400).render('./userViews/vbook', { message: 'Duplicate entry. Please check the data.' });
         }
+
+        const details=await parkingLots.findOne({name:plotname});
+
+        const outtime = moment(outTime);
+
+        // Calculate the difference between outTime and inTime in hours
+        const intime = moment(inTime);
+        const timeDiffInMins = outtime.diff(intime, 'minutes');
+    
+        // Calculate the total charges based on the rate per hour
+        const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+        let charges = (timeDiffInMins / 60) * ratePerHour;
+    
+        // Round the total charges to the nearest whole number
+        charges = Math.round(charges);
+
+
+
+
 
         // If validation is successful, redirect the user to the payment page
         return res.status(200).render('./userViews/payment', { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime, charges });

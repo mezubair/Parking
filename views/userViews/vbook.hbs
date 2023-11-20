@@ -114,12 +114,12 @@
 
                             <div class="form-group mb-4">
                                 <label for="registrationNumber">Vehicle Registration Number</label>
-                                <input type="text" class="form-control" name="vehreno" id="registrationNumber">
+                                <input type="text" class="form-control" name="vehreno" id="registrationNumber" required>
                             </div>
 
                             <div class="form-group mb-4">
                                 <label for="catename">Vehicle Category</label>
-                                <select class="form-select" name="catename" id="catename">
+                                <select class="form-select" name="catename" id="catename"required>
                                     <option value="Four Wheeler">Four Wheeler</option>
                                     <option value="Three Wheeler">Three Wheeler</option>
                                     <option value="Two Wheeler">Two Wheeler</option>
@@ -141,32 +141,25 @@
 
                             <div class="form-group mb-4">
                                 <label for="registrationNumber">Vehicle Model</label>
-                                <input type="text" class="form-control" name="model" id="model">
+                                <input type="text" class="form-control" name="model" id="model" required>
                             </div>
 
 
 
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle IN Time</label>
-                                <input type="datetime-local" class="form-control" name="inTime" id="inTime">
+                                <input type="datetime-local" class="form-control" name="inTime" id="inTime"required>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle Out Time</label>
-                                <input type="datetime-local" class="form-control" name="outTime" id="outTime">
+                                <input type="datetime-local" class="form-control" name="outTime" id="outTime"required>
                             </div>
 
                             <div class="form-group mb-4">
                                 <label for="sdesc">Vehicle Owned By</label>
-                                <input type="text" class="form-control" name="ownername" id="sdesc">
+                                <input type="text" class="form-control" name="ownername" id="sdesc" required>
                             </div>
 
-
-
-
-                            <div class="form-group mb-4">
-                                <label for="parkingcharge">Total Charges &#8377</label>
-                                <input type="text" class="form-control" name="charges" id="charges" readonly>
-                            </div>
 
 
                               <button type="submit" class="btn btn-primary" id="submit">Submit</button>

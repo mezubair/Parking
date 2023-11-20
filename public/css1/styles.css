@@ -1031,3 +1031,13 @@ p.back-link {
   margin-bottom: 20px;
   font-size: 12px;
   text-transform: uppercase; }
+
+  /* Add this to your CSS file or in a <style> tag in your HTML */
+.notification-count {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  margin-left: 4px; /* Adjust as needed for spacing */
+}

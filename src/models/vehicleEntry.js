@@ -52,7 +52,7 @@ const vehicleSchema = new mongoose.Schema({
   },
   outTime: {
     type: Date,
-    default: moment().tz('Asia/Kolkata')
+    default: null,
   },
   status: {
     type: String,

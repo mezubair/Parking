@@ -2,27 +2,27 @@
 <html>
 
 <head>
-	
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VPS</title>
-    <link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
 
-    <link href="/css1/font-awesome.min.css" rel="stylesheet">
-    <link href="/css1/datepicker3.css" rel="stylesheet">
-    <link href="/css1/styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VPS</title>
+	<link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
 
-    <!--Custom Font-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
+	<link href="/css1/font-awesome.min.css" rel="stylesheet">
+	<link href="/css1/datepicker3.css" rel="stylesheet">
+	<link href="/css1/styles.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<!--Custom Font-->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
+		rel="stylesheet">
 
 </head>
 
 <body>
- {{>adminNavbar}}
+	{{>adminNavbar}}
 
-{{>sidebar}}
+	{{>sidebar}}
 
 
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -49,10 +49,10 @@
 
 						<div class="col-md-12">
 
-	
 
 
-							<form method="POST"action="/update-incomingdetail/{{vehicleDetail._id}}">
+
+							<form method="POST" action="/update-incomingdetail/{{vehicleDetail._id}}">
 
 
 
@@ -87,12 +87,12 @@
 
 								<div class="form-group">
 									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="{{formatDate vehicleDetail.inTime}}" id="sdesc"
-										name="sdesc" readonly>
+									<input type="text" class="form-control" value="{{formatDate vehicleDetail.inTime}}"
+										id="sdesc" name="sdesc" readonly>
 								</div>
 								<div class="form-group">
 									<label>Vehicle Out Time</label>
-									<input type="text" class="form-control" value="{{formatDate vehicleDetail.outTime}}" id="sdesc"
+									<input type="text" class="form-control" value="{{formatDate outTime}}" id="sdesc"
 										name="sdesc" readonly>
 								</div>
 
@@ -110,6 +110,14 @@
 										id="sdesc" name="sdesc" readonly>
 								</div>
 
+								<div class="form-group">
+									<label>Payment Status</label>
+									<input type="text" class="form-control" value="{{vehicleDetail.paymentStatus}}"
+										id="sdesc" name="sdesc" readonly>
+								</div>
+
+
+
 
 								<div class="form-group">
 									<label>Current Status</label>
@@ -117,12 +125,36 @@
 										name="sdesc" readonly>
 								</div>
 
+								{{#if (eq vehicleDetail.paymentStatus 'paid')}}
+								<div class="form-group">
+									<label> Charges Paid &#8377 </label>
+									<input type="text" class="form-control"
+										value="&#8377 {{vehicleDetail.totalCharge}}" id="totalChargesPaid"
+										name="totalChargesPaid" readonly>
+								</div>
 
 								<div class="form-group">
-									<label>Total Charges  &#8377 </label>
+									<label>Vehicle Expected Out Time</label>
+									<input type="text" class="form-control"
+										value="{{formatDate vehicleDetail.outTime}}" id="expectedOutTime"
+										name="expectedOutTime" readonly>
+								</div>
+
+								<div class="form-group">
+									<label>Fine &#8377 </label>
+									<input type="text" class="form-control" value="&#8377 {{fine}} "
+										id="parkingcharge" name="parkingcharge" readonly>
+								</div>
+								{{/if}}
+
+								{{#if (eq vehicleDetail.paymentStatus 'not paid')}}
+
+								<div class="form-group">
+									<label>Total Charges &#8377 </label>
 									<input type="text" class="form-control" value="&#8377 {{totalCharges}} "
 										id="parkingcharge" name="parkingcharge" readonly>
 								</div>
+								{{/if}}
 
 
 								<div class="form-group">

@@ -17,7 +17,7 @@ router.use(
     secret: 'mySecret',
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 24 * 60  * 1000 }
+    cookie: { maxAge: 24 * 60 * 1000 }
   })
 );
 
@@ -31,7 +31,7 @@ const adminDetails = (req, res, next) => {
 };
 
 // Route for the admin login page
-router.get('/adminLogin',(req, res) => {
+router.get('/adminLogin', (req, res) => {
   res.render('adminViews/adminLogin');
 });
 
@@ -83,6 +83,7 @@ router.get('/dashboard', adminDetails, async (req, res) => {
       status: 'Out',
       parkinglotName: details.name,
     });
+    const awaitedEntries = await VehicleEntry.countDocuments({ paymentStatus: "awaited", parkinglotName: details.name });
 
     const twentyFourHoursAgo = new Date();
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
@@ -94,11 +95,12 @@ router.get('/dashboard', adminDetails, async (req, res) => {
 
     res.render('adminViews/dashboard', {
       page: 'dashboard',
-      parkinglotName:details.name,
+      parkinglotName: details.name,
       totalCount,
       inCount,
       outCount,
       within24HoursCount,
+      awaitedEntries,
     });
   } catch (err) {
     console.error(err);
@@ -106,21 +108,21 @@ router.get('/dashboard', adminDetails, async (req, res) => {
   }
 });
 //manage-vehicles
-router.get('/manage-vehicles',adminDetails, (req, res) => {
-const details = req.session.admin;
-console.log(details)
-    res.render('adminViews/manage-vehicles', { details,page: 'manage-vehicles' })
-  
+router.get('/manage-vehicles', adminDetails, (req, res) => {
+  const details = req.session.admin;
+  console.log(details)
+  res.render('adminViews/manage-vehicles', { details, page: 'manage-vehicles' })
+
 });
 router.post("/manage-vehicles", adminDetails, async (req, res) => {
   const details = req.session.admin;
   console.log(details.name);
   try {
     // Extracting necessary information from the request body
-    const { ownername, ownercontno, catename, vehcomp, vehreno, model} = req.body;
+    const { ownername, ownercontno, catename, vehcomp, vehreno, model } = req.body;
 
     // Ensure that admin details are available in the session
-   
+
     console.log("Admin details:", details);
 
     // Check for an existing entry with the same registrationNumber, status 'In', and inTime
@@ -135,14 +137,14 @@ router.post("/manage-vehicles", adminDetails, async (req, res) => {
     // If an existing entry is found, return a duplicate entry error message
     if (existingEntry) {
       console.log("Duplicate entry found. Please check the data.");
-      return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+      return res.status(400).render('./adminViews/manage-vehicles', { details, message: 'Duplicate entry. Please check the data.' });
     }
 
 
     // Generate a random parking number and fetch the current time in Asia/Kolkata timezone
     const parkingNumber = Math.floor(10000 + Math.random() * 90000);
     const currentTime = moment().tz('Asia/Kolkata');
-   
+
 
     // Create a new instance of VehicleEntry with the extracted information and save it
     const newVehicle = new VehicleEntry({
@@ -157,23 +159,23 @@ router.post("/manage-vehicles", adminDetails, async (req, res) => {
       inTime: currentTime.toDate()
     });
     console.log("New Vehicle:", newVehicle);
-    details.totalSpots -=1;
+    details.totalSpots -= 1;
     const registered = await newVehicle.save();
     await parkingLots.findOneAndUpdate(
-      { name : details.name }, // Use the appropriate field to identify the specific document
+      { name: details.name }, // Use the appropriate field to identify the specific document
       { $inc: { totalSpots: -1 } } // Decrement the totalSpots field by one
     );
 
 
     // Render a success message upon successful save
     console.log("Vehicle entry successfully saved.");
-    return res.status(200).render('./adminViews/manage-vehicles', {details, message: 'Booked successfully' });
+    return res.status(200).render('./adminViews/manage-vehicles', { details, message: 'Booked successfully' });
   } catch (error) {
     console.error("Error during registration:", error);
     // Check for duplicate entry error and handle accordingly
     if (error.code === 11000) {
       console.log("Duplicate entry error. Please check the data.");
-      return res.status(400).render('./adminViews/manage-vehicles', {details, message: 'Duplicate entry. Please check the data.' });
+      return res.status(400).render('./adminViews/manage-vehicles', { details, message: 'Duplicate entry. Please check the data.' });
     }
     // Handle other potential errors with a generic server error message
     console.log("Internal server error. Please try again later.");
@@ -184,7 +186,7 @@ router.post("/manage-vehicles", adminDetails, async (req, res) => {
 
 
 
-router.get('/in-vehicles',adminDetails, async (req, res) => {
+router.get('/in-vehicles', adminDetails, async (req, res) => {
   try {
     const details = req.session.admin;
     const vehicles = await VehicleEntry.find({ status: "In", parkinglotName: details.name, paymentStatus: { $ne: "awaited" } }); // Fetch all entries from the database
@@ -195,36 +197,55 @@ router.get('/in-vehicles',adminDetails, async (req, res) => {
   }
 });
 
-router.get('/update-incomingdetail/:id',adminDetails, async (req, res) => {
+router.get('/update-incomingdetail/:id', adminDetails, async (req, res) => {
   try {
-    const details=req.session.admin;
+    const details = req.session.admin;
     const id = req.params.id;
     const vehicleDetail = await VehicleEntry.findById(id);
 
 
 
-    // Get the current time as the outTime
-    const outTime = moment.tz('Asia/Kolkata');
+    if (vehicleDetail.outTime === null) {
 
-    // Calculate the difference between outTime and inTime in hours
-    const inTime = moment(vehicleDetail.inTime);
-    const timeDiffInMins = outTime.diff(inTime, 'minutes');
 
-    // Calculate the total charges based on the rate per hour
-    const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
-    let totalCharges = (timeDiffInMins / 60) * ratePerHour;
+      // Get the current time as the outTime
+      const outTime = moment.tz("Asia/Kolkata");
 
-    // Round the total charges to the nearest whole number
-    totalCharges = Math.round(totalCharges);
+      // Calculate the difference between outTime and inTime in hours
+      const inTime = moment(vehicleDetail.inTime);
+      const timeDiffInMins = outTime.diff(inTime, 'minutes');
 
-    await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
-    details.totalSpots +=1;
-    await parkingLots.findOneAndUpdate(
-      { name : details.name }, // Use the appropriate field to identify the specific document
-      { $inc: { totalSpots: +1 } } // Decrement the totalSpots field by one
-    );
+      // Calculate the total charges based on the rate per hour
+      const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+      let totalCharges = (timeDiffInMins / 60) * ratePerHour;
 
-    res.render('adminViews/update-incomingdetail', { availabeSlots:details.totalSpots,outTime, vehicleDetail, totalCharges, page: 'update-incomingdetail' });
+      // Round the total charges to the nearest whole number
+      totalCharges = Math.round(totalCharges);
+
+      await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
+
+    }
+    else {
+      const outTime = moment(vehicleDetail.outTime);
+      const inTime = moment(vehicleDetail.inTime);
+      const timeDiffInMins = outTime.diff(inTime, 'minutes');
+      const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+      let totalCharges = (timeDiffInMins / 60) * ratePerHour;
+      const DiffInMins = outTime.diff(vehicleDetail.outTime, 'minutes');
+      let fine = (DiffInMins / 60) * ratePerHour;
+      totalCharges=totalCharges+fine;
+      totalCharges = Math.round(totalCharges);
+      await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
+
+    }
+
+
+
+    // Calculate Fine
+   
+    fine = Math.max(0, fine);
+
+    res.render('adminViews/update-incomingdetail', { availabeSlots: details.totalSpots, outTime, vehicleDetail, totalCharges, fine, outTime, page: 'update-incomingdetail' });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
     res.status(500).send('Internal server error. Please try again later.');
@@ -244,10 +265,10 @@ router.get('/print-receipt/:id', async (req, res) => {
 });
 
 
-router.get('/out-vehicles',adminDetails, async (req, res) => {
+router.get('/out-vehicles', adminDetails, async (req, res) => {
   try {
     const details = req.session.admin;
-    const status = await VehicleEntry.find({ status: "Out" , parkinglotName: details.name});
+    const status = await VehicleEntry.find({ status: "Out", parkinglotName: details.name });
     res.render('adminViews/out-vehicles', { status, page: 'out-vehicles' });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
@@ -255,7 +276,7 @@ router.get('/out-vehicles',adminDetails, async (req, res) => {
   }
 });
 
-router.get('/outgoing-detail/:id',adminDetails, async (req, res) => {
+router.get('/outgoing-detail/:id', adminDetails, async (req, res) => {
   try {
     const id = req.params.id;
     const vehicleInfo = await VehicleEntry.findById(id);
@@ -272,7 +293,7 @@ router.get('/outgoing-detail/:id',adminDetails, async (req, res) => {
 
 
 
-router.get('/out-vehicles',adminDetails, (req, res) => {
+router.get('/out-vehicles', adminDetails, (req, res) => {
   res.render('adminViews/out-vehicles', { page: 'out-vehicles' })
 })
 
@@ -324,18 +345,19 @@ router.get('/total-income', adminDetails, async (req, res) => {
 
 
 
-router.get('/outgoing-detail',adminDetails, (req, res) => {
+router.get('/outgoing-detail', adminDetails, (req, res) => {
   res.render('adminViews/outgoing-detail')
 });
 
 
 
 /////////////////////////////////////////////////////////////
-router.get('/awaited',adminDetails, async (req, res) => {
+router.get('/awaited', adminDetails, async (req, res) => {
   try {
     const details = req.session.admin;
-    const vehicles = await VehicleEntry.find({ paymentStatus:"awaited",parkinglotName: details.name});
-    res.render('adminViews/awaited', { vehicles, page:'awaited' });
+    const vehicles = await VehicleEntry.find({ paymentStatus: "awaited", parkinglotName: details.name });
+
+    res.render('adminViews/awaited', { vehicles, page: 'awaited' });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
     res.status(500).send('Internal server error. Please try again later.');
@@ -345,15 +367,15 @@ router.get('/awaited',adminDetails, async (req, res) => {
 
 router.post('/update-payment-status/:id', async (req, res) => {
   try {
-      const { id } = req.params;
+    const { id } = req.params;
 
-      // Update the payment status to "not paid"
-      await VehicleEntry.findByIdAndUpdate(id, { $set: { paymentStatus: 'not paid' } });
+    // Update the payment status to "not paid"
+    await VehicleEntry.findByIdAndUpdate(id, { $set: { paymentStatus: 'not paid' } });
 
-      res.redirect('/in-vehicles'); // Redirect back to the awaited page
+    res.redirect('/in-vehicles'); // Redirect back to the awaited page
   } catch (error) {
-      console.error('Error updating payment status:', error);
-      res.status(500).send('Internal server error. Please try again later.');
+    console.error('Error updating payment status:', error);
+    res.status(500).send('Internal server error. Please try again later.');
   }
 });
 
@@ -365,8 +387,15 @@ router.post('/update-payment-status/:id', async (req, res) => {
 
 
 
-router.post('/update-incomingdetail/:id',adminDetails, async (req, res) => {
+router.post('/update-incomingdetail/:id', adminDetails, async (req, res) => {
   try {
+    details = req.session.admin;
+
+    details.totalSpots += 1;
+    await parkingLots.findOneAndUpdate(
+      { name: details.name }, // Use the appropriate field to identify the specific document
+      { $inc: { totalSpots: +1 } } // Decrement the totalSpots field by one
+    );
     const id = req.params.id;
     const { remark, status } = req.body;
 
