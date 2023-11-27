@@ -185,7 +185,7 @@ router.get('/userafterlogin', userDetails, async (req, res) => {
     try {
         const uservehicle = await VehicleEntry.find({
             ownerContactNumber: user.phoneNumber,
-            status: "In"
+            
         });
         console.log(uservehicle);
         // Pass user data with associated vehicle entries to the view
