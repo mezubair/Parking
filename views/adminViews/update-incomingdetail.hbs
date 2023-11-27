@@ -1,203 +1,173 @@
-<!DOCTYPE html>
-<html>
+{{>adminHead}}
+{{>adminNavbar}}
 
-<head>
-
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>VPS</title>
-	<link rel="stylesheet" type="text/css" href="/css1/bootstrap.min.css">
-
-	<link href="/css1/font-awesome.min.css" rel="stylesheet">
-	<link href="/css1/datepicker3.css" rel="stylesheet">
-	<link href="/css1/styles.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<!--Custom Font-->
-	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"
-		rel="stylesheet">
-
-</head>
-
-<body>
-	{{>adminNavbar}}
-
-	{{>sidebar}}
+{{>sidebar}}
 
 
-	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="../dashboard">
-						<em class="fa fa-home"></em>
-					</a></li>
-				<li class="active">Vehicle Category Management</li>
-			</ol>
-		</div><!--/.row-->
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+	<div class="row">
+		<ol class="breadcrumb">
+			<li><a href="../dashboard">
+					<em class="fa fa-home"></em>
+				</a></li>
+			<li class="active">Vehicle Category Management</li>
+		</ol>
+	</div><!--/.row-->
 
-		<div class="row">
-			<div class="col-lg-12">
-				<!-- <h1 class="page-header">Vehicle Management</h1> -->
-			</div>
-		</div><!--/.row-->
+	<div class="row">
+		<div class="col-lg-12">
+			<!-- <h1 class="page-header">Vehicle Management</h1> -->
+		</div>
+	</div><!--/.row-->
 
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">Manage Incoming Vehicles</div>
-					<div class="panel-body">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">Manage Incoming Vehicles</div>
+				<div class="panel-body">
 
-						<div class="col-md-12">
+					<div class="col-md-12">
 
 
 
 
-							<form method="POST" action="/update-incomingdetail/{{vehicleDetail._id}}">
+						<form method="POST" action="/update-incomingdetail/{{vehicleDetail._id}}">
 
 
 
 
-								<div class="form-group">
-									<label>Vehicle Registration Number</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.registrationNumber}}"
-										id="catename" name="catename" readonly>
-								</div>
+							<div class="form-group">
+								<label>Vehicle Registration Number</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.registrationNumber}}"
+									id="catename" name="catename" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Company Name</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.vehicleCompanyname}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Company Name</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.vehicleCompanyname}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Category</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.vehicleCategory}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Category</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.vehicleCategory}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Parking Number</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.parkingNumber}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Parking Number</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.parkingNumber}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Vehicle IN Time</label>
-									<input type="text" class="form-control" value="{{formatDate vehicleDetail.inTime}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
-								<div class="form-group">
-									<label>Vehicle Out Time</label>
-									<input type="text" class="form-control" value="{{formatDate outTime}}" id="sdesc"
-										name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Vehicle IN Time</label>
+								<input type="text" class="form-control" value="{{formatDate vehicleDetail.inTime}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
+							<div class="form-group">
+								<label>Vehicle Out Time</label>
+								<input type="text" class="form-control" value="{{formatDate outTime}}" id="sdesc"
+									name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Vehicle Owned By</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.ownerName}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Vehicle Owned By</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.ownerName}}" id="sdesc"
+									name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Vehicle Owner Contact</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.ownerContactNumber}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
+							<div class="form-group">
+								<label>Vehicle Owner Contact</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.ownerContactNumber}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
 
-								<div class="form-group">
-									<label>Payment Status</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.paymentStatus}}"
-										id="sdesc" name="sdesc" readonly>
-								</div>
-
-
+							<div class="form-group">
+								<label>Payment Status</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.paymentStatus}}"
+									id="sdesc" name="sdesc" readonly>
+							</div>
 
 
-								<div class="form-group">
-									<label>Current Status</label>
-									<input type="text" class="form-control" value="{{vehicleDetail.status}}" id="sdesc"
-										name="sdesc" readonly>
-								</div>
-
-								{{#if (eq vehicleDetail.paymentStatus 'paid')}}
-								<div class="form-group">
-									<label> Charges Paid &#8377 </label>
-									<input type="text" class="form-control"
-										value="&#8377 {{vehicleDetail.totalCharge}}" id="totalChargesPaid"
-										name="totalChargesPaid" readonly>
-								</div>
-
-								<div class="form-group">
-									<label>Vehicle Expected Out Time</label>
-									<input type="text" class="form-control"
-										value="{{formatDate vehicleDetail.outTime}}" id="expectedOutTime"
-										name="expectedOutTime" readonly>
-								</div>
-
-								<div class="form-group">
-									<label>Fine &#8377 </label>
-									<input type="text" class="form-control" value="&#8377 {{fine}} "
-										id="parkingcharge" name="parkingcharge" readonly>
-								</div>
-								{{/if}}
-
-								{{#if (eq vehicleDetail.paymentStatus 'not paid')}}
-
-								<div class="form-group">
-									<label>Total Charges &#8377 </label>
-									<input type="text" class="form-control" value="&#8377 {{totalCharges}} "
-										id="parkingcharge" name="parkingcharge" readonly>
-								</div>
-								{{/if}}
 
 
-								<div class="form-group">
-									<label>Status</label>
-									<select name="status" class="form-control" required="true">
-										<option value="Out">Outgoing Vehicle</option>
-									</select>
-								</div>
+							<div class="form-group">
+								<label>Current Status</label>
+								<input type="text" class="form-control" value="{{vehicleDetail.status}}" id="sdesc"
+									name="sdesc" readonly>
+							</div>
+
+							{{#if (eq vehicleDetail.paymentStatus 'paid')}}
+							<!-- Display these fields if payment status is 'paid' -->
+
+							<div class="form-group">
+								<label> Charges Paid &#8377 </label>
+								<input type="text" class="form-control" value=" {{vehicleDetail.totalCharge}}"
+									id="totalChargesPaid" name="totalChargesPaid" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>Vehicle Expected Out Time</label>
+								<input type="text" class="form-control" value="{{formatDate vehicleDetail.outTime}}"
+									id="expectedOutTime" name="expectedOutTime" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>Fine &#8377 </label>
+								<input type="text" class="form-control" value=" {{fine}} " id="parkingcharge"
+									name="parkingcharge" readonly>
+							</div>
+							{{/if}}
+
+							{{#if (eq vehicleDetail.paymentStatus 'notpaid')}}
+							<!-- Display these fields if payment status is 'not paid' -->
+
+							<div class="form-group">
+								<label>Total Charges &#8377 </label>
+								<input type="text" class="form-control" value=" {{totalCharges}} " id="parkingcharge"
+									name="parkingcharge" readonly>
+							</div>
+							{{/if}}
 
 
-								<div class="form-group">
-									<label>Remarks</label>
-									<input type="text" class="form-control" placeholder="" id="remark" name="remark"
-										required>
-								</div>
+							<div class="form-group">
+								<label>Status</label>
+								<select name="status" class="form-control" required="true">
+									<option value="Out">Outgoing Vehicle</option>
+								</select>
+							</div>
 
 
-								<button type="submit" class="btn btn-success" name="submit-in">Submit For
-									Out-Going</button>
-								<button type="reset" class="btn btn-default">Reset</button>
-							</form>
-						</div> <!--  col-md-12 ends -->
+							<div class="form-group">
+								<label>Remarks</label>
+								<input type="text" class="form-control" placeholder="" id="remark" name="remark"
+									required>
+							</div>
 
 
-					</div>
+							<button type="submit" class="btn btn-success" name="submit-in">Submit For
+								Out-Going</button>
+							<button type="reset" class="btn btn-default">Reset</button>
+						</form>
+					</div> <!--  col-md-12 ends -->
+
+
 				</div>
 			</div>
+		</div>
 
 
 
-		</div><!--/.row-->
+	</div><!--/.row-->
 
-
-		<script src="/js1/jquery-1.11.1.min.js"></script>
-		<script src="/js1/bootstrap.min.js"></script>
-		<script src="/js1/custom.js"></script>
-
-
-
-
-
-	</div> <!--/.main-->
-
+	
 
 
 

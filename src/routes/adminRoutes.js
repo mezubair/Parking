@@ -203,54 +203,68 @@ router.get('/update-incomingdetail/:id', adminDetails, async (req, res) => {
     const id = req.params.id;
     const vehicleDetail = await VehicleEntry.findById(id);
 
+    let totalCharges = 0;
+    let fine = 0;
 
+    if (vehicleDetail.paymentStatus === 'notpaid') {
+      if (vehicleDetail.outTime === null) {
+        // Case 1: Vehicle not checked out yet
+        const outTime = moment.tz("Asia/Kolkata");
+        const inTime = moment(vehicleDetail.inTime);
+        const timeDiffInMins = outTime.diff(inTime, 'minutes');
+        const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+        totalCharges = (timeDiffInMins / 60) * ratePerHour;
+        totalCharges = Math.round(totalCharges);
+        
+      } else {
+        // Case 2: Vehicle checked out but not paid
+        const outTime = moment(vehicleDetail.outTime);
+        const inTime = moment(vehicleDetail.inTime);
+        const timeDiffInMins = outTime.diff(inTime, 'minutes');
+        const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+        totalCharges = (timeDiffInMins / 60) * ratePerHour;
 
-    if (vehicleDetail.outTime === null) {
+        
+        // Retrieve totalCharge from the database
+        const databaseTotalCharge = vehicleDetail.totalCharge;
 
-
-      // Get the current time as the outTime
-      const outTime = moment.tz("Asia/Kolkata");
-
-      // Calculate the difference between outTime and inTime in hours
-      const inTime = moment(vehicleDetail.inTime);
-      const timeDiffInMins = outTime.diff(inTime, 'minutes');
-
-      // Calculate the total charges based on the rate per hour
-      const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
-      let totalCharges = (timeDiffInMins / 60) * ratePerHour;
-
-      // Round the total charges to the nearest whole number
-      totalCharges = Math.round(totalCharges);
-
-      await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
-
-    }
-    else {
+        // If the calculated totalCharges is greater, use it; otherwise, use the database value
+        totalCharges = Math.max(totalCharges, databaseTotalCharge);
+      }
+    } else if (vehicleDetail.paymentStatus === 'paid') {
+      // Case 3: Vehicle checked out and paid
       const outTime = moment(vehicleDetail.outTime);
       const inTime = moment(vehicleDetail.inTime);
       const timeDiffInMins = outTime.diff(inTime, 'minutes');
       const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
-      let totalCharges = (timeDiffInMins / 60) * ratePerHour;
-      const DiffInMins = outTime.diff(vehicleDetail.outTime, 'minutes');
-      let fine = (DiffInMins / 60) * ratePerHour;
-      totalCharges=totalCharges+fine;
+      totalCharges = (timeDiffInMins / 60) * ratePerHour;
       totalCharges = Math.round(totalCharges);
-      await VehicleEntry.findByIdAndUpdate(id, { totalCharge: totalCharges });
 
+      // Calculate Fine only if outTime is greater than the current time
+      const currentTime = moment.tz("Asia/Kolkata");
+      const diffInMins = currentTime.diff(outTime, 'minutes');
+      fine = (diffInMins / 60) * (ratePerHour / 2);
+      fine = Math.round(fine);
+      // Ensure fine is not negative
+      fine = Math.max(0, fine);
     }
 
+    // Update the totalCharge in the database
 
 
-    // Calculate Fine
-   
-    fine = Math.max(0, fine);
-
-    res.render('adminViews/update-incomingdetail', { availabeSlots: details.totalSpots, outTime, vehicleDetail, totalCharges, fine, outTime, page: 'update-incomingdetail' });
+    res.render('adminViews/update-incomingdetail', {
+      availabeSlots: details.totalSpots,
+      vehicleDetail,
+      totalCharges,
+      fine,
+      page: 'update-incomingdetail'
+    });
   } catch (error) {
     console.error('Error fetching vehicle details:', error);
     res.status(500).send('Internal server error. Please try again later.');
   }
 });
+
 
 router.get('/print-receipt/:id', async (req, res) => {
   try {
@@ -370,7 +384,7 @@ router.post('/update-payment-status/:id', async (req, res) => {
     const { id } = req.params;
 
     // Update the payment status to "not paid"
-    await VehicleEntry.findByIdAndUpdate(id, { $set: { paymentStatus: 'not paid' } });
+    await VehicleEntry.findByIdAndUpdate(id, { $set: { paymentStatus: 'notpaid' } });
 
     res.redirect('/in-vehicles'); // Redirect back to the awaited page
   } catch (error) {
@@ -397,7 +411,7 @@ router.post('/update-incomingdetail/:id', adminDetails, async (req, res) => {
       { $inc: { totalSpots: +1 } } // Decrement the totalSpots field by one
     );
     const id = req.params.id;
-    const { remark, status } = req.body;
+    const { remark, status, fine, totalChargesPaid, parkingcharge } = req.body;
 
     const vehicleToUpdate = await VehicleEntry.findById(id);
 
@@ -411,11 +425,17 @@ router.post('/update-incomingdetail/:id', adminDetails, async (req, res) => {
       return res.status(400).send('Duplicate entry. Vehicle has already been updated to "Out" status.');
     }
 
+    // Ensure that undefined values are treated as zero
+    const parsedTotalChargesPaid = parseFloat(totalChargesPaid) || 0;
+    const parsedFine = parseFloat(fine) || 0;
+    const parsedParkingCharge = parseFloat(parkingcharge) || 0;
+
     const updatedVehicle = await VehicleEntry.findByIdAndUpdate(
       id,
       {
         remarks: remark,
         status: status,
+        totalCharge: parsedTotalChargesPaid + parsedFine + parsedParkingCharge
       },
       { new: true }
     );

@@ -5,7 +5,11 @@
         </div>
         <div class="profile-usertitle">
             <div class="profile-usertitle-name">Admin</div>
-            <div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
+            <div class="profile-usertitle-status"><span class="indicator label-success"></span>Online
+                <a href="logout">
+                    <div><em class="fa fa-power-off"></em> Logout</div>
+                </a>
+            </div>
         </div>
         <div class="clear"></div>
     </div>
@@ -19,10 +23,10 @@
         <li class="{{#if (eq page 'manage-vehicles')}}active{{/if}}"><a href="/manage-vehicles"><em
                     class="fa fa-dashboard"></em> Vehicle Entry</a></li>
 
-       <li class="{{#if (eq page 'awaited')}}active{{/if}}">
-            <a href="/awaited"><em class="fa fa-clock-o"></em> Awaited Vehicles 
+        <li class="{{#if (eq page 'awaited')}}active{{/if}}">
+            <a href="/awaited"><em class="fa fa-clock-o"></em> Awaited Vehicles
                 {{#if awaitedEntries}}
-                    <span class="notification-count">{{awaitedEntries}}</span>
+                <span class="notification-count">{{awaitedEntries}}</span>
                 {{/if}}
             </a>
         </li>

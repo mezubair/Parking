@@ -87,7 +87,7 @@ router.post('/slotBooking', async (req, res) => {
     const origin = `${userLatitude},${userLongitude}`;
     const filteredParkingLots = await parkingLots.find({ city, locality });
 
-    const apiKey = '75da3d7912msh345449a21dd102fp122829jsnd22aad6e0df2';
+    const apiKey = 'c5d9f5e4f3mshbcf56966a30c301p146815jsnaef80ac74468';
     const host = 'trueway-matrix.p.rapidapi.com';
 
     try {
@@ -110,22 +110,25 @@ router.post('/slotBooking', async (req, res) => {
                 const distanceInMeters = response.data.distances[0];
                 const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
                 parkingLot.distance = distanceInKilometers;
+                return parkingLot; // Return the parkingLot object with distance
             } else {
                 parkingLot.distance = 'N/A';
+                return parkingLot; // Return the parkingLot object with distance as 'N/A'
             }
         });
 
-        await Promise.all(distanceCalculations);
+        const parkingLotsWithDistances = await Promise.all(distanceCalculations);
 
         // Sort filtered parking lots by distance
-        filteredParkingLots.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-        console.log(filteredParkingLots);
-        res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
+        parkingLotsWithDistances.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+        console.log(parkingLotsWithDistances);
+        res.json({ parkingLots: parkingLotsWithDistances, searchPerformed: true });
     } catch (error) {
         console.error('Error:', error);
         res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
     }
 });
+
 
 
 router.get('/vbook', userDetails, async (req, res) => {
