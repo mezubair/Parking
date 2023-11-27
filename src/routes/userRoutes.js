@@ -221,11 +221,11 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
-// const authToken = '710d631200691a7d7187ab8d687bf7c5';
-// const twilioPhone = '+15637702743';
+const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
+const authToken = '710d631200691a7d7187ab8d687bf7c5';
+const twilioPhone = '+15637702743';
 
-// const client = twilio(accountSid, authToken);
+const client = twilio(accountSid, authToken);
 
 router.post("/register", async (req, res) => {
     try {
@@ -248,14 +248,14 @@ router.post("/register", async (req, res) => {
         const registered = await regNewUser.save();
 
         // Send a welcome message via Twilio
-        // const messageBody= "Welcome to ParKing! You have been successfully registered.Thank you for choosing ParKing!";
-        // await client.messages.create({
-        //     body: messageBody,
-        //     to: `+91${phoneNumber}`,
-        //     from: twilioPhone,
-        // })
+        const messageBody= "Welcome to ParKing! You have been successfully registered.Thank you for choosing ParKing!";
+        await client.messages.create({
+            body: messageBody,
+            to: `+91${phoneNumber}`,
+            from: twilioPhone,
+        })
 
-        // console.log('Message sent successfully:', messageBody .sid);
+        console.log('Message sent successfully:', messageBody .sid);
 
         // Render the registration success message here
         return res.status(400).render('./userViews/login', { message: 'Registration Successful' });
@@ -384,15 +384,15 @@ router.post("/payment", userDetails, async (req, res) => {
         
 
         // Sending a message to the user's phone number using Twilio
-        // const messageBody = `Dear ${user.fullName},\nYour Parking slot at ${plotname} has been successfully booked from ${inTime} to ${outTime}. Thank you for choosing ParKing!`;
+        const messageBody = `Dear ${user.fullName},\nYour Parking slot at ${plotname} has been successfully booked from ${inTime} to ${outTime}. Thank you for choosing ParKing!`;
 
-        // await client.messages.create({
-        //     body: messageBody,
-        //     to: `+91${user.phoneNumber}`,
-        //     from: twilioPhone,
-        // });
+        await client.messages.create({
+            body: messageBody,
+            to: `+91${user.phoneNumber}`,
+            from: twilioPhone,
+        });
 
-        // console.log('Message sent successfully');
+        console.log('Message sent successfully');
 
         return res.status(200).render('./userViews/paymentSucess', { parkingNumber, inTime, outTime, submitSource, lat, longt });
     } catch (error) {
