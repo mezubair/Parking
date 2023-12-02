@@ -5,7 +5,8 @@ const session = require('express-session');
 const moment = require('moment-timezone');
 const axios = require("axios");
 const Razorpay = require('razorpay');
-// const twilio = require('twilio');
+const twilio = require('twilio');
+
 
 const parkingLots = require('../models/parkingLot')
 const VehicleEntry = require('../models/vehicleEntry');
@@ -82,12 +83,12 @@ router.get("/paymentSucess", userDetails, (req, res) => {
 // router.post implementation
 
 
-router.post('/slotBooking', async (req, res) => {
+    router.post('/slotBooking', async (req, res) => {
     const { userLatitude, userLongitude, city, locality } = req.body;
     const origin = `${userLatitude},${userLongitude}`;
     const filteredParkingLots = await parkingLots.find({ city, locality });
 
-    const apiKey = 'c5d9f5e4f3mshbcf56966a30c301p146815jsnaef80ac74468';
+    const apiKey = '150ff0b567msh4eda225a6f58a67p1e3f64jsn762349d245cb';
     const host = 'trueway-matrix.p.rapidapi.com';
 
     try {
@@ -128,7 +129,6 @@ router.post('/slotBooking', async (req, res) => {
         res.json({ parkingLots: filteredParkingLots, searchPerformed: true });
     }
 });
-
 
 
 router.get('/vbook', userDetails, async (req, res) => {

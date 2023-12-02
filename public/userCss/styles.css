@@ -504,63 +504,21 @@ a:hover {
 /******************/
 
 
-/*
-.header {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-    background-color: #fff2dc;
-    text-align: center;
-    height: 720px;
-}
-
-.header .h1-large {
-    margin-bottom: 1.25rem;
-}
-
-.header .replace-me {
-    color: #f25c05;
-}
-
-.header .replace-me span {
-    text-decoration: underline;
-}
-
-.header .p-large {
-    margin-bottom: 2.75rem;
-}
-
-.header .btn-solid-lg {
-    display: block;
-    margin-bottom: 1.75rem;
-}
-
-.header .text-container {
-    margin-bottom: 5rem;
-}
-
-.header .image-container img {
-    height: 600px;
-    width: 600px;
-}*/
-
-
 
 
 /*     Carousel    */
 
 
 /********************/
+/* Carousel Item Styling */
 .carousel-item {
-    white-space: nowrap;
     height: 100vh;
     min-height: 300px;
-
-    background: no-repeat scroll center scroll;
-    -webkit-background-size: cover;
-    background-size: cover;
+    background: center/cover no-repeat;
+    /* Include background fallbacks if needed */
 }
 
-.carousel-item ::before {
+.carousel-item::before {
     content: "";
     display: block;
     position: absolute;
@@ -569,9 +527,9 @@ a:hover {
     left: 0;
     right: 0;
     opacity: 0.7;
-
 }
 
+/* Carousel Caption Styling */
 .carousel-caption {
     bottom: 180px;
     padding-left: 100px;
@@ -579,7 +537,6 @@ a:hover {
 }
 
 .carousel-caption h5 {
-
     font-size: 5rem;
     font-weight: 700;
     padding-bottom: 60px;
@@ -588,10 +545,11 @@ a:hover {
 
 .carousel-caption p {
     font-size: 18px;
-    top: 2 rem;
+    top: 2rem; /* Adjusted value */
     color: orange;
 }
 
+/* Specific Carousel Item Styling */
 .c3 h5 {
     color: black;
 }
@@ -604,8 +562,8 @@ a:hover {
     color: orange;
     white-space: nowrap;
     font-size: 5rem;
-
 }
+
 
 .c1 p {
     color: white;
@@ -1565,4 +1523,10 @@ a:hover {
 .center-align {
     text-align: center;
     vertical-align: middle;
+}
+
+@media (max-width: 1200px) {
+    h5 {
+       display: none;
+    }
 }
