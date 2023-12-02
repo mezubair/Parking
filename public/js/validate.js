@@ -1,6 +1,7 @@
 /* Signup form validation */
 let signup_form = document.getElementById('signupForm');
 const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.(com|in)$/;
 
 
 if (signup_form) {
@@ -26,22 +27,23 @@ if (signup_form) {
             document.getElementById('floatingInput1_error').innerHTML = '';
         }
 
-        if (!phone.value) {
-            document.getElementById('floatingInput2_error').innerHTML = 'Mobile Number is required';
+        if (!phone.value || phone.value.length !== 10) {
+            document.getElementById('floatingInput2_error').innerHTML = 'Mobile Number is required and must be 10 digits';
             e.preventDefault();
         } else {
             document.getElementById('floatingInput2_error').innerHTML = '';
         }
-
         if (!email.value) {
             document.getElementById('floatingInput3_error').innerHTML = 'Email is required';
             e.preventDefault();
-        
-        
+        } else if (!emailPattern.test(email.value)) {
+            document.getElementById('floatingInput3_error').innerHTML = 'Enter a valid email address with .com or .in domain';
+            e.preventDefault();
+        } else {
+            document.getElementById('floatingInput3_error').innerHTML = ''; // Clear the error message if everything is fine
         }
-        else {
-            document.getElementById('floatingInput3_error').innerHTML = '';
-        }
+        
+
         if (!password.value) {
             document.getElementById('floatingPassword_error').innerHTML = 'Password is required';
             e.preventDefault();
@@ -127,3 +129,5 @@ if(login_form){
     
     });
     }
+
+ 

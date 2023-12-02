@@ -1,96 +1,101 @@
 {{>userHead}}
 {{>userNavbar}}
 
-    <!-- Header -->
-    <header class="ex-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-10 offset-xl-1">
-                    <h1 class="text-center">Sign Up</h1>
-                </div>
-                <!-- end of col -->
+<!-- Header -->
+<header class="ex-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-10 offset-xl-1">
+                <h1 class="text-center">Sign Up</h1>
             </div>
-            <!-- end of row -->
+            <!-- end of col -->
         </div>
-        <!-- end of container -->
-    </header>
-    <!-- end of ex-header -->
-    <!-- end of header -->
+        <!-- end of row -->
+    </div>
+    <!-- end of container -->
+</header>
+<!-- end of ex-header -->
+<!-- end of header -->
 
 
-    <!-- Basic -->
-    <div class="ex-form-1 pt-5 pb-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-6 offset-xl-3">
-                    <div class="text-box mt-5 mb-5">
-                        <p class="mb-4">Fill out the form below to sign up for the service. Already signed up? Then just
-                            <a class="blue" href="login">Log In</a>
-                        </p>
-                        
-                      {{#if message}}    
-                            <div class="container">
-                                <div class="row">
-                                     <div class="col-xl-10 offset-xl-1">
-                                         <p class="text-danger">{{message}}</p>
-                                     </div>
-                                </div>
+<!-- Basic -->
+<div class="ex-form-1 pt-5 pb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 offset-xl-3">
+                <div class="text-box mt-5 mb-5">
+                    <p class="mb-4">Fill out the form below to sign up for the service. Already signed up? Then just
+                        <a class="blue" href="login">Log In</a>
+                    </p>
+
+                    {{#if message}}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-10 offset-xl-1">
+                                <p class="text-danger">{{message}}</p>
                             </div>
-                            
-                      {{/if}}
-
-                        <!-- Sign Up Form -->
-                        <form id="signupForm" method="POST" action="/register">
-                             
-                            <div class="mb-4 form-floating">
-                                <input type="text" class="form-control" name="fullName" id="floatingInput1"
-                                    placeholder="Full Name">
-                                <label for="floatingInput">Full Name</label>
-                                <p class="text-danger" id="floatingInput1_error"></p>
-
-                            </div>
-                            <div class="mb-4 form-floating">
-                                <input type="tel" pattern="[789][0-9]{9}" class="form-control" name="phoneNumber"
-                                    id="floatingInput2" minlength="10" maxlength="10" placeholder="Mobile">
-                                <label for="floatingInput">Mobile Number</label>
-                                <p class="text-danger" id="floatingInput2_error"></p>
-                               
-
-                            </div>
-                            <div class="mb-4 form-floating">
-                                <input type="email" name="email" class="form-control" id="floatingInput3"
-                                    placeholder="name@example.com">
-                                <label for="floatingInput">Email address</label>
-                                <p class="text-danger" id="floatingInput3_error"></p>
-                                
-
-                            </div>
-
-                            <div class="mb-4 form-floating">
-                                <input type="password" name="password" class="form-control" id="floatingPassword"
-                                    placeholder="Password">
-                                <label for="floatingPassword">Password</label>
-                                <p class="text-danger" id="floatingPassword_error"></p>
-
-                            </div>
-                            <div class="mb-4 form-floating">
-                                <input type="password" name="confirmPassword" class="form-control" id="floatingCpassword"
-                                    placeholder="Confirm Password" >
-                                <label for="floatingCpassword">Confirm Password</label>
-                                <p class="text-danger"  id="floatingCpassword_error"></p>
-                                
-                            
-
+                        </div>
                     </div>
-                    <div class="mb-4 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">I agree with the site's stated <a
-                                href="#">Privacy Policy</a> and <a href="#">Terms &
-                                Conditions</a></label>
-                    </div>
-                    <p class="text-danger" id="exampleCheck1_error"></p>
 
-                    <button type="submit" class="form-control-submit-button">Sign up</button>
+                    {{/if}}
+
+                    <!-- Sign Up Form -->
+                    <form id="signupForm" method="POST" action="/register">
+
+                        <div class="mb-4 form-floating">
+                            <input type="text" class="form-control" name="fullName" id="floatingInput1"
+                                placeholder="Full Name">
+                            <label for="floatingInput">Full Name</label>
+                            <p class="text-danger" id="floatingInput1_error"></p>
+
+                        </div>
+                        <div class="mb-4 form-floating">
+                            <input type="tel" pattern="[789][0-9]{9}" class="form-control" name="phoneNumber"
+                                id="floatingInput2" minlength="10" maxlength="10" placeholder="Mobile">
+                            <label for="floatingInput">Mobile Number</label>
+                            <p class="text-danger" id="floatingInput2_error"></p>
+
+
+                        </div>
+                        <div class="mb-4 form-floating">
+                            <input type="email" name="email" class="form-control" id="floatingInput3"
+                                placeholder="name@example.com">
+                            <label for="floatingInput">Email address</label>
+                            <p class="text-danger" id="floatingInput3_error"></p>
+
+
+                        </div>
+
+                        <div class="mb-4 form-floating">
+                            <input type="password" name="password" class="form-control" id="floatingPassword"
+                                placeholder="Password">
+                            <label for="floatingPassword">Password</label>
+                            <p class="text-danger" id="floatingPassword_error"></p>
+
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="showPasswordCheckbox"
+                                onchange="togglePasswordVisibility()">
+                            <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
+                        </div>
+                        <div class="mb-4 form-floating">
+                            <input type="password" name="confirmPassword" class="form-control" id="floatingCpassword"
+                                placeholder="Confirm Password">
+                            <label for="floatingCpassword">Confirm Password</label>
+                            <p class="text-danger" id="floatingCpassword_error"></p>
+
+
+
+                        </div>
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">I agree with the site's stated <a
+                                    href="#">Privacy Policy</a> and <a href="#">Terms &
+                                    Conditions</a></label>
+                        </div>
+                        <p class="text-danger" id="exampleCheck1_error"></p>
+
+                        <button type="submit" class="form-control-submit-button">Sign up</button>
                     </form>
                     <!-- end of sign up form -->
 
@@ -102,9 +107,9 @@
         <!-- end of row -->
     </div>
     <!-- end of container -->
-    </div>
-    <!-- end of ex-basic-1 -->
-    <!-- end of basic -->
+</div>
+<!-- end of ex-basic-1 -->
+<!-- end of basic -->
 
 
-   {{>userFooter}}
+{{>userFooter}}

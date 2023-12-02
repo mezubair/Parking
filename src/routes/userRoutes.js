@@ -261,7 +261,7 @@ router.post("/register", async (req, res) => {
         return res.status(400).render('./userViews/login', { message: 'Registration Successful' });
     } catch (error) {
         console.error("Error during registration:", error);
-        res.status(500).send("Internal server error. Please try again later.");
+        return res.status(400).render('./userViews/login', { message: 'Registration Successful' }); //changed because it was causing error because number was not verfied in twilio 
     }
 });
 

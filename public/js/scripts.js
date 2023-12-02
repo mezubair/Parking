@@ -110,3 +110,19 @@ function topFunction() {
     document.body.scrollTop = 0; // for Safari
     document.documentElement.scrollTop = 0; // for Chrome, Firefox, IE and Opera
 }
+
+// Show password Function //
+
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("floatingPassword");
+        const confirmPasswordInput = document.getElementById("floatingCpassword");
+        const showPasswordCheckbox = document.getElementById("showPasswordCheckbox");
+
+        if (showPasswordCheckbox.checked) {
+            passwordInput.type = "text";
+            confirmPasswordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+            confirmPasswordInput.type = "password";
+        }
+    }

@@ -1,105 +1,105 @@
 {{>userHead}}
 
-    <!-- Navigation -->
-    <nav id="navbarExample" class="navbar navbar-expand-lg fixed-top navbar-light" aria-label="Main navigation">
-        <div class="container">
+<!-- Navigation -->
+<nav id="navbarExample" class="navbar navbar-expand-lg fixed-top navbar-light" aria-label="Main navigation">
+    <div class="container">
 
-            <!-- Image Logo -->
-            <a class="navbar-brand logo-text" href="userafterlogin"><img src="images/parKinglogo.png" width="200"
-                    height="40" alt=""></a>
+        <!-- Image Logo -->
+        <a class="navbar-brand logo-text" href="userafterlogin"><img src="images/parKinglogo.png" width="200"
+                height="40" alt=""></a>
 
-            <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav ms-auto navbar-nav-scroll">
-                    <span class="nav-item">
-                        <a class="btn-outline-sm" href="login">Logout</a>
-                    </span>
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ms-auto navbar-nav-scroll">
+                <span class="nav-item">
+                    <a class="btn-outline-sm" href="login">Logout</a>
+                </span>
 
 
-                    </span>
-            </div>
-            <!-- end of navbar-collapse -->
+                </span>
         </div>
-        <!-- end of container -->
-    </nav>
-    <!-- end of navbar -->
-    <!-- end of navigation -->
-
-    <div class="ex-form-1 pt-5 pb-5" style="margin-top: 100px; background-color: rgb(241, 238, 238);">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-6 offset-xl-3">
-                    <div class="text-box mt-4 mb-8">
-
-                        <h6 class="mb-4" style="color: green;">Procced to payment.....</h6>
-
-                        {{#if message}}
-                        <div>
-                            <p style="color: red;">{{message}}</p>
-                        </div>
-                        {{/if}}
-
-                        <form method="POST" action="/payment" id="paymentForm">
-
-
-                            <input type="hidden" name="plotname" value="{{plotname}}">
-                            <input type="hidden" name="catename" value="{{catename}}">
-                            <input type="hidden" name="vehcomp" value="{{vehcomp}}">
-                            <input type="hidden" name="model" value="{{model}}">
-                            <input type="hidden" name="ownername" value="{{ownername}}">
-
-
-
-                            <div class="form-group mb-4">
-                                <label for="registrationNumber">Vehicle Registration Number</label>
-                                <input type="text" class="form-control" value="{{vehreno}}" name="vehreno"
-                                    id="registrationNumber" readonly>
-                            </div>
-
-
-                            <div class="form-group mb-4">
-                                <label for="sdesc">Vehicle IN Time</label>
-                                <input type="datetime-local" class="form-control" value="{{inTime}}" name="inTime"
-                                    id="inTime" readonly>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="sdesc">Vehicle Out Time</label>
-                                <input type="datetime-local" class="form-control" value="{{outTime}}" name="outTime"
-                                    id="outTime" readonly>
-                            </div>
-
-
-
-
-                            <div class="form-group mb-4">
-                                <label for="parkingcharge">Total Charges &#8377</label>
-                                <input type="text" class="form-control" value="{{charges}}" name="charges" id="charges"
-                                    readonly>
-                            </div>
-
-
-                            <input type="hidden" name="submitSource" id="submitSource" value="">
-                            <button type="button" class="btn btn-primary" id="payNowButton">Pay Now</button>
-                            <button type="button" class="btn btn-primary" id="payLater">Pay Later</button>
-
-
-                        </form>
-
-
-                    </div>
-                    <!-- end of text-box -->
-                </div>
-                <!-- end of col -->
-            </div>
-            <!-- end of row -->
-        </div>
-        <!-- end of container -->
+        <!-- end of navbar-collapse -->
     </div>
-    <!-- end of ex-basic-1 -->
-    <!-- end of basic -->
+    <!-- end of container -->
+</nav>
+<!-- end of navbar -->
+<!-- end of navigation -->
 
-    {{>userFooter}}
+<div class="ex-form-1 pt-5 pb-5" style="margin-top: 100px; background-color: rgb(241, 238, 238);">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 offset-xl-3">
+                <div class="text-box mt-4 mb-8">
+
+                    <h6 class="mb-4" style="color: green;">Procced to payment.....</h6>
+
+                    {{#if message}}
+                    <div>
+                        <p style="color: red;">{{message}}</p>
+                    </div>
+                    {{/if}}
+
+                    <form method="POST" action="/payment" id="paymentForm">
+
+
+                        <input type="hidden" name="plotname" value="{{plotname}}">
+                        <input type="hidden" name="catename" value="{{catename}}">
+                        <input type="hidden" name="vehcomp" value="{{vehcomp}}">
+                        <input type="hidden" name="model" value="{{model}}">
+                        <input type="hidden" name="ownername" value="{{ownername}}">
+
+
+
+                        <div class="form-group mb-4">
+                            <label for="registrationNumber">Vehicle Registration Number</label>
+                            <input type="text" class="form-control" value="{{vehreno}}" name="vehreno"
+                                id="registrationNumber" readonly>
+                        </div>
+
+
+                        <div class="form-group mb-4">
+                            <label for="sdesc">Vehicle IN Time</label>
+                            <input type="datetime-local" class="form-control" value="{{inTime}}" name="inTime"
+                                id="inTime" readonly>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="sdesc">Vehicle Out Time</label>
+                            <input type="datetime-local" class="form-control" value="{{outTime}}" name="outTime"
+                                id="outTime" readonly>
+                        </div>
+
+
+
+
+                        <div class="form-group mb-4">
+                            <label for="parkingcharge">Total Charges &#8377</label>
+                            <input type="text" class="form-control" value="{{charges}}" name="charges" id="charges"
+                                readonly>
+                        </div>
+
+
+                        <input type="hidden" name="submitSource" id="submitSource" value="">
+                        <button type="button" class="btn btn-primary" id="payNowButton">Pay Now</button>
+                        <button type="button" class="btn btn-primary" id="payLater">Pay Later</button>
+
+
+                    </form>
+
+
+                </div>
+                <!-- end of text-box -->
+            </div>
+            <!-- end of col -->
+        </div>
+        <!-- end of row -->
+    </div>
+    <!-- end of container -->
+</div>
+<!-- end of ex-basic-1 -->
+<!-- end of basic -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{{>userFooter}}
