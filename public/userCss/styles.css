@@ -1530,3 +1530,18 @@ a:hover {
        display: none;
     }
 }
+
+/**/
+.password-input {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: rgb(207, 99, 5);
+}

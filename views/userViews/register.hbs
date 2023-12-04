@@ -50,42 +50,41 @@
 
                         </div>
                         <div class="mb-4 form-floating">
-                            <input type="tel" pattern="[789][0-9]{9}" class="form-control" name="phoneNumber"
-                                id="floatingInput2" minlength="10" maxlength="10" placeholder="Mobile">
-                            <label for="floatingInput">Mobile Number</label>
+                            <input type="text" class="form-control" name="phoneNumber" id="floatingInput2"
+                                placeholder="Mobile" minlength="10" maxlength="10"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            <label for="floatingInput2">Mobile Number</label>
                             <p class="text-danger" id="floatingInput2_error"></p>
-
-
                         </div>
+
                         <div class="mb-4 form-floating">
                             <input type="email" name="email" class="form-control" id="floatingInput3"
                                 placeholder="name@example.com">
                             <label for="floatingInput">Email address</label>
                             <p class="text-danger" id="floatingInput3_error"></p>
-
-
                         </div>
-
-                        <div class="mb-4 form-floating">
+                        <div class="mb-4 form-floating password-input">
                             <input type="password" name="password" class="form-control" id="floatingPassword"
                                 placeholder="Password">
                             <label for="floatingPassword">Password</label>
                             <p class="text-danger" id="floatingPassword_error"></p>
+                            <div class="password-toggle" id="passwordToggle"
+                                onmousedown="togglePasswordVisibility('floatingPassword')"
+                                onmouseup="togglePasswordVisibility('floatingPassword')">
+                                👁️
+                            </div>
+                        </div>
 
-                        </div>
-                        <div class="form-check mt-2">
-                            <input class="form-check-input" type="checkbox" id="showPasswordCheckbox"
-                                onchange="togglePasswordVisibility()">
-                            <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
-                        </div>
-                        <div class="mb-4 form-floating">
+                        <div class="mb-4 form-floating password-input">
                             <input type="password" name="confirmPassword" class="form-control" id="floatingCpassword"
                                 placeholder="Confirm Password">
                             <label for="floatingCpassword">Confirm Password</label>
                             <p class="text-danger" id="floatingCpassword_error"></p>
-
-
-
+                            <div class="password-toggle" id="confirmPasswordToggle"
+                                onmousedown="togglePasswordVisibility('floatingCpassword')"
+                                onmouseup="togglePasswordVisibility('floatingCpassword')">
+                                👁️
+                            </div>
                         </div>
                         <div class="mb-4 form-check">
                             <input type="checkbox" class="form-check-input" id="exampleCheck1">

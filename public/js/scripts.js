@@ -113,16 +113,17 @@ function topFunction() {
 
 // Show password Function //
 
-    function togglePasswordVisibility() {
-        const passwordInput = document.getElementById("floatingPassword");
-        const confirmPasswordInput = document.getElementById("floatingCpassword");
-        const showPasswordCheckbox = document.getElementById("showPasswordCheckbox");
 
-        if (showPasswordCheckbox.checked) {
-            passwordInput.type = "text";
-            confirmPasswordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-            confirmPasswordInput.type = "password";
-        }
+function togglePasswordVisibility(fieldId) {
+    var passwordInput = document.getElementById(fieldId);
+    var passwordToggle = document.getElementById(fieldId + 'Toggle');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.innerHTML = '👁️';
+    } else {
+        passwordInput.type = 'password';
+        passwordToggle.innerHTML = '👁️';
     }
+}
+
