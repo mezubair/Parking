@@ -267,51 +267,49 @@ router.post("/register", async (req, res) => {
 
 router.post("/vbook", async (req, res) => {
     try {
-        // Extracting necessary information from the request body
         const { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime } = req.body;
 
-        // Check for an existing entry with the same registrationNumber, status 'In', and inTime
+        const currentDate = moment().format("YYYY-MM-DD");
+        const intime = moment(`${currentDate} ${inTime}`);
+        const outtime = moment(`${currentDate} ${outTime}`);
+
+        if (!intime.isValid() || !outtime.isValid() || outtime.isSameOrBefore(intime)) {
+            console.log("Invalid time inputs");
+            return res.status(400).render('./userViews/vbook', { message: 'Invalid time inputs. Please check the data.' });
+        }
+
         const existingEntry = await VehicleEntry.findOne({
             parkinglotName: plotname,
             registrationNumber: vehreno,
             status: 'In',
         });
-        console.log("Existing entry:", existingEntry);
 
-        // If an existing entry is found, return a duplicate entry error message
         if (existingEntry) {
             console.log("Duplicate entry found. Please check the data.");
             return res.status(400).render('./userViews/vbook', { message: 'Duplicate entry. Please check the data.' });
         }
 
-        const details=await parkingLots.findOne({name:plotname});
+        const details = await parkingLots.findOne({ name: plotname });
 
-        const outtime = moment(outTime);
+        if (!details) {
+            console.log("Parking lot details not found.");
+            return res.status(400).render('./userViews/vbook', { message: 'Parking lot details not found. Please check the data.' });
+        }
 
-        // Calculate the difference between outTime and inTime in hours
-        const intime = moment(inTime);
         const timeDiffInMins = outtime.diff(intime, 'minutes');
-    
-        // Calculate the total charges based on the rate per hour
-        const ratePerHour = details.chargesPerHour; // Set your own rate per hour here
+        const ratePerHour = details.chargesPerHour;
+
         let charges = (timeDiffInMins / 60) * ratePerHour;
-    
-        // Round the total charges to the nearest whole number
         charges = Math.round(charges);
 
-
-
-
-
-        // If validation is successful, redirect the user to the payment page
         return res.status(200).render('./userViews/payment', { plotname, ownername, ownercontno, catename, vehcomp, vehreno, model, inTime, outTime, charges });
+
     } catch (error) {
-        // Handle other potential errors with a generic server error message
         console.error("Error during form validation:", error);
-        console.log("Internal server error. Please try again later.");
         res.status(500).send("Internal server error. Please try again later.");
     }
 });
+
 
 
 router.get("/payment", userDetails, (req, res) => {
@@ -329,7 +327,9 @@ router.post("/payment", userDetails, async (req, res) => {
     try {
         const { plotname, ownername, catename, vehcomp, vehreno, model, inTime, outTime, submitSource, charges } = req.body;
         const parkingNumber = Math.floor(10000 + Math.random() * 90000);
-        console.log(plotname);
+        const currentDate = moment().format("YYYY-MM-DD");
+        const intime = moment(`${currentDate} ${inTime}`);
+        const outtime = moment(`${currentDate} ${outTime}`);
 
         let newVehicle;
 
@@ -343,8 +343,8 @@ router.post("/payment", userDetails, async (req, res) => {
                 vehicleCategory: catename,
                 vehicleCompanyname: vehcomp,
                 vehicleModel: model,
-                inTime: inTime,
-                outTime: outTime,
+                inTime: intime,
+                outTime: outtime,
                 paymentStatus: "paid",
                 totalCharge: charges
             });
@@ -365,8 +365,8 @@ router.post("/payment", userDetails, async (req, res) => {
                 vehicleCategory: catename,
                 vehicleCompanyname: vehcomp,
                 vehicleModel: model,
-                inTime: inTime,
-                outTime: outTime,
+                inTime: intime,
+                outTime: outtime,
                 paymentStatus: "awaited",
                 totalCharge: charges
             });
