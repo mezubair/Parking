@@ -22,7 +22,7 @@ const razorpay = new Razorpay({
 
 //Admin Controls
 exports.getAdminLogin = (req, res) => {
-  res.render('adminViews/adminLogin');
+  res.render('adminViews/adminLogin',{ page: 'adminLogin' });
 }
 
 exports.postAdminLogin = async (req, res) => {
@@ -388,16 +388,17 @@ exports.awaitedId = async (req, res) => {
 }
 
 /////////////////User Controls////////////////
+
 exports.getUserIndex = (req, res) => {
-  res.render('userViews/index')
+  res.render('userViews/index',{ page: 'index' });
 }
 exports.getUserDetail =  (req, res) => {
-  res.render('userViews/detail')
+  res.render('userViews/detail',{ page: 'detail' });
 }
 
 exports.getUserLogin = (req, res) => {
 
-  res.render('userViews/login');
+  res.render('userViews/login',{ page: 'login' });
 }
 exports.postUserLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -432,7 +433,7 @@ exports.getUserLogout = (req, res) => {
   });
 }
 exports.getUserRegister = (req, res) => {
-  res.render('userViews/register')
+  res.render('userViews/register',{ page: 'register' });
 }
 exports.postUserRegister = async (req, res) => {
   try {

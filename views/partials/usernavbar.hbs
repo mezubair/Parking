@@ -1,43 +1,48 @@
-    <!-- Navigation -->
-    <nav id="navbarExample" class="navbar navbar-expand-lg fixed-top navbar-light" aria-label="Main navigation">
-        <div class="container">
+<!-- Navigation -->
+<nav id="navbarExample" class="navbar navbar-expand-lg fixed-top navbar-light" aria-label="Main navigation">
+    <div class="container">
 
-            <!-- Image Logo -->
-            <a class="navbar-brand logo-text" href="/"><img src="images/parKinglogo.png" width="200" height="40"
-                    alt=""></a>
+        <!-- Image Logo -->
+        <a class="navbar-brand logo-text" href="/"><img src="images/parKinglogo.png" width="200" height="40" alt=""></a>
 
-            <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav ms-auto navbar-nav-scroll">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#features">Services</a>
-                    </li>
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ms-auto navbar-nav-scroll">
+                <li class="nav-item ">
+                    <a class="nav-link {{#if (eq page 'index')}}active{{/if}} " aria-current="page" href="/">Home</a>
+                </li>
+               <li class="nav-item">
+    <a class="nav-link {{#if (eq (indexOf page '/#features') 0)}}active{{/if}}" href="/#features">Services</a>
+</li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="detail">About Us</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Register / Log In
-                </a>
-                
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/login">User</a>
-                    <a class="dropdown-item" href="/adminLogin">Admin</a>
-                </div>
-            </li>
-                </ul>
-            </div>
-            <!-- end of navbar-collapse -->
+
+
+                <li class="nav-item">
+                    <a class="nav-link {{#if (eq page 'detail')}}active{{/if}} " href="detail">About Us</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{#if (eq page 'register')}}active{{else}}{{#if (eq page 'login')}}active{{else}}{{#if (eq page 'adminLogin')}}active{{/if}}{{/if}}{{/if}}"
+                        href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Register / Log In
+                    </a>
+
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {{#if (eq page 'login')}}active{{/if}} " href="/login">User</a>
+                        <a class="dropdown-item {{#if (eq page 'adminLogin')}}active{{/if}} "
+                            href="/adminLogin">Admin</a>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <!-- end of container -->
-    </nav>
-    <!-- end of navbar -->
-    <!-- end of navigation -->
+        <!-- end of navbar-collapse -->
+    </div>
+    <!-- end of container -->
+</nav>
+<!-- end of navbar -->
+<!-- end of navigation -->
