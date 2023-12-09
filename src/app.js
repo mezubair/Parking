@@ -44,6 +44,9 @@ app.engine('hbs', exphbs.engine({
         addOne: function(value) {
             return value + 1;
         },
+        indexOf: function (haystack, needle) {
+            return haystack.indexOf(needle);
+        },
         formatDate: function (date) {
             const momentDate = moment(date);
             return momentDate.format('MMMM Do YYYY, hh:mm A');
