@@ -1,15 +1,8 @@
 const mongoose = require('mongoose');
-
-mongoose.connect("mongodb://localhost:27017/pms", {
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
-}).then(() =>{
-    console.log(`Connection Successful`);
-}).catch((e) => {
-    console.log(`Couldn't connect to Database`);
-}) 
-
-
+const db='mongodb+srv://mesamparker1998:root@cluster0.kxw5t04.mongodb.net/?retryWrites=true&w=majority'
+mongoose.connect(db).then(() =>{
+console.log("connection sucessfull");
+}).catch((err) => console.log("no connecion"));
 
 
 
