@@ -11,7 +11,7 @@ const axios = require("axios");
 
 
 const accountSid = 'AC7c3ab69ecd3b61ad8d3e0c9fe8d736b8';
-const authToken = '710d631200691a7d7187ab8d687bf7c5';
+const authToken = '40ec59e362d438fc2d66798242846d10';
 const twilioPhone = '+15637702743';
 const client = twilio(accountSid, authToken);
 
