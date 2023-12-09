@@ -71,7 +71,7 @@ function requestLocationAccess() {
                 <td>${lot.distance} km</td>
                 <td>${availableSpots}</td>
                 <td>
-                ${lot.totalSpots > 0 ? `<a href="/vbook?lotId=${lot._id}" class="btn-outline-reg">Book Now</a>` : ''}
+                ${lot.totalSpots > 0 ? `<a href="/vbook?lotId=${lot._id}" class="btn btn-outline-reg">Book</a>` : ''}
               </td>
             
             `;

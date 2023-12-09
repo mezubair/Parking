@@ -89,6 +89,7 @@
 
                         <!-- Display user's vehicle entries -->
                         {{#if userEntries.length}}
+                        <div class="table-responsive">
                         <h3>Your Check In / Check Out History:</h3>
                         <table id="parkingLotsTable" class="table" style="display:block">
                             <thead class="center-align">
@@ -120,6 +121,7 @@
                         </table>
                         {{else}}
                         <p>No current bookings.</p>
+                        </div>
                         {{/if}}
 
                         <!-- end of col -->

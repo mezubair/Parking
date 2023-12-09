@@ -69,7 +69,7 @@
                 {{#if (eq submitSource 'PayLater')}}
                 <strong class="card-text">Your slot is reserved !</strong>
                 <p>Temporary Parking Number: CA {{parkingNumber}}</p>
-                <strong>Your slot is reserved till {{formatDate inTime}} </strong>
+                <strong>Your slot is reserved till {{inTime}} </strong>
                 <br>
                 <br>
                 <em>Kindly be advised that your parking reservation is subject to cancellation if you do not arrive at
@@ -78,7 +78,7 @@
                 {{else if (eq submitSource 'PayNow')}}
                 <strong class="card-text">Booked Successfully</strong>
                 <p>Parking Number: CA {{parkingNumber}}</p>
-                <p>Your slot is booked from {{formatDate inTime}} to {{formatDate outTime}}</p>
+                <p>Your slot is booked from {{inTime}} to {{outTime}}</p>
 
                 {{else}}
                 <p class="card-text">Unexpected Payment Status</p>
